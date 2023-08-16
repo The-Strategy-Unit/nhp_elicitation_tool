@@ -1,0 +1,3 @@
+Patients with mental health conditions are sometimes admitted to an inpatient bed after attending an emergency department. The reasons for admission can be for a range of reasons including self harm, acute psychosis, or drug and alcohol related issues. These patients may  benefit more from appropriate treatment in the community or an alternative psychiatric facility. Provision of  a psychiatric liaison type service (sometimes known as RAID) could avoid admissions of this type. 
+
+This model identifies patients who may benefit from psychiatric liaison  as those with a primary diagnosis in ICD10 chapter F (mental and behavioural disorders) who were admitted from ED and did not undergo a procedure.

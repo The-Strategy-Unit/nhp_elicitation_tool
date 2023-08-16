@@ -1,0 +1,1 @@
+Patients aged over 75 admitted as an emergency.
