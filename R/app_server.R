@@ -4,5 +4,5 @@
 #'     DO NOT REMOVE.
 #' @noRd
 app_server <- function(input, output, session) {
-
+  mod_mitigator_server("mitigator")
 }
