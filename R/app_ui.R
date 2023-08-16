@@ -13,7 +13,10 @@ app_ui <- function(request) {
 
   sidebar <- bs4Dash::bs4DashSidebar()
 
-  body <- bs4Dash::bs4DashBody()
+  body <- bs4Dash::bs4DashBody(
+    # temporary, should have a home module that leads to this page
+    mod_mitigator_ui("mitigator")
+  )
 
   page <- bs4Dash::bs4DashPage(
     title = "NHP Elicitation Tool",
