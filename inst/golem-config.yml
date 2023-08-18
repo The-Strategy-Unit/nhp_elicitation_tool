@@ -2,6 +2,29 @@ default:
   golem_name: nhp.elicitation.tool
   golem_version: 0.0.0.9000
   app_prod: no
+  strategies:
+    alcohol_partially_attributable-acute: Alcohol Partially Attributable (Acute)
+    alcohol_partially_attributable-chronic: Alcohol Partially Attributable (Chronic)
+    alcohol_wholly_attributable: Alcohol Wholly Attributable
+    cancelled_operations: Cancelled Operations
+    emergency_elderly: Emergency Elderly
+    eol_care-0-2_days: End of Life Care (0-2 days)
+    eol_care-3+_days: End of Life Care (3+ days)
+    frail_elderly-high: Frail Elderly (High)
+    frail_elderly-intermediate: Frail Elderly (Intermediate)
+    frail_elderly-low: Frail Elderly (Low)
+    intentional_self_harm: Intentional Self Harm
+    medically_unexplained_related_admissions: Medically Unexplained Related Admissions
+    obesity_related_admissions: Obesity Related Admissions
+    preop_los-1day: Pre-op Length of Stay (1 day)
+    preop_los-2day: Pre-op Length of Stay (2 days)
+    raid_ae: Rapid Assessment Interface Discharge (A&E)
+    raid_ip: Rapid Assessment Interface Discharge (IP)
+    readmission_within_28_days: Readmission Within 28 Days
+    smoking: Smoking
+    stroke_early_supported_discharge: Stroke Early Supported Discharge
+    zero_los_no_procedure-adult: Zero Length of Stay With No Procedure (Adult)
+    zero_los_no_procedure-child: Zero Length of Stay With No Procedure (Child)
 production:
   app_prod: yes
 dev:
