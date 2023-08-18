@@ -13,6 +13,13 @@ mod_mitigator_ui <- function(id) {
       title = "Mitigator",
       collapsible = FALSE,
       width = 12,
+      shiny::selectInput(
+        ns("strategy_selection"),
+        "Mitigator",
+        get_golem_config("strategies") |>
+          # flip the names and values
+          (\(s) setNames(names(s), s))()
+      ),
       shiny::uiOutput(ns("mitigator_text"))
     ),
     bs4Dash::box(
@@ -73,13 +80,23 @@ mod_mitigator_server <- function(id) {
   shiny::moduleServer(id, function(input, output, session) {
     .data <- rlang::.data
 
+    trend_data <- app_sys("app", "data", "trend_data.csv") |>
+      readr::read_csv(col_types = "dcddd")
+
     selected_data <- shiny::reactive({
-      set.seed(123)
-      tibble::tibble(year = 2000:2019) |>
-        dplyr::mutate(
-          value = (.data[["year"]] - 2000) * 0.05 + 10 + rnorm(n = dplyr::n()),
-          year = .data[["year"]] * 100 + .data[["year"]] - 1999
-        )
+      s <- shiny::req(input$strategy_selection)
+
+      dplyr::filter(
+        trend_data,
+        .data[["strategy"]] == s
+      )
+    })
+
+    value_format <- shiny::reactive({
+      v <- mean(selected_data()$rate)
+      s <- round(1 - log10(v))
+
+      scales::number_format(accuracy = 0.1, scale = 10^s)
     })
 
     param_table <- shiny::reactive({
@@ -90,21 +107,28 @@ mod_mitigator_server <- function(id) {
 
       tibble::tibble(
         year = last_year$year + c(0, 2020),
-        value_lo = last_year$value * c(1, p[[1]]),
-        value_hi = last_year$value * c(1, p[[2]])
+        value_lo = last_year$rate * c(1, p[[1]]),
+        value_hi = last_year$rate * c(1, p[[2]])
       )
     })
 
     output$mitigator_text <- shiny::renderUI({
-      shiny::tags$p("mitigators text")
+      s <- shiny::req(input$strategy_selection) |>
+        stringr::str_remove("-.*$")
+
+      md_file_to_html("app", "mitigators_text", paste0(s, ".md"))
     })
 
     output$trend_plot <- shiny::renderPlot({
       mitigator_trend_plot(
         selected_data(),
         param_table(),
-        scales::number_format(0.1)
+        value_format()
       )
+    })
+
+    shiny::observe({
+      s <- shiny::req(input$strategy_selection)
     })
   })
 }
