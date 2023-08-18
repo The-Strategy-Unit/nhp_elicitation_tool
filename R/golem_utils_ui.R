@@ -373,3 +373,16 @@ includeRMarkdown <- function(path) {
 
   return(shiny::HTML(html))
 }
+
+
+md_file_to_html <- function(...) {
+  file <- app_sys(...)
+
+  if (!file.exists(file)) {
+    s <- rev(list(...))[[1]]
+    warning(paste(s, "documentation not found"))
+    return(NULL)
+  }
+
+  shiny::HTML(markdown::mark_html(file, output = FALSE, template = FALSE))
+}
