@@ -6,7 +6,7 @@ mitigator_trend_plot <- function(data, param_table, value_format) {
       ggplot2::aes(x = .data[["year"]]),
     ) +
     ggplot2::geom_line(
-      ggplot2::aes(y = .data[["value"]]),
+      ggplot2::aes(y = .data[["rate"]]),
       colour = "#2c2825"
     ) +
     ggplot2::geom_ribbon(
@@ -19,7 +19,7 @@ mitigator_trend_plot <- function(data, param_table, value_format) {
       colour = "#2c2825"
     ) +
     ggplot2::geom_point(
-      ggplot2::aes(y = .data[["value"]]),
+      ggplot2::aes(y = .data[["rate"]]),
       shape = "circle filled",
       fill = "#686f73",
       colour = "#2c2825",
@@ -35,7 +35,7 @@ mitigator_trend_plot <- function(data, param_table, value_format) {
       size = 3
     ) +
     ggplot2::scale_x_continuous(
-      breaks = param_table$year,
+      breaks = c(min(data$year), param_table$year),
       labels = scales::number_format(
         decimal.mark = "/",
         big.mark = "",
