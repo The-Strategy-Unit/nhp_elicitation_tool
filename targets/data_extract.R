@@ -1,5 +1,5 @@
 year_to_fyear <- function(year) {
-  as.integer(year * 100 + year - 1999)
+  as.integer(year * 100 + (year + 1) %% 100)
 }
 
 db_con <- function(database = Sys.getenv("DB_DATABASE"),
@@ -39,3 +39,46 @@ get_values <- function(strategy, fyear) {
     ) |>
     dplyr::collect()
 }
+
+get_england_pop <- function() {
+  url <- httr::modify_url(
+    "https://www.ons.gov.uk/generator",
+    query = list(
+      format="csv",
+      uri=paste(
+        sep = "/",
+        "",
+        "peoplepopulationandcommunity",
+        "populationandmigration",
+        "populationestimates",
+        "timeseries",
+        "enpop",
+        "pop"
+      )
+    )
+  )
+  
+  filename <- "inst/app/data/england_pop.csv"
+
+  df <- readr::read_csv(
+    url,
+    skip = 8,
+    col_names = c("year", "pop"),
+    col_types = "dd"
+  )
+  
+  readr::write_csv(df, filename)
+
+  filename
+}
+
+
+      # targets::tar_read(values) |>
+      #   dplyr::rename(fyear = "FYEAR") |>
+      #   dplyr::inner_join(
+      #     pop(),
+      #     by = dplyr::join_by("fyear")
+      #   ) |>
+      #   dplyr::mutate(
+      #     value = .data[["n"]] / .data[["pop"]]
+      #   ) |>
