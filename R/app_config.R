@@ -9,7 +9,7 @@
 #'
 #' @noRd
 app_sys <- function(...) {
-  system.file(..., package = "nhp_elicitation_tool")
+  system.file(..., package = "nhp.elicitation.tool")
 }
 
 
