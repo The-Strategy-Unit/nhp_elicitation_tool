@@ -8,11 +8,11 @@
 mod_mitigator_ui <- function(id) {
   ns <- shiny::NS(id)
 
-  shiny::tagList(
+  shiny::fluidRow(
     bs4Dash::box(
       title = "Mitigator",
       collapsible = FALSE,
-      width = 12,
+      width = 2,
       shiny::selectInput(
         ns("strategy_selection"),
         "Mitigator",
@@ -22,52 +22,51 @@ mod_mitigator_ui <- function(id) {
       ),
       shiny::uiOutput(ns("mitigator_text"))
     ),
-    bs4Dash::box(
-      title = "Parameter Setting",
-      collapsible = FALSE,
-      width = 12,
+    col_10(
       shiny::fluidRow(
-        col_8(
-          shiny::plotOutput(ns("trend_plot"))
-        ),
-        col_1(
-          shiny::sliderInput(
-            ns("param_values"),
-            "Values",
-            min = 0,
-            max = 100,
-            value = c(0, 100),
-            step = 1
+        bs4Dash::box(
+          title = "Parameter Setting",
+          collapsible = FALSE,
+          width = 12,
+          shiny::fluidRow(
+            col_8(
+              shiny::plotOutput(ns("trend_plot"), height = "600px")
+            ),
+            col_1(
+              shiny::sliderInput(
+                ns("param_values"),
+                "Values",
+                min = 0,
+                max = 100,
+                value = c(0, 100),
+                step = 1
+              )
+            ),
+            col_3(
+              shiny::textAreaInput(
+                ns("why_lo"),
+                label = NULL,
+                value = "why low?",
+                width = "100%"
+              ),
+              shiny::textAreaInput(
+                ns("why_hi"),
+                label = NULL,
+                value = "why high?",
+                width = "100%"
+              )
+            )
           )
         ),
-        col_3(
-          shiny::textAreaInput(
-            ns("why_lo"),
-            label = NULL,
-            value = "why low?",
-            width = "100%"
-          ),
-          shiny::textAreaInput(
-            ns("why_hi"),
-            label = NULL,
-            value = "why high?",
-            width = "100%"
-          )
+        col_4(
+          shiny::actionButton(ns("prev"), "Previous")
+        ),
+        col_4(
+          shiny::actionButton(ns("next"), "Next")
+        ),
+        col_4(
+          shiny::actionButton(ns("save"), "Save")
         )
-      )
-    ),
-    shiny::fluidRow(
-      col_3(
-        shiny::actionButton(ns("prev"), "Previous")
-      ),
-      col_3(
-        shiny::actionButton(ns("next"), "Next")
-      ),
-      col_3(
-        shiny::actionButton(ns("skip"), "Skip")
-      ),
-      col_3(
-        shiny::actionButton(ns("save"), "Save")
       )
     )
   )
