@@ -111,9 +111,14 @@ mod_mitigator_server <- function(id) {
       )
     })
 
-    output$mitigator_text <- shiny::renderUI({
-      s <- shiny::req(input$strategy_selection) |>
+    selected_strategy_group <- shiny::reactive({
+      input$strategy_selection |>
+        shiny::req() |>
         stringr::str_remove("-.*$")
+    })
+
+    output$mitigator_text <- shiny::renderUI({
+      s <- shiny::req(selected_strategy_group())
 
       md_file_to_html("app", "mitigators_text", paste0(s, ".md"))
     })
