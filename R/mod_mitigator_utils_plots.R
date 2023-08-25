@@ -5,6 +5,14 @@ mitigator_trend_plot <- function(data, param_table, value_format) {
     ggplot2::ggplot(
       ggplot2::aes(x = .data[["year"]]),
     ) +
+    ggplot2::annotate(
+      "ribbon",
+      x = param_table$year,
+      ymin = param_table$value_lo[[1]] * c(1, 0),
+      ymax = param_table$value_lo[[1]] * c(1, 1),
+      fill = "#2c2825",
+      alpha = 0.05
+    ) +
     ggplot2::geom_line(
       ggplot2::aes(y = .data[["rate"]]),
       colour = "#2c2825"
