@@ -13,12 +13,15 @@ mod_mitigator_ui <- function(id) {
       title = "Mitigator",
       collapsible = FALSE,
       width = 2,
-      shiny::selectInput(
+      shinyWidgets::pickerInput(
         ns("strategy_selection"),
         "Mitigator",
         get_golem_config("strategies") |>
           # flip the names and values
-          (\(s) setNames(names(s), s))()
+          (\(s) setNames(names(s), s))(),
+        options = list(
+          "live-search" = TRUE
+        )
       ),
       shiny::uiOutput(ns("mitigator_text"))
     ),
@@ -33,13 +36,17 @@ mod_mitigator_ui <- function(id) {
               shiny::plotOutput(ns("trend_plot"), height = "600px")
             ),
             col_1(
-              shiny::sliderInput(
+              shinyWidgets::noUiSliderInput(
                 ns("param_values"),
                 "Values",
                 min = 0,
                 max = 100,
                 value = c(0, 100),
-                step = 1
+                step = 1,
+                orientation = "vertical",
+                direction = "rtl",
+                width = "100%", height = "500px",
+                color = "#fcdf83"
               )
             ),
             col_3(
@@ -81,6 +88,8 @@ mod_mitigator_server <- function(id) {
 
     trend_data <- app_sys("app", "data", "trend_data.csv") |>
       readr::read_csv(col_types = "dcddd")
+
+    min_year <- min(trend_data$year)
 
     selected_data <- shiny::reactive({
       s <- shiny::req(input$strategy_selection)
@@ -127,7 +136,8 @@ mod_mitigator_server <- function(id) {
       mitigator_trend_plot(
         selected_data(),
         param_table(),
-        value_format()
+        value_format(),
+        min_year
       )
     })
 
