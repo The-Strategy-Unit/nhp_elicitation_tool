@@ -1,4 +1,4 @@
-mitigator_trend_plot <- function(data, param_table, value_format, min_year) {
+mitigator_trend_plot <- function(data, param_table, value_format, min_year, y_title) {
   .data <- rlang::.data # suppress lintr warnings
 
   data |>
@@ -64,6 +64,10 @@ mitigator_trend_plot <- function(data, param_table, value_format, min_year) {
       )
     ) +
     ggplot2::expand_limits(y = 0) +
+    ggplot2::labs(
+      x = "Financial Year of Admission",
+      y = y_title
+    ) +
     ggplot2::theme(
       panel.background = ggplot2::element_blank(),
       axis.line = ggplot2::element_line(colour = "#2c2825"),
