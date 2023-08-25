@@ -34,42 +34,13 @@ get_values <- function(strategy, fyear) {
     dplyr::filter(.data[["FYEAR"]] == fyear) |>
     dplyr::count(
       .data[["FYEAR"]],
+      .data[["AGE"]],
+      .data[["SEX"]],
       .data[["strategy"]],
       wt = .data[["fraction"]]
     ) |>
-    dplyr::collect()
-}
-
-get_england_pop <- function() {
-  url <- httr::modify_url(
-    "https://www.ons.gov.uk/generator",
-    query = list(
-      format="csv",
-      uri=paste(
-        sep = "/",
-        "",
-        "peoplepopulationandcommunity",
-        "populationandmigration",
-        "populationestimates",
-        "timeseries",
-        "enpop",
-        "pop"
-      )
-    )
-  )
-  
-  filename <- "inst/app/data/england_pop.csv"
-
-  df <- readr::read_csv(
-    url,
-    skip = 8,
-    col_names = c("year", "pop"),
-    col_types = "dd"
-  )
-  
-  readr::write_csv(df, filename)
-
-  filename
+    dplyr::collect() |>
+    janitor::clean_names()
 }
 
 get_preop_los_denominator <- function(fyear) {
@@ -97,61 +68,48 @@ get_preop_los_denominator <- function(fyear) {
 }
 
 get_rates <- function(values, england_pop, preop_los_denominator) {
-  fyears <- unique(values$FYEAR)
+  .data <- rlang::.data
+
+  fyears <- unique(values$fyear)
 
   pop <- england_pop |>
-    readr::read_csv(col_types = "ii") |>
+    readr::read_csv(col_types = "icii") |>
     dplyr::transmute(
       fyear = year_to_fyear(.data[["year"]]),
-      n = .data[["pop"]]
+      .data[["sex"]],
+      .data[["age"]],
+      pop = .data[["value"]]
     ) |>
-    dplyr::filter(fyear %in% fyears)
+    dplyr::filter(.data[["fyear"]] %in% fyears)
 
-  denominators <- dplyr::bind_rows(
-    .id = "strategy",
-    "alcohol_partially_attributable-acute" = pop,
-    "alcohol_partially_attributable-chronic" = pop,
-    "alcohol_wholly_attributable" = pop, 
-    "cancelled_operations" = pop,
-    "emergency_elderly" = pop,
-    "eol_care-0-2_days" = pop,
-    "eol_care-3+_days" = pop,
-    "frail_elderly-high" = pop,
-    "frail_elderly-intermediate" = pop,
-    "frail_elderly-low" = pop,
-    "intentional_self_harm" = pop,
-    "medically_unexplained_related_admissions" = pop, 
-    "obesity_related_admissions" = pop,
-    "preop_los-1day" = preop_los_denominator,
-    "preop_los-2day" = preop_los_denominator,
-    "raid_ae" = pop,
-    "raid_ip" = pop, 
-    "readmission_within_28_days" = pop,
-    "smoking" = pop,
-    "stroke_early_supported_discharge" = pop,
-    "zero_los_no_procedure-adult" = pop,
-    "zero_los_no_procedure-child" = pop
-  ) |>
-    dplyr::rename(d = "n")
+  pop_final_year <- pop |>
+    dplyr::filter(.data[["fyear"]] == max(fyears)) |>
+    dplyr::select(-"fyear") |>
+    dplyr::rename(pop_final = "pop")
 
   filename <- "inst/app/data/trend_data.csv"
 
   values |>
-    dplyr::rename(year = "FYEAR") |>
-    dplyr::inner_join(denominators, by = c("strategy", "year" = "fyear")) |>
-    dplyr::mutate(rate = .data[["n"]] / .data[["d"]]) |>
+    dplyr::right_join(
+      pop,
+      by = dplyr::join_by("fyear", "age", "sex")
+    ) |>
+    dplyr::right_join(
+      pop_final_year,
+      by = dplyr::join_by("age", "sex")
+    ) |>
+    dplyr::mutate(
+      dplyr::across("n", ~ tidyr::replace_na(.x, 0)),
+      r = .data[["n"]] / .data[["pop"]] * .data[["pop_final"]]
+    ) |>
+    dplyr::summarise(
+      n = sum(.data[["r"]]),
+      d = sum(.data[["pop_final"]]),
+      rate = .data[["n"]] / .data[["d"]],
+      .by = c("fyear", "strategy")
+    ) |>
+    dplyr::rename(year = "fyear") |>
     readr::write_csv(filename)
-  
+
   filename
 }
-
-
-      # targets::tar_read(values) |>
-      #   dplyr::rename(fyear = "FYEAR") |>
-      #   dplyr::inner_join(
-      #     pop(),
-      #     by = dplyr::join_by("fyear")
-      #   ) |>
-      #   dplyr::mutate(
-      #     value = .data[["n"]] / .data[["pop"]]
-      #   ) |>
