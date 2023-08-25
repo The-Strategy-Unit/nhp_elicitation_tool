@@ -5,7 +5,7 @@ tar_source("targets")
 list(
   tar_target(
     england_pop,
-    get_england_pop(),
+    get_england_population_by_year(),
     format = "file"
   ),
   tar_target(
