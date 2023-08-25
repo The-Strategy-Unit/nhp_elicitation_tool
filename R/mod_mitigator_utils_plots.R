@@ -1,4 +1,4 @@
-mitigator_trend_plot <- function(data, param_table, value_format) {
+mitigator_trend_plot <- function(data, param_table, value_format, min_year) {
   .data <- rlang::.data # suppress lintr warnings
 
   data |>
@@ -43,14 +43,15 @@ mitigator_trend_plot <- function(data, param_table, value_format) {
       size = 3
     ) +
     ggplot2::scale_x_continuous(
-      breaks = c(min(data$year), param_table$year),
+      breaks = c(min_year, param_table$year),
       labels = scales::number_format(
         decimal.mark = "/",
         big.mark = "",
         accuracy = 0.01,
         scale = 0.01
       ),
-      expand = ggplot2::expansion(c(0.05, 0))
+      expand = ggplot2::expansion(c(0.05, 0)),
+      limits = c(min_year, param_table$year[[2]])
     ) +
     ggplot2::scale_y_continuous(
       labels = value_format,
