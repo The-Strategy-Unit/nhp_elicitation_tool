@@ -100,11 +100,19 @@ mod_mitigator_server <- function(id) {
       )
     })
 
-    value_format <- shiny::reactive({
+    selected_data_scale <- shiny::reactive({
       v <- mean(selected_data()$rate)
-      s <- round(1 - log10(v))
+      10^round(1 - log10(v))
+    })
 
-      scales::number_format(accuracy = 0.1, scale = 10^s)
+    value_format <- shiny::reactive({
+      s <- selected_data_scale()
+      scales::number_format(accuracy = 0.1, scale = s)
+    })
+
+    y_axis_title <- shiny::reactive({
+      s <- selected_data_scale()
+      paste("Rate per", scales::comma(s), "population")
     })
 
     param_table <- shiny::reactive({
@@ -137,7 +145,8 @@ mod_mitigator_server <- function(id) {
         selected_data(),
         param_table(),
         value_format(),
-        min_year
+        min_year,
+        y_axis_title()
       )
     })
 
