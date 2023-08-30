@@ -20,7 +20,6 @@ get_strategies_subset|function|52221a0ee156d60b|||||||||||||||
 get_total_admissions|function|a75269d180e97895|||||||||||||||
 get_values|function|dfbb16ed7ae71d84|||||||||||||||
 get_values_los|function|f2806acf33bff965|||||||||||||||
-rates|stem|be5cb24bd4e555c3|3be6105dcbc4d594|788bb09ed9acd9e4|966943187|inst/app/data/trend_data.csv|t19598.6388851659s|06eb02a59c1b3b64|25220|file|local|vector|||0.3||
 strategies_all|stem|8588a42c55189992|225436da1c638041|a47e0d6bd6fa9fb8|1589890098||t19598.4077350081s|494b560fddd003d2|368|rds|local|vector|||7.36||
 strategies_los|stem|fedc0cbe50d95e60|df0adb33982cf29c|b07d6339b7ed8343|1452741302||t19598.4082283161s|c3cbfe28e1565b13|202|rds|local|vector|||0.11||
 strategies_pcnts|stem|854c46b50cb2c25b|ff1ff212af08cb24|b07d6339b7ed8343|-781719080||t19598.408228956s|1d635f53cb385f1d|65|rds|local|vector|||0||
