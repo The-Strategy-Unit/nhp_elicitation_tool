@@ -1,6 +1,4 @@
-year_to_fyear <- function(year) {
-  as.integer(year * 100 + (year + 1) %% 100)
-}
+.data <- rlang::.data
 
 db_con <- function(database = Sys.getenv("DB_DATABASE"),
                    envir = parent.frame()) {
