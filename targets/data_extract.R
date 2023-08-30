@@ -25,6 +25,20 @@ get_strategies <- function() {
     dplyr::pull(1)
 }
 
+get_strategies_subset <- function(strategies, ...) {
+  stringr::str_subset(
+    strategies,
+    paste0(
+      "^ip_(",
+      paste(
+        sep = "|",
+        ...
+      ),
+      ")$"
+    )
+  )
+}
+
 get_values <- function(strategy, fyear) {
   con <- db_con()
 
@@ -41,71 +55,116 @@ get_values <- function(strategy, fyear) {
     janitor::clean_names()
 }
 
-get_preop_los_denominator <- function(fyear) {
+get_values_los <- function(strategy, fyear) {
   con <- db_con()
 
-  tbl_ip <- dplyr::tbl(con, dbplyr::in_schema("nhp_modelling", "inpatients"))
-  tbl_procs <- dplyr::tbl(con, "tbInpatientsProcedures") |>
-    dplyr::select(-"FYEAR")
-
-  tbl_ip |>
-    dplyr::inner_join(tbl_procs, by = dplyr::join_by("EPIKEY")) |>
+  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
     dplyr::filter(
       .data[["FYEAR"]] == fyear,
-      .data[["ADMIMETH"]] %LIKE% "1%",
-      !.data[["OPCODE"]] %LIKE% "[UYZ]%",
-      dplyr::between(
-        .data[["OPDATE"]],
-        .data[["ADMIDATE"]],
-        .data[["DISDATE"]]
-      )
+      !is.na(.data[["AGE"]]),
+      !is.na(.data[["SPELDUR"]])
     ) |>
-    dplyr::count() |>
+    dplyr::summarise(
+      days = sum(.data[["SPELDUR"]], na.rm = TRUE),
+      n = dplyr::n(),
+      .by = c("FYEAR", "AGE", "SEX", "strategy")
+    ) |>
     dplyr::collect() |>
-    dplyr::mutate(fyear = fyear)
+    janitor::clean_names()
 }
 
-get_rates <- function(values, england_pop, preop_los_denominator) {
-  .data <- rlang::.data
+get_total_admissions <- function(fyear) {
+  con <- db_con()
 
-  fyears <- unique(values$fyear)
-
-  pop <- england_pop |>
-    readr::read_csv(col_types = "icii") |>
-    dplyr::transmute(
-      fyear = year_to_fyear(.data[["year"]]),
-      .data[["sex"]],
-      .data[["age"]],
-      pop = .data[["value"]]
+  dplyr::tbl(con, dbplyr::in_schema("nhp_modelling", "inpatients")) |>
+    dplyr::filter(.data[["FYEAR"]] == fyear) |>
+    dplyr::count(
+      .data[["FYEAR"]],
+      .data[["AGE"]],
+      .data[["SEX"]],
+      name = "admissions"
     ) |>
-    dplyr::filter(.data[["fyear"]] %in% fyears)
+    dplyr::collect() |>
+    janitor::clean_names()
+}
 
-  pop_final_year <- pop |>
-    dplyr::filter(.data[["fyear"]] == max(fyears)) |>
-    dplyr::select(-"fyear") |>
-    dplyr::rename(pop_final = "pop")
-
-  filename <- "inst/app/data/trend_data.csv"
-
-  values |>
-    dplyr::right_join(
-      pop,
-      by = dplyr::join_by("fyear", "age", "sex")
+get_age_standardised_rates <- function(values, pop_final_year, total_admissions) {
+  total_admissions |>
+    tidyr::drop_na() |>
+    dplyr::mutate(
+      dplyr::across("age", ~ pmax(0, pmin(90, .x)))
     ) |>
-    dplyr::right_join(
+    dplyr::summarise(
+      dplyr::across("admissions", sum),
+      .by = -"admissions"
+    ) |>
+    dplyr::inner_join(
       pop_final_year,
       by = dplyr::join_by("age", "sex")
     ) |>
+    dplyr::left_join(
+      values,
+      by = dplyr::join_by("fyear", "age", "sex")
+    ) |>
     dplyr::mutate(
       dplyr::across("n", ~ tidyr::replace_na(.x, 0)),
-      r = .data[["n"]] / .data[["pop"]] * .data[["pop_final"]]
+      r = .data[["n"]] / .data[["admissions"]] * .data[["pop_final"]]
     ) |>
     dplyr::summarise(
       n = sum(.data[["r"]]),
       d = sum(.data[["pop_final"]]),
       rate = .data[["n"]] / .data[["d"]],
       .by = c("fyear", "strategy")
+    )
+}
+
+get_age_standardised_los <- function(values_los, pop_final_year) {
+  values_los |>
+    dplyr::mutate(
+      dplyr::across("age", ~ pmax(0, pmin(90, .x)))
     ) |>
+    dplyr::summarise(
+      dplyr::across(c("days", "n"), sum),
+      .by = -c("days", "n")
+    ) |>
+    tidyr::complete(
+      .data[["fyear"]],
+      age = 0:90,
+      .data[["sex"]],
+      .data[["strategy"]]
+    ) |>
+    dplyr::mutate(
+      dplyr::across(c("days", "n"), ~ tidyr::replace_na(.x, 0))
+    ) |>
+    dplyr::filter(
+      .data[["age"]] >= min(
+        ifelse(.data[["n"]] > 0, .data[["age"]], NA),
+        na.rm = TRUE
+      ),
+      .by = c("strategy")
+    ) |>
+    dplyr::inner_join(
+      pop_final_year,
+      by = dplyr::join_by("age", "sex")
+    ) |>
+    dplyr::mutate(
+      r = ifelse(
+        .data[["n"]] > 0,
+        .data[["days"]] / .data[["n"]] * .data[["pop_final"]],
+        0
+      )
+    ) |>
+    dplyr::summarise(
+      n = sum(.data[["pop_final"]]),
+      rate = sum(.data[["r"]]) / .data[["n"]],
+      .by = c("fyear", "strategy")
+    )
+}
+
+create_trend_data <- function(...) {
+  filename <- "inst/app/data/trend_data.csv"
+
+  dplyr::bind_rows(...) |>
     dplyr::rename(year = "fyear") |>
     readr::write_csv(filename)
 
