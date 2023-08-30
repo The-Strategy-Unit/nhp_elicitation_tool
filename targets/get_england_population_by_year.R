@@ -1,3 +1,5 @@
+.data <- rlang::.data
+
 get_england_population_by_year <- function() {
   tf <- withr::local_tempfile(fileext = ".xlsx")
 
@@ -47,7 +49,11 @@ get_england_population_by_year <- function() {
     tidyr::fill("year_code") |>
     tidyr::pivot_longer(-"year_code") |>
     tidyr::drop_na("value") |>
-    tidyr::separate_wider_position("name", c("sex" = 1, "age" = 2), too_few = "align_start") |>
+    tidyr::separate_wider_position(
+      "name",
+      c("sex" = 1, "age" = 2),
+      too_few = "align_start"
+    ) |>
     dplyr::rename("year" = "year_code") |>
     dplyr::mutate(
       dplyr::across("age", as.integer),
@@ -75,14 +81,17 @@ get_england_population_by_year <- function() {
     ) |>
     dplyr::select(-"value")
 
-
   fixed_rows <- df |>
     dplyr::filter(
       max(.data[["age"]]) == 85,
       .data[["age"]] == 85,
       .by = "year"
     ) |>
-    tidyr::complete(year, sex, age = 85:90) |>
+    tidyr::complete(
+      .data[["year"]],
+      .data[["sex"]],
+      age = 85:90
+    ) |>
     tidyr::fill("value") |>
     dplyr::inner_join(
       age_rates,
@@ -93,14 +102,28 @@ get_england_population_by_year <- function() {
     ) |>
     dplyr::select(-"r")
 
-  filename <- "inst/app/data/england_pop.csv"
   df |>
     dplyr::anti_join(
       fixed_rows,
       by = dplyr::join_by("year", "sex", "age")
     ) |>
     dplyr::bind_rows(fixed_rows) |>
-    readr::write_csv(filename)
+    dplyr::mutate(
+      dplyr::across("sex", as.character)
+    )
+}
 
-  filename
+get_england_population_final_year <- function(england_pop, fyears) {
+  final_fyear <- max(fyears)
+
+  england_pop |>
+    dplyr::transmute(
+      fyear = year_to_fyear(.data[["year"]]),
+      .data[["sex"]],
+      .data[["age"]],
+      pop = .data[["value"]]
+    ) |>
+    dplyr::filter(.data[["fyear"]] == final_fyear) |>
+    dplyr::select(-"fyear") |>
+    dplyr::rename(pop_final = "pop")
 }
