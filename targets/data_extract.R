@@ -39,11 +39,28 @@ get_strategies_subset <- function(strategies, ...) {
   )
 }
 
+fix_ages <- function(x) {
+  x |>
+    dplyr::mutate(
+      dplyr::across("age", ~ pmax(0, pmin(90, .x)))
+    ) |>
+    dplyr::group_by(
+      dplyr::across(c("fyear", "age", "sex", "strategy"))
+    ) |>
+    dplyr::summarise(
+      dplyr::across(tidyselect::everything(), sum),
+      .groups = "drop"
+    )
+}
+
 get_values <- function(strategy, fyear) {
   con <- db_con()
 
   dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
-    dplyr::filter(.data[["FYEAR"]] == fyear) |>
+    dplyr::filter(
+      .data[["FYEAR"]] == fyear,
+      !is.na(.data[["AGE"]])
+    ) |>
     dplyr::count(
       .data[["FYEAR"]],
       .data[["AGE"]],
@@ -52,7 +69,8 @@ get_values <- function(strategy, fyear) {
       wt = .data[["fraction"]]
     ) |>
     dplyr::collect() |>
-    janitor::clean_names()
+    janitor::clean_names() |>
+    fix_ages()
 }
 
 get_values_los <- function(strategy, fyear) {
@@ -70,14 +88,36 @@ get_values_los <- function(strategy, fyear) {
       .by = c("FYEAR", "AGE", "SEX", "strategy")
     ) |>
     dplyr::collect() |>
-    janitor::clean_names()
+    janitor::clean_names() |>
+    fix_ages()
+}
+
+get_values_pcnts <- function(strategy, fyear) {
+  con <- db_con()
+
+  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
+    dplyr::filter(
+      .data[["FYEAR"]] == fyear,
+      !is.na(.data[["AGE"]])
+    ) |>
+    dplyr::summarise(
+      n = sum(.data[["fraction"]], na.rm = TRUE),
+      d = dplyr::n(),
+      .by = c("FYEAR", "AGE", "SEX", "strategy")
+    ) |>
+    dplyr::collect() |>
+    janitor::clean_names() |>
+    fix_ages()
 }
 
 get_total_admissions <- function(fyear) {
   con <- db_con()
 
   dplyr::tbl(con, dbplyr::in_schema("nhp_modelling", "inpatients")) |>
-    dplyr::filter(.data[["FYEAR"]] == fyear) |>
+    dplyr::filter(
+      .data[["FYEAR"]] == fyear,
+      !is.na(.data[["AGE"]])
+    ) |>
     dplyr::count(
       .data[["FYEAR"]],
       .data[["AGE"]],
@@ -85,19 +125,12 @@ get_total_admissions <- function(fyear) {
       name = "admissions"
     ) |>
     dplyr::collect() |>
-    janitor::clean_names()
+    janitor::clean_names() |>
+    fix_ages()
 }
 
 get_age_standardised_rates <- function(values, pop_final_year, total_admissions) {
   total_admissions |>
-    tidyr::drop_na() |>
-    dplyr::mutate(
-      dplyr::across("age", ~ pmax(0, pmin(90, .x)))
-    ) |>
-    dplyr::summarise(
-      dplyr::across("admissions", sum),
-      .by = -"admissions"
-    ) |>
     dplyr::inner_join(
       pop_final_year,
       by = dplyr::join_by("age", "sex")
@@ -120,13 +153,6 @@ get_age_standardised_rates <- function(values, pop_final_year, total_admissions)
 
 get_age_standardised_los <- function(values_los, pop_final_year) {
   values_los |>
-    dplyr::mutate(
-      dplyr::across("age", ~ pmax(0, pmin(90, .x)))
-    ) |>
-    dplyr::summarise(
-      dplyr::across(c("days", "n"), sum),
-      .by = -c("days", "n")
-    ) |>
     tidyr::complete(
       .data[["fyear"]],
       age = 0:90,
