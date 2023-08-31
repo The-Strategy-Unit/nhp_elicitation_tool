@@ -40,7 +40,7 @@ list(
   ),
   tar_target(
     strategies_rates,
-    setdiff(strategies_all, c(strategies_los))
+    setdiff(strategies_all, c(strategies_los, strategies_pcnts))
   ),
   # values ----
   tar_target(
