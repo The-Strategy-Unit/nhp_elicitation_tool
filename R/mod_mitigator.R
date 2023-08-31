@@ -9,20 +9,28 @@ mod_mitigator_ui <- function(id) {
   ns <- shiny::NS(id)
 
   shiny::fluidRow(
-    bs4Dash::box(
-      title = "Mitigator",
-      collapsible = FALSE,
-      width = 2,
-      shinyWidgets::pickerInput(
-        ns("strategy_selection"),
-        "Mitigator",
-        get_golem_config("strategies") |>
-          # flip the names and values
-          (\(s) setNames(names(s), s))(),
-        options = list(
-          "live-search" = TRUE
+    col_12(
+      shiny::uiOutput(ns("strategy")),
+      shinyjs::disabled(
+        shinyWidgets::actionBttn(
+          ns("prev_strat"),
+          "Previous",
+          style = "simple",
+          color = "primary"
         )
       ),
+      shinyWidgets::actionBttn(
+        ns("next_strat"),
+        "Next",
+        style = "simple",
+        color = "primary"
+      ),
+      shiny::tags$p("")
+    ),
+    bs4Dash::box(
+      title = "Description",
+      collapsible = FALSE,
+      width = 2,
       shiny::uiOutput(ns("mitigator_text"))
     ),
     col_10(
@@ -64,15 +72,6 @@ mod_mitigator_ui <- function(id) {
               )
             )
           )
-        ),
-        col_4(
-          shiny::actionButton(ns("prev"), "Previous")
-        ),
-        col_4(
-          shiny::actionButton(ns("next"), "Next")
-        ),
-        col_4(
-          shiny::actionButton(ns("save"), "Save")
         )
       )
     )
@@ -89,10 +88,49 @@ mod_mitigator_server <- function(id) {
     trend_data <- app_sys("app", "data", "trend_data.csv") |>
       readr::read_csv(col_types = "dcddd")
 
+    strategies <- get_golem_config("strategies")
+
     min_year <- min(trend_data$year)
 
+    selected_strategy <- shiny::reactiveVal(1)
+
+    selected_strategy_text <- shiny::reactive({
+      s <- selected_strategy()
+      strategies[[s]]
+    })
+
+    selected_strategy_id <- shiny::reactive({
+      s <- selected_strategy()
+      names(strategies)[[s]]
+    })
+
+    output$strategy <- shiny::renderUI({
+      shiny::tags$h2(selected_strategy_text())
+    })
+
+    shiny::observe({
+      ls <- length(strategies)
+      s <- pmin(selected_strategy() + 1, ls)
+      selected_strategy(s)
+      if (s == ls) {
+        shinyjs::disable("next_strat")
+      }
+      shinyjs::enable("prev_strat")
+    }) |>
+      shiny::bindEvent(input$next_strat)
+
+    shiny::observe({
+      s <- pmax(selected_strategy() - 1, 1)
+      selected_strategy(s)
+      if (s == 1) {
+        shinyjs::disable("prev_strat")
+      }
+      shinyjs::enable("next_strat")
+    }) |>
+      shiny::bindEvent(input$prev_strat)
+
     selected_data <- shiny::reactive({
-      s <- shiny::req(input$strategy_selection)
+      s <- selected_strategy_id()
 
       dplyr::filter(
         trend_data,
@@ -129,7 +167,7 @@ mod_mitigator_server <- function(id) {
     })
 
     selected_strategy_group <- shiny::reactive({
-      input$strategy_selection |>
+      selected_strategy_id() |>
         shiny::req() |>
         stringr::str_remove("-.*$")
     })
@@ -148,10 +186,6 @@ mod_mitigator_server <- function(id) {
         min_year,
         y_axis_title()
       )
-    })
-
-    shiny::observe({
-      s <- shiny::req(input$strategy_selection)
     })
   })
 }
