@@ -19,11 +19,21 @@ mod_mitigator_ui <- function(id) {
           color = "primary"
         )
       ),
-      shinyWidgets::actionBttn(
-        ns("next_strat"),
-        "Next",
-        style = "simple",
-        color = "primary"
+      identity(
+        shinyWidgets::actionBttn(
+          ns("next_strat"),
+          "Next",
+          style = "simple",
+          color = "primary"
+        )
+      ),
+      shinyjs::hidden(
+        shinyWidgets::actionBttn(
+          ns("complete"),
+          "Complete",
+          style = "simple",
+          color = "success"
+        )
       ),
       shiny::tags$p("")
     ),
@@ -90,6 +100,11 @@ mod_mitigator_server <- function(id) {
 
     strategies <- get_golem_config("strategies")
 
+    values <- do.call(
+      shiny::reactiveValues,
+      purrr::map(strategies, ~ c(lo = 0, hi = 1))
+    )
+
     min_year <- min(trend_data$year)
 
     selected_strategy <- shiny::reactiveVal(1)
@@ -114,6 +129,7 @@ mod_mitigator_server <- function(id) {
       selected_strategy(s)
       if (s == ls) {
         shinyjs::disable("next_strat")
+        shinyjs::show("complete")
       }
       shinyjs::enable("prev_strat")
     }) |>
@@ -126,8 +142,38 @@ mod_mitigator_server <- function(id) {
         shinyjs::disable("prev_strat")
       }
       shinyjs::enable("next_strat")
+      shinyjs::hide("complete")
     }) |>
       shiny::bindEvent(input$prev_strat)
+
+    shiny::observe({
+      modal <- shiny::modalDialog(
+        "are you finished?",
+        shiny::tableOutput(
+          session$ns("results")
+        ),
+        title = "Submit Values",
+        footer = shiny::tagList(
+          shiny::modalButton("Return"),
+          shinyWidgets::actionBttn(
+            session$ns("save_results"),
+            "Save and Exit",
+            style = "simple",
+            color = "success"
+          )
+        ),
+        size = "l"
+      )
+      shiny::showModal(modal)
+    }) |>
+      shiny::bindEvent(input$complete)
+
+    output$results <- shiny::renderTable({
+      values |>
+        shiny::reactiveValuesToList() |>
+        tibble::enframe("strategy") |>
+        tidyr::unnest_wider("value")
+    })
 
     selected_data <- shiny::reactive({
       s <- selected_strategy_id()
@@ -187,5 +233,27 @@ mod_mitigator_server <- function(id) {
         y_axis_title()
       )
     })
+
+    shiny::observe({
+      s <- shiny::req(selected_strategy_id())
+      values[[s]] <- purrr::set_names(input$param_values, c("lo", "hi")) / 100
+    }) |>
+      shiny::bindEvent(input$param_values)
+
+    shiny::observe({
+      s <- shiny::req(selected_strategy_id())
+      shinyWidgets::updateNoUiSliderInput(
+        session,
+        "param_values",
+        value = unname(values[[s]] * 100)
+      )
+    }) |>
+      shiny::bindEvent(selected_strategy_id())
+
+    shiny::observe({
+      shiny::removeModal()
+      cat("save results...\n")
+    }) |>
+      shiny::bindEvent(input$save_results)
   })
 }
