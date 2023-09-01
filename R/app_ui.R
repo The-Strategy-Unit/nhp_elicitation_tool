@@ -11,7 +11,10 @@ app_ui <- function(request) {
     )
   )
 
-  sidebar <- bs4Dash::bs4DashSidebar()
+  sidebar <- bs4Dash::bs4DashSidebar(
+    collapsed = TRUE,
+    expandOnHover = FALSE
+  )
 
   body <- bs4Dash::bs4DashBody(
     # temporary, should have a home module that leads to this page
