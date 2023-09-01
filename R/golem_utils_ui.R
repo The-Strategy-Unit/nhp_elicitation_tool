@@ -253,6 +253,10 @@ col_10 <- function(...) {
   shiny::column(10, ...)
 }
 
+col_9 <- function(...) {
+  shiny::column(9, ...)
+}
+
 col_8 <- function(...) {
   shiny::column(8, ...)
 }
