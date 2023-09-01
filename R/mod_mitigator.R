@@ -45,7 +45,7 @@ mod_mitigator_ui <- function(id) {
           width = 12,
           shiny::fluidRow(
             col_8(
-              shiny::plotOutput(ns("trend_plot"), height = "600px")
+              plotly::plotlyOutput(ns("trend_plot"), height = "600px")
             ),
             col_1(
               shinyWidgets::noUiSliderInput(
@@ -224,14 +224,16 @@ mod_mitigator_server <- function(id) {
       md_file_to_html("app", "mitigators_text", paste0(s, ".md"))
     })
 
-    output$trend_plot <- shiny::renderPlot({
-      mitigator_trend_plot(
+    output$trend_plot <- plotly::renderPlotly({
+      p <- mitigator_trend_plot(
         selected_data(),
         param_table(),
         value_format(),
         min_year,
         y_axis_title()
       )
+
+      plotly::ggplotly(p)
     })
 
     shiny::observe({
