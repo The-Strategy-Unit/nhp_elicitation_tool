@@ -1,0 +1,10 @@
+name: nhp_elicitation_tool
+title:
+username: thomas.jemmett
+account: thomas.jemmett
+server: connect.strategyunitwm.nhs.uk
+hostUrl: https://connect.strategyunitwm.nhs.uk/__api__
+appId: 135
+bundleId: 704
+url: https://connect.strategyunitwm.nhs.uk/content/1d935152-00c4-4d88-8b1d-c1986f127f5d/
+version: 1
