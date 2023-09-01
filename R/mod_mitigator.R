@@ -37,13 +37,7 @@ mod_mitigator_ui <- function(id) {
       ),
       shiny::tags$p("")
     ),
-    bs4Dash::box(
-      title = "Description",
-      collapsible = FALSE,
-      width = 2,
-      shiny::uiOutput(ns("mitigator_text"))
-    ),
-    col_10(
+    col_9(
       shiny::fluidRow(
         bs4Dash::box(
           title = "Parameter Setting",
@@ -84,6 +78,12 @@ mod_mitigator_ui <- function(id) {
           )
         )
       )
+    ),
+    bs4Dash::box(
+      title = "Description",
+      collapsible = FALSE,
+      width = 3,
+      shiny::uiOutput(ns("mitigator_text"))
     )
   )
 }
