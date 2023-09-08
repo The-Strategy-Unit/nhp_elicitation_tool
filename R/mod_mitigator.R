@@ -98,7 +98,8 @@ mod_mitigator_server <- function(id) {
     trend_data <- app_sys("app", "data", "trend_data.csv") |>
       readr::read_csv(col_types = "dcddd")
 
-    strategies <- get_golem_config("strategies")
+    strategies <- get_golem_config("strategies") |>
+      purrr::keep(~ .x$include %||% TRUE)
 
     values <- do.call(
       shiny::reactiveValues,
@@ -111,7 +112,7 @@ mod_mitigator_server <- function(id) {
 
     selected_strategy_text <- shiny::reactive({
       s <- selected_strategy()
-      strategies[[s]]
+      strategies[[s]]$name
     })
 
     selected_strategy_id <- shiny::reactive({
@@ -195,8 +196,9 @@ mod_mitigator_server <- function(id) {
     })
 
     y_axis_title <- shiny::reactive({
-      s <- selected_data_scale()
-      paste("Rate per", scales::comma(s), "population")
+      s <- selected_strategy()
+      n <- scales::comma(selected_data_scale()) # nolint
+      glue::glue(strategies[[s]]$label)
     })
 
     param_table <- shiny::reactive({
@@ -233,7 +235,7 @@ mod_mitigator_server <- function(id) {
         y_axis_title()
       )
 
-      plotly::ggplotly(p)
+      plotly::ggplotly(p, tooltip = "text")
     })
 
     shiny::observe({
