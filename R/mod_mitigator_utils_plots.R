@@ -1,6 +1,13 @@
 mitigator_trend_plot <- function(data, param_table, value_format, min_year, y_title) {
   .data <- rlang::.data # suppress lintr warnings
 
+  fyear_format <- scales::number_format(
+    decimal.mark = "/",
+    big.mark = "",
+    accuracy = 0.01,
+    scale = 0.01
+  )
+
   data |>
     ggplot2::ggplot(
       ggplot2::aes(x = .data[["year"]]),
@@ -27,29 +34,22 @@ mitigator_trend_plot <- function(data, param_table, value_format, min_year, y_ti
       colour = "#2c2825"
     ) +
     ggplot2::geom_point(
-      ggplot2::aes(y = .data[["rate"]]),
+      ggplot2::aes(
+        y = .data[["rate"]],
+        text = glue::glue(
+          "Year: {fyear_format(year)}\n",
+          "Value: {value_format(rate)}\n",
+          "N: {scales::comma(n)}"
+        )
+      ),
       shape = "circle filled",
       fill = "#686f73",
       colour = "#2c2825",
       size = 3
     ) +
-    ggplot2::annotate(
-      "point",
-      x = param_table$year[[1]],
-      y = param_table$value_lo[[1]],
-      shape = "circle filled",
-      fill = "#f9bf07",
-      colour = "#2c2825",
-      size = 3
-    ) +
     ggplot2::scale_x_continuous(
       breaks = c(min_year, param_table$year),
-      labels = scales::number_format(
-        decimal.mark = "/",
-        big.mark = "",
-        accuracy = 0.01,
-        scale = 0.01
-      ),
+      labels = fyear_format,
       expand = ggplot2::expansion(c(0.05, 0)),
       limits = c(min_year, param_table$year[[2]])
     ) +
