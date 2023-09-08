@@ -45,7 +45,9 @@ mod_mitigator_ui <- function(id) {
           width = 12,
           shiny::fluidRow(
             col_8(
-              plotly::plotlyOutput(ns("trend_plot"), height = "600px")
+              shinycssloaders::withSpinner(
+                plotly::plotlyOutput(ns("trend_plot"), height = "600px")
+              )
             ),
             col_1(
               shinyWidgets::noUiSliderInput(
