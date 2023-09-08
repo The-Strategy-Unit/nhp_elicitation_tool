@@ -23,6 +23,7 @@ Imports:
     readr,
     scales,
     shiny (>= 1.7.4.1),
+    shinycssloaders,
     shinyjs,
     shinyWidgets,
     stringr
