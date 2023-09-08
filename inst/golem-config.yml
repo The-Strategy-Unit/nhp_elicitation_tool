@@ -3,27 +3,69 @@ default:
   golem_version: 0.0.0.9000
   app_prod: no
   strategies:
-    alcohol_partially_attributable-acute: Alcohol Partially Attributable (Acute)
-    alcohol_partially_attributable-chronic: Alcohol Partially Attributable (Chronic)
-    alcohol_wholly_attributable: Alcohol Wholly Attributable
-    cancelled_operations: Cancelled Operations
-    emergency_elderly: Emergency Elderly
-    eol_care-0-2_days: End of Life Care (0-2 days)
-    eol_care-3+_days: End of Life Care (3+ days)
-    frail_elderly-high: Frail Elderly (High)
-    frail_elderly-intermediate: Frail Elderly (Intermediate)
-    intentional_self_harm: Intentional Self Harm
-    medically_unexplained_related_admissions: Medically Unexplained Related Admissions
-    obesity_related_admissions: Obesity Related Admissions
-    preop_los-1day: Pre-op Length of Stay (1 day)
-    preop_los-2day: Pre-op Length of Stay (2 days)
-    raid_ae: Rapid Assessment Interface Discharge (A&E)
-    raid_ip: Rapid Assessment Interface Discharge (IP)
-    readmission_within_28_days: Readmission Within 28 Days
-    smoking: Smoking
-    stroke_early_supported_discharge: Stroke Early Supported Discharge
-    zero_los_no_procedure-adult: Zero Length of Stay With No Procedure (Adult)
-    zero_los_no_procedure-child: Zero Length of Stay With No Procedure (Child)
+    alcohol_partially_attributable-acute:
+      name: Alcohol Partially Attributable (Acute)
+      label: "Rate per {n} Admissions"
+    alcohol_partially_attributable-chronic:
+      name: Alcohol Partially Attributable (Chronic)
+      label: "Rate per {n} Admissions"
+    alcohol_wholly_attributable:
+      name: Alcohol Wholly Attributable
+      label: "Rate per {n} Admissions"
+    cancelled_operations:
+      name: Cancelled Operations
+      label: "Rate per {n} Admissions"
+    emergency_elderly:
+      name: Emergency Elderly
+      label: "Mean Length of Stay"
+    eol_care-0-2_days:
+      name: End of Life Care (0-2 days)
+      label: "Rate per {n} Admissions"
+    eol_care-3+_days:
+      name: End of Life Care (3+ days)
+      label: "Rate per {n} Admissions"
+    frail_elderly-high:
+      name: Frail Elderly (High)
+      label: "Rate per {n} Admissions"
+    frail_elderly-intermediate:
+      name: Frail Elderly (Intermediate)
+      label: "Rate per {n} Admissions"
+    intentional_self_harm:
+      name: Intentional Self Harm
+      label: "Rate per {n} Admissions"
+    medically_unexplained_related_admissions:
+      name: Medically Unexplained Related Admissions
+      label: "Rate per {n} Admissions"
+    obesity_related_admissions:
+      name: Obesity Related Admissions
+      label: "Rate per {n} Admissions"
+    preop_los-1day:
+      name: Pre-op Length of Stay (1 day)
+      include: False
+    preop_los-2day:
+      name: Pre-op Length of Stay (2 days)
+      include: False
+    raid_ae:
+      name: Rapid Assessment Interface Discharge (A&E)
+      label: "Rate per {n} Admissions"
+    raid_ip:
+      name: Rapid Assessment Interface Discharge (IP)
+      label: "Mean Length of Stay"
+    readmission_within_28_days:
+      name: Readmission Within 28 Days
+      label: "Rate per {n} Admissions"
+    smoking:
+      name: Smoking
+      label: "Rate per {n} Admissions"
+    stroke_early_supported_discharge:
+      name: Stroke Early Supported Discharge
+      label: "Mean Length of Stay"
+    zero_los_no_procedure-adult:
+      name: Zero Length of Stay With No Procedure (Adult)
+      label: "Rate per {n} Admissions"
+    zero_los_no_procedure-child:
+      name: Zero Length of Stay With No Procedure (Child)
+      label: "Rate per {n} Admissions"
 production:
   app_prod: yes
 dev:
