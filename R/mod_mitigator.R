@@ -79,11 +79,25 @@ mod_mitigator_ui <- function(id) {
         )
       )
     ),
-    bs4Dash::box(
-      title = "Description",
-      collapsible = FALSE,
-      width = 3,
-      shiny::uiOutput(ns("mitigator_text"))
+    col_3(
+      shiny::fluidRow(
+        bs4Dash::bs4Card(
+          title = "Progress",
+          collapsible = FALSE,
+          width = 12,
+          shinyWidgets::progressBar(
+            ns("progress"),
+            0,
+            display_pct = TRUE
+          )
+        ),
+        bs4Dash::box(
+          title = "Description",
+          collapsible = FALSE,
+          width = 12,
+          shiny::uiOutput(ns("mitigator_text"))
+        )
+      )
     )
   )
 }
@@ -109,6 +123,14 @@ mod_mitigator_server <- function(id) {
     min_year <- min(trend_data$year)
 
     selected_strategy <- shiny::reactiveVal(1)
+
+    shiny::observe({
+      s <- selected_strategy()
+      n <- length(strategies)
+
+      shinyWidgets::updateProgressBar(session, "progress", s - 1, n)
+    })
+
 
     selected_strategy_text <- shiny::reactive({
       s <- selected_strategy()
@@ -227,12 +249,14 @@ mod_mitigator_server <- function(id) {
     })
 
     output$trend_plot <- plotly::renderPlotly({
-      p <- mitigator_trend_plot(
-        selected_data(),
-        param_table(),
-        value_format(),
-        min_year,
-        y_axis_title()
+      p <- suppressWarnings(
+        mitigator_trend_plot(
+          selected_data(),
+          param_table(),
+          value_format(),
+          min_year,
+          y_axis_title()
+        )
       )
 
       plotly::ggplotly(p, tooltip = "text")
