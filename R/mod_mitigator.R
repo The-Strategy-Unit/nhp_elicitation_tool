@@ -52,15 +52,16 @@ mod_mitigator_ui <- function(id) {
             col_1(
               shinyWidgets::noUiSliderInput(
                 ns("param_values"),
-                "Values",
+                "Percentage Reduction",
                 min = 0,
                 max = 100,
                 value = c(0, 100),
                 step = 1,
                 orientation = "vertical",
-                direction = "rtl",
-                width = "100%", height = "500px",
-                color = "#fcdf83"
+                width = "100%",
+                height = "500px",
+                color = "#fcdf83",
+                format = shinyWidgets::wNumbFormat(decimals = 0)
               )
             ),
             col_3(
@@ -125,7 +126,7 @@ mod_mitigator_server <- function(id) {
 
     values <- do.call(
       shiny::reactiveValues,
-      purrr::map(strategies, ~ c(lo = 0, hi = 1))
+      purrr::map(strategies, ~ c(lo = 0, hi = 100))
     )
 
     min_year <- min(trend_data$year)
@@ -272,7 +273,7 @@ mod_mitigator_server <- function(id) {
 
     shiny::observe({
       s <- shiny::req(selected_strategy_id())
-      values[[s]] <- purrr::set_names(input$param_values, c("lo", "hi")) / 100
+      values[[s]] <- purrr::set_names(input$param_values, c("lo", "hi"))
     }) |>
       shiny::bindEvent(input$param_values)
 
@@ -281,7 +282,7 @@ mod_mitigator_server <- function(id) {
       shinyWidgets::updateNoUiSliderInput(
         session,
         "param_values",
-        value = unname(values[[s]] * 100)
+        value = unname(values[[s]])
       )
     }) |>
       shiny::bindEvent(selected_strategy_id())
