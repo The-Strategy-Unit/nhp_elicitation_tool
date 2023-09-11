@@ -64,17 +64,23 @@ mod_mitigator_ui <- function(id) {
               )
             ),
             col_3(
-              shiny::textAreaInput(
-                ns("why_lo"),
-                label = NULL,
-                value = "why low?",
-                width = "100%"
+              shiny::tags$div(
+                style = "position: absolute; top: 0px; width: 95%",
+                shiny::textAreaInput(
+                  ns("why_lo"),
+                  label = "What factors make it a surprisingly low % reduction",
+                  width = "100%",
+                  height = "200px"
+                )
               ),
-              shiny::textAreaInput(
-                ns("why_hi"),
-                label = NULL,
-                value = "why high?",
-                width = "100%"
+              shiny::tags$div(
+                style = "position: absolute; bottom: 0px; width: 95%",
+                shiny::textAreaInput(
+                  ns("why_hi"),
+                  label = "What factors make it a surprisingly high % reduction", # nolint
+                  width = "100%",
+                  height = "200px"
+                )
               )
             )
           )
