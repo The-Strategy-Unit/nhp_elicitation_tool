@@ -27,6 +27,7 @@ list(
       strategies_all,
       "emergency_elderly",
       "enhanced_recovery_.*",
+      "excess_beddays",
       "raid_ip",
       "stroke_early_supported_discharge"
     )
@@ -35,6 +36,8 @@ list(
     strategies_pcnts,
     get_strategies_subset(
       strategies_all,
+      "bads_daycase_occassional",
+      "bads_daycase",
       "preop_los"
     )
   ),
