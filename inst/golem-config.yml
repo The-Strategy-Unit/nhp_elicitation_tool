@@ -4,37 +4,124 @@ default:
   app_prod: no
   strategies:
     alcohol_partially_attributable-acute:
-      name: Alcohol Partially Attributable (Acute)
+      name: Alcohol Related Admisins (Acute Conditions - Partially Attributable)
       label: "Rate per {n} Admissions"
     alcohol_partially_attributable-chronic:
-      name: Alcohol Partially Attributable (Chronic)
+      name: Alcohol Related Admisins (Chronic Conditions - Partially Attributable)
       label: "Rate per {n} Admissions"
     alcohol_wholly_attributable:
-      name: Alcohol Wholly Attributable
+      name: Alcohol Related Admisins (Wholly Attributable)
+      label: "Rate per {n} Admissions"
+    ambulatory_care_conditions_acute:
+      name: "Ambulatory Care Sensitive Admissions (Acute Conditions)"
+      label: "Rate per {n} Admissions"
+    ambulatory_care_conditions_chronic:
+      name: "Ambulatory Care Sensitive Admissions (Chronic Conditions)"
+      label: "Rate per {n} Admissions"
+    ambulatory_care_conditions_vaccine_preventable:
+      name: "Ambulatory Care Sensitive Admissions (Vaccine Preventable)"
+      label: "Rate per {n} Admissions"
+    ambulatory_emergency_care_low:
+      name: "Ambulatory Emergency Care (Low Potential)"
+      label: "Rate per {n} Admissions"
+    ambulatory_emergency_care_moderate:
+      name: "Ambulatory Emergency Care (Moderate Potential)"
+      label: "Rate per {n} Admissions"
+    ambulatory_emergency_care_high:
+      name: "Ambulatory Emergency Care (High Potential)"
+      label: "Rate per {n} Admissions"
+    ambulatory_emergency_care_very_high:
+      name: "Ambulatory Emergency Care (Very High Potential)"
       label: "Rate per {n} Admissions"
     cancelled_operations:
       name: Cancelled Operations
       label: "Rate per {n} Admissions"
     emergency_elderly:
-      name: Emergency Elderly
+      name: Emergency Admission of Older People
+      label: "Mean Length of Stay"
+    enhanced_recovery_bladder:
+      name: Enhanced Recovery (Bladder)
+      label: "Mean Length of Stay"
+    enhanced_recovery_breast:
+      name: Enhanced Recovery (Breast)
+      label: "Mean Length of Stay"
+    enhanced_recovery_colectomy:
+      name: Enhanced Recovery (Colectomy)
+      label: "Mean Length of Stay"
+    enhanced_recovery_hip:
+      name: Enhanced Recovery (Hip)
+      label: "Mean Length of Stay"
+    enhanced_recovery_hysterectomy:
+      name: Enhanced Recovery (Hysterectomy)
+      label: "Mean Length of Stay"
+    enhanced_recovery_knee:
+      name: Enhanced Recovery (Knee)
+      label: "Mean Length of Stay"
+    enhanced_recovery_prostate:
+      name: Enhanced Recovery (Prostate)
+      label: "Mean Length of Stay"
+    enhanced_recovery_rectum:
+      name: Enhanced Recovery (Rectum)
       label: "Mean Length of Stay"
     eol_care-0-2_days:
-      name: End of Life Care (0-2 days)
+      name: End of Life Care Admissions (died within 2 days)
       label: "Rate per {n} Admissions"
     eol_care-3+_days:
-      name: End of Life Care (3+ days)
+      name: End of Life Care Admissions (died within 3-14 days)
+      label: "Rate per {n} Admissions"
+    evidence_based_interventions_ent:
+      name: Interventions with Limited Evidence (ENT)
+      label: "Rate per {n} Admissions"
+    evidence_based_interventions_general_surgery:
+      name: Interventions with Limited Evidence (General Surgery)
+      label: "Rate per {n} Admissions"
+    evidence_based_interventions_gi_surgical:
+      name: Interventions with Limited Evidence (GI Surgical)
+      label: "Rate per {n} Admissions"
+    evidence_based_interventions_msk:
+      name: Interventions with Limited Evidence (MSK)
+      label: "Rate per {n} Admissions"
+    evidence_based_interventions_urology:
+      name: Interventions with Limited Evidence (Urology)
+      label: "Rate per {n} Admissions"
+    evidence_based_interventions_vasuclar_varicose_veins:
+      name: Interventions with Limited Evidence (Vascular Varicose Veins)
+      label: "Rate per {n} Admissions"
+    excess_beddays_elective:
+      name: Excess Beddays (Elective Admissions)
+      label: "Mean Length of Stay"
+    excess_beddays_emergency:
+      name: Excess Beddays (Emergency Admissions)
+      label: "Mean Length of Stay"
+    falls_related_admissions:
+      name: Falls Related Admissions
       label: "Rate per {n} Admissions"
     frail_elderly-high:
-      name: Frail Elderly (High)
+      name: Frail Elderly Admissions (High Frailty Risk)
       label: "Rate per {n} Admissions"
     frail_elderly-intermediate:
-      name: Frail Elderly (Intermediate)
+      name: Frail Elderly Admissions (Intermediate Frailty Risk)
       label: "Rate per {n} Admissions"
     intentional_self_harm:
-      name: Intentional Self Harm
+      name: Intentional Self Harm Admissions
       label: "Rate per {n} Admissions"
     medically_unexplained_related_admissions:
-      name: Medically Unexplained Related Admissions
+      name: Medically Unexplained Symptoms Admissions
+      label: "Rate per {n} Admissions"
+    medicines_related_admissions_explicit:
+      name: Medicines Related Admissions (Explicit)
+      label: "Rate per {n} Admissions"
+    medicines_related_admissions_implicit_anti_diabetics:
+      name: Medicines Related Admissions (Implicit - Anti-Diabetics)
+      label: "Rate per {n} Admissions"
+    medicines_related_admissions_implicit_benzodiasepines:
+      name: Medicines Related Admissions (Implicit - Benzodiazepines)
+      label: "Rate per {n} Admissions"
+    medicines_related_admissions_implicit_diurectics:
+      name: Medicines Related Admissions (Implicit - Diurectics)
+      label: "Rate per {n} Admissions"
+    medicines_related_admissions_implicit_nsaids:
+      name: Medicines Related Admissions (Implicit - NSAIDs)
       label: "Rate per {n} Admissions"
     obesity_related_admissions:
       name: Obesity Related Admissions
@@ -46,25 +133,25 @@ default:
       name: Pre-op Length of Stay (2 days)
       include: False
     raid_ae:
-      name: Rapid Assessment Interface Discharge (A&E)
+      name: Mental Health Admissions via Emergency Department
       label: "Rate per {n} Admissions"
     raid_ip:
-      name: Rapid Assessment Interface Discharge (IP)
+      name: Admissions with Mental Health Comorbidities
       label: "Mean Length of Stay"
     readmission_within_28_days:
-      name: Readmission Within 28 Days
+      name: Emergency Readmissions Within 28 Days
       label: "Rate per {n} Admissions"
     smoking:
-      name: Smoking
+      name: Smoking Related Admissions
       label: "Rate per {n} Admissions"
     stroke_early_supported_discharge:
       name: Stroke Early Supported Discharge
       label: "Mean Length of Stay"
     zero_los_no_procedure-adult:
-      name: Zero Length of Stay With No Procedure (Adult)
+      name: Admission With No Overnight Stay and No Procedure (Adults)
       label: "Rate per {n} Admissions"
     zero_los_no_procedure-child:
-      name: Zero Length of Stay With No Procedure (Child)
+      name: Admission With No Overnight Stay and No Procedure (Children)
       label: "Rate per {n} Admissions"
 production:
   app_prod: yes

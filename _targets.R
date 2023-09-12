@@ -27,6 +27,7 @@ list(
       strategies_all,
       "emergency_elderly",
       "enhanced_recovery_.*",
+      "excess_beddays",
       "raid_ip",
       "stroke_early_supported_discharge"
     )
