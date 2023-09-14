@@ -119,7 +119,8 @@ mod_mitigator_server <- function(id) {
     .data <- rlang::.data
 
     trend_data <- app_sys("app", "data", "trend_data.csv") |>
-      readr::read_csv(col_types = "dcddd")
+      readr::read_csv(col_types = "dcddd") |>
+      dplyr::filter(.data[["year"]] >= 201011)
 
     strategies <- get_golem_config("strategies") |>
       purrr::keep(~ .x$include %||% TRUE)
