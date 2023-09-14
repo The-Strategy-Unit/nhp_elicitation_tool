@@ -127,7 +127,13 @@ mod_mitigator_server <- function(id) {
 
     values <- do.call(
       shiny::reactiveValues,
-      purrr::map(strategies, ~ c(lo = 0, hi = 100))
+      purrr::map(
+        strategies, ~ list(
+          values = c(lo = 0, hi = 100),
+          comments_lo = "",
+          comments_hi = ""
+        )
+      )
     )
 
     min_year <- min(trend_data$year)
@@ -205,7 +211,8 @@ mod_mitigator_server <- function(id) {
       values |>
         shiny::reactiveValuesToList() |>
         tibble::enframe("strategy") |>
-        tidyr::unnest_wider("value")
+        tidyr::unnest_wider("value") |>
+        tidyr::unnest_wider("values")
     })
 
     selected_data <- shiny::reactive({
@@ -274,16 +281,40 @@ mod_mitigator_server <- function(id) {
 
     shiny::observe({
       s <- shiny::req(selected_strategy_id())
-      values[[s]] <- purrr::set_names(input$param_values, c("lo", "hi"))
+      values[[s]]$values[["lo"]] <- input$param_values[[1]]
+      values[[s]]$values[["hi"]] <- input$param_values[[2]]
     }) |>
       shiny::bindEvent(input$param_values)
 
     shiny::observe({
       s <- shiny::req(selected_strategy_id())
+      values[[s]]$comments_lo <- input$why_lo
+    }) |>
+      shiny::bindEvent(input$why_lo)
+
+    shiny::observe({
+      s <- shiny::req(selected_strategy_id())
+      values[[s]]$comments_hi <- input$why_hi
+    }) |>
+      shiny::bindEvent(input$why_hi)
+
+    shiny::observe({
+      s <- shiny::req(selected_strategy_id())
+      v <- values[[s]]
       shinyWidgets::updateNoUiSliderInput(
         session,
         "param_values",
-        value = unname(values[[s]])
+        value = unname(v$values)
+      )
+      shiny::updateTextAreaInput(
+        session,
+        "why_lo",
+        value = v$comments_lo
+      )
+      shiny::updateTextAreaInput(
+        session,
+        "why_hi",
+        value = v$comments_hi
       )
     }) |>
       shiny::bindEvent(selected_strategy_id())
@@ -291,6 +322,10 @@ mod_mitigator_server <- function(id) {
     shiny::observe({
       shiny::removeModal()
       cat("save results...\n")
+      v <- values |>
+        shiny::reactiveValuesToList() |>
+        jsonlite::toJSON(auto_unbox = TRUE, pretty = TRUE)
+      cat(v, "\n")
     }) |>
       shiny::bindEvent(input$save_results)
   })
