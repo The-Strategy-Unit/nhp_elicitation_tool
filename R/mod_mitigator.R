@@ -321,11 +321,20 @@ mod_mitigator_server <- function(id) {
 
     shiny::observe({
       shiny::removeModal()
-      cat("save results...\n")
-      v <- values |>
+
+      filename <- file.path(
+        Sys.getenv("save_path", tempdir()),
+        paste0(
+          format(Sys.time(), "%Y%m%d_%H%M%S"),
+          ".json"
+        )
+      )
+
+      cat("saving:", filename, "\n")
+
+      values |>
         shiny::reactiveValuesToList() |>
-        jsonlite::toJSON(auto_unbox = TRUE, pretty = TRUE)
-      cat(v, "\n")
+        jsonlite::write_json(filename, auto_unbox = TRUE, pretty = TRUE)
     }) |>
       shiny::bindEvent(input$save_results)
   })
