@@ -3,6 +3,8 @@
 get_england_population_by_year <- function() {
   tf <- withr::local_tempfile(fileext = ".xlsx")
 
+  withr::local_options("HTTPUserAgent" = "Mozilla/5.0")
+
   httr::modify_url(
     "https://www.ons.gov.uk/file",
     query = list(
