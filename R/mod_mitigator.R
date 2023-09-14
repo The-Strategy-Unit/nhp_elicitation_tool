@@ -107,6 +107,14 @@ mod_mitigator_ui <- function(id) {
           shiny::uiOutput(ns("mitigator_text"))
         )
       )
+    ),
+    bs4Dash::box(
+      width = 6,
+      title = "Pilot: General Comments",
+      shiny::textAreaInput(
+        ns("general_comments"),
+        "General Comments about thi mitigator"
+      )
     )
   )
 }
@@ -131,7 +139,8 @@ mod_mitigator_server <- function(id) {
         strategies, ~ list(
           values = c(lo = 0, hi = 100),
           comments_lo = "",
-          comments_hi = ""
+          comments_hi = "",
+          general_comments = ""
         )
       )
     )
@@ -300,6 +309,12 @@ mod_mitigator_server <- function(id) {
 
     shiny::observe({
       s <- shiny::req(selected_strategy_id())
+      values[[s]]$general_comments <- input$general_comments
+    }) |>
+      shiny::bindEvent(input$general_comments)
+
+    shiny::observe({
+      s <- shiny::req(selected_strategy_id())
       v <- values[[s]]
       shinyWidgets::updateNoUiSliderInput(
         session,
@@ -315,6 +330,11 @@ mod_mitigator_server <- function(id) {
         session,
         "why_hi",
         value = v$comments_hi
+      )
+      shiny::updateTextAreaInput(
+        session,
+        "general_comments",
+        value = v$general_comments
       )
     }) |>
       shiny::bindEvent(selected_strategy_id())
