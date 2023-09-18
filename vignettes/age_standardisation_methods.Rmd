@@ -1,0 +1,48 @@
+---
+title: "Age Standardisation Methods"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{age_standardisation_methods}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+$$
+Rate_{(y,i)}=
+\cfrac{
+  \sum_{(a,s)}{
+    \cfrac{
+      n_{(a,s,y,i)}
+    }{
+      d_{(a,s,y,i)}
+    }
+    \cdot
+    p_{(a,s,y=2019)}
+  }
+}{
+  \sum_{(a,s)}{p_{(a,s,y=2019)}}
+}
+$$
+
+
+where
+
+* $a$ is age
+* $s$ is sex
+* $y$ is year
+* $i$ is the current strategy
+* $n_{(a,s,y,i)}$ is the amount of activity for strategy $i$ in year $y$, for each age and sex
+* $d_{(a,s,y,i)}$ is the denominator for strategy $i$ in year $y$, for each age and sex
+* $p_{(a,s,y=2019)}$ is the standard population in year 2019, for each age and sex
+
+For Rates per N population, $n$ is the count of admissions for that strategy in that year, and $d$ is the count of all admissions in that year
+
+For Mean Length of Stay, $n$ is the sum of length of stay (`SPELDUR`) for that strategy in that year, and $d$ is the count of admissioins for that stategy in that year.
+
+The standard population used is the total admissions in 2019/20, rather than the whole population estimate.
