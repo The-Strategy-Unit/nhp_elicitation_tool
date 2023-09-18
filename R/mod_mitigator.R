@@ -253,7 +253,7 @@ mod_mitigator_server <- function(id) {
       last_year <- selected_data() |>
         dplyr::slice_tail(n = 1)
 
-      p <- input$param_values / 100
+      p <- 1 - input$param_values / 100
 
       tibble::tibble(
         year = last_year$year + c(0, 2020),
