@@ -95,15 +95,17 @@ get_values_los <- function(strategy, fyear) {
 get_values_pcnts <- function(strategy, fyear) {
   con <- db_con()
 
-  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
+  n <- dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
     dplyr::filter(
       .data[["FYEAR"]] == fyear,
       !is.na(.data[["AGE"]])
     ) |>
-    dplyr::summarise(
-      n = sum(.data[["fraction"]], na.rm = TRUE),
-      d = dplyr::n(),
-      .by = c("FYEAR", "AGE", "SEX", "strategy")
+    dplyr::count(
+      .data[["FYEAR"]],
+      .data[["AGE"]],
+      .data[["SEX"]],
+      .data[["strategy"]],
+      wt = .data[["fraction"]]
     ) |>
     dplyr::collect() |>
     janitor::clean_names() |>
@@ -129,9 +131,18 @@ get_total_admissions <- function(fyear) {
     fix_ages()
 }
 
-get_age_standardised_rates <- function(values, pop_final_year,
+get_age_standardised_rates <- function(values_rates, values_los,
                                        total_admissions) {
-  values |>
+  dplyr::bind_rows(
+    values_rates |>
+      dplyr::inner_join(
+        total_admissions |>
+          dplyr::rename(d = "admissions"),
+        by = dplyr::join_by("fyear", "age", "sex")
+      ),
+    values_los |>
+      dplyr::rename(d = "n", n = "days")
+  ) |>
     tidyr::complete(
       .data[["fyear"]],
       age = 0:90,
@@ -139,10 +150,6 @@ get_age_standardised_rates <- function(values, pop_final_year,
       .data[["strategy"]],
       fill = list(n = 0)
     ) |>
-    dplyr::inner_join(
-      total_admissions,
-      by = dplyr::join_by("fyear", "age", "sex")
-    ) |>
     dplyr::filter(
       .data[["age"]] >= min(
         ifelse(.data[["n"]] > 0, .data[["age"]], NA),
@@ -157,71 +164,29 @@ get_age_standardised_rates <- function(values, pop_final_year,
     dplyr::filter(
       sum(.data[["n"]]) > 0,
       .by = c("strategy", "sex")
-    ) |>
-    dplyr::inner_join(
-      pop_final_year,
-      by = dplyr::join_by("age", "sex")
     ) |>
     dplyr::filter(.data[["n"]] > 0) |>
-    dplyr::mutate(
-      r = .data[["n"]] / .data[["admissions"]] * .data[["pop_final"]]
-    ) |>
-    dplyr::summarise(
-      n = sum(.data[["r"]]),
-      d = sum(.data[["pop_final"]]),
-      rate = .data[["n"]] / .data[["d"]],
-      .by = c("fyear", "strategy")
-    )
-}
-
-get_age_standardised_los <- function(values_los, pop_final_year) {
-  values_los |>
-    tidyr::complete(
-      .data[["fyear"]],
-      age = 0:90,
-      .data[["sex"]],
-      .data[["strategy"]]
-    ) |>
-    dplyr::mutate(
-      dplyr::across(c("days", "n"), ~ tidyr::replace_na(.x, 0))
-    ) |>
-    dplyr::filter(
-      .data[["age"]] >= min(
-        ifelse(.data[["n"]] > 0, .data[["age"]], NA),
-        na.rm = TRUE
-      ),
-      .data[["age"]] <= max(
-        ifelse(.data[["n"]] > 0, .data[["age"]], NA),
-        na.rm = TRUE
-      ),
-      .by = c("strategy")
-    ) |>
-    dplyr::filter(
-      sum(.data[["n"]]) > 0,
-      .by = c("strategy", "sex")
-    ) |>
     dplyr::inner_join(
-      pop_final_year,
+      total_admissions |>
+        dplyr::filter(.data[["fyear"]] == 201920) |>
+        dplyr::select(-"fyear") |>
+        dplyr::rename(p = "admissions"),
       by = dplyr::join_by("age", "sex")
     ) |>
     dplyr::mutate(
-      r = ifelse(
-        .data[["n"]] > 0,
-        .data[["days"]] / .data[["n"]] * .data[["pop_final"]],
-        0
-      )
+      rate = .data[["n"]] / .data[["d"]] * .data[["p"]]
     ) |>
     dplyr::summarise(
-      n = sum(.data[["pop_final"]]),
-      rate = sum(.data[["r"]]) / .data[["n"]],
+      dplyr::across(c("n", "d", "p", "rate"), sum),
+      rate = .data[["rate"]] / .data[["p"]],
       .by = c("fyear", "strategy")
     )
 }
 
-create_trend_data <- function(...) {
+create_trend_data <- function(age_standardised_rates) {
   filename <- "inst/app/data/trend_data.csv"
 
-  dplyr::bind_rows(...) |>
+  age_standardised_rates |>
     dplyr::rename(year = "fyear") |>
     readr::write_csv(filename)
 

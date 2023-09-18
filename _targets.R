@@ -7,15 +7,6 @@ list(
     fyears,
     year_to_fyear(2010:2019)
   ),
-  # population figures ----
-  tar_target(
-    england_pop,
-    get_england_population_by_year()
-  ),
-  tar_target(
-    england_pop_final_year,
-    get_england_population_final_year(england_pop, fyears)
-  ),
   # strategies ----
   tar_target(
     strategies_all,
@@ -70,24 +61,15 @@ list(
     age_standardised_rates,
     get_age_standardised_rates(
       values_rates,
-      england_pop_final_year,
+      values_los,
       total_admissions
     ),
   ),
-  tar_target(
-    age_standardised_los,
-    get_age_standardised_los(
-      values_los,
-      england_pop_final_year
-    ),
-  ),
-
   # save results ----
   tar_target(
     trend_data,
     create_trend_data(
-      age_standardised_rates,
-      age_standardised_los
+      age_standardised_rates
     ),
     format = "file"
   )
