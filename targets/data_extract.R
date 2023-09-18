@@ -131,17 +131,39 @@ get_total_admissions <- function(fyear) {
 
 get_age_standardised_rates <- function(values, pop_final_year,
                                        total_admissions) {
-  total_admissions |>
+  values |>
+    tidyr::complete(
+      .data[["fyear"]],
+      age = 0:90,
+      .data[["sex"]],
+      .data[["strategy"]],
+      fill = list(n = 0)
+    ) |>
+    dplyr::inner_join(
+      total_admissions,
+      by = dplyr::join_by("fyear", "age", "sex")
+    ) |>
+    dplyr::filter(
+      .data[["age"]] >= min(
+        ifelse(.data[["n"]] > 0, .data[["age"]], NA),
+        na.rm = TRUE
+      ),
+      .data[["age"]] <= max(
+        ifelse(.data[["n"]] > 0, .data[["age"]], NA),
+        na.rm = TRUE
+      ),
+      .by = c("strategy")
+    ) |>
+    dplyr::filter(
+      sum(.data[["n"]]) > 0,
+      .by = c("strategy", "sex")
+    ) |>
     dplyr::inner_join(
       pop_final_year,
       by = dplyr::join_by("age", "sex")
     ) |>
-    dplyr::left_join(
-      values,
-      by = dplyr::join_by("fyear", "age", "sex")
-    ) |>
+    dplyr::filter(.data[["n"]] > 0) |>
     dplyr::mutate(
-      dplyr::across("n", ~ tidyr::replace_na(.x, 0)),
       r = .data[["n"]] / .data[["admissions"]] * .data[["pop_final"]]
     ) |>
     dplyr::summarise(
@@ -168,7 +190,15 @@ get_age_standardised_los <- function(values_los, pop_final_year) {
         ifelse(.data[["n"]] > 0, .data[["age"]], NA),
         na.rm = TRUE
       ),
+      .data[["age"]] <= max(
+        ifelse(.data[["n"]] > 0, .data[["age"]], NA),
+        na.rm = TRUE
+      ),
       .by = c("strategy")
+    ) |>
+    dplyr::filter(
+      sum(.data[["n"]]) > 0,
+      .by = c("strategy", "sex")
     ) |>
     dplyr::inner_join(
       pop_final_year,

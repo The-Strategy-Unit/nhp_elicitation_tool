@@ -5,7 +5,7 @@ tar_source("targets")
 list(
   tar_target(
     fyears,
-    year_to_fyear(2000:2019)
+    year_to_fyear(2010:2019)
   ),
   # population figures ----
   tar_target(
@@ -41,7 +41,13 @@ list(
   ),
   tar_target(
     strategies_rates,
-    setdiff(strategies_all, c(strategies_los, strategies_pcnts))
+    setdiff(
+      strategies_all,
+      c(
+        strategies_los,
+        strategies_pcnts
+      )
+    )
   ),
   # values ----
   tar_target(
