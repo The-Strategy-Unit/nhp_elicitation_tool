@@ -113,7 +113,7 @@ mod_mitigator_ui <- function(id) {
       title = "Pilot: General Comments",
       shiny::textAreaInput(
         ns("general_comments"),
-        "General Comments about thi mitigator"
+        "General Comments about this mitigator"
       )
     )
   )
@@ -197,6 +197,10 @@ mod_mitigator_server <- function(id) {
     shiny::observe({
       modal <- shiny::modalDialog(
         "are you finished?",
+        shiny::textInput(
+          session$ns("name"),
+          "Your name"
+        ),
         shiny::tableOutput(
           session$ns("results")
         ),
@@ -350,6 +354,8 @@ mod_mitigator_server <- function(id) {
         Sys.getenv("save_path", tempdir()),
         paste0(
           format(Sys.time(), "%Y%m%d_%H%M%S"),
+          "-",
+          snakecase::to_snake_case(input$name),
           ".json"
         )
       )
