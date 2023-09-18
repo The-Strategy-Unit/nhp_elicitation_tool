@@ -4,13 +4,13 @@ default:
   app_prod: no
   strategies:
     alcohol_partially_attributable-acute:
-      name: Alcohol Related Admisins (Acute Conditions - Partially Attributable)
+      name: Alcohol Related Admissions (Acute Conditions - Partially Attributable)
       label: "Rate per {n} Admissions"
     alcohol_partially_attributable-chronic:
-      name: Alcohol Related Admisins (Chronic Conditions - Partially Attributable)
+      name: Alcohol Related Admissions (Chronic Conditions - Partially Attributable)
       label: "Rate per {n} Admissions"
     alcohol_wholly_attributable:
-      name: Alcohol Related Admisins (Wholly Attributable)
+      name: Alcohol Related Admissions (Wholly Attributable)
       label: "Rate per {n} Admissions"
     ambulatory_care_conditions_acute:
       name: "Ambulatory Care Sensitive Admissions (Acute Conditions)"
