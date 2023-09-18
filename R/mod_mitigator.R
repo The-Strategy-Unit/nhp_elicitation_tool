@@ -234,6 +234,10 @@ mod_mitigator_server <- function(id) {
     })
 
     selected_data_scale <- shiny::reactive({
+      s <- selected_strategy()
+      if (!strategies[[s]]$label |> stringr::str_detect("\\{n\\}")) {
+        return(1)
+      }
       v <- mean(selected_data()$rate)
       10^round(1 - log10(v))
     })
