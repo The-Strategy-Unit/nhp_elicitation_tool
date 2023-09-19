@@ -14,15 +14,28 @@ Imports:
     bs4Dash,
     config (>= 0.3.1),
     dplyr,
+    future,
     ggplot2,
     golem (>= 0.4.1),
+    markdown,
     pkgload,
-    shiny (>= 1.7.4.1)
+    plotly,
+    readr,
+    scales,
+    shiny (>= 1.7.4.1),
+    shinycssloaders,
+    shinyjs,
+    shinyWidgets,
+    stringr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
 Suggests: 
+    knitr,
+    rmarkdown,
+    rsconnect,
     spelling,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Language: en-US
+VignetteBuilder: knitr

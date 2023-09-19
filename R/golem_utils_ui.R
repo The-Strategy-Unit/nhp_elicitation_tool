@@ -253,6 +253,10 @@ col_10 <- function(...) {
   shiny::column(10, ...)
 }
 
+col_9 <- function(...) {
+  shiny::column(9, ...)
+}
+
 col_8 <- function(...) {
   shiny::column(8, ...)
 }
@@ -372,4 +376,17 @@ includeRMarkdown <- function(path) {
   Encoding(html) <- "UTF-8"
 
   return(shiny::HTML(html))
+}
+
+
+md_file_to_html <- function(...) {
+  file <- app_sys(...)
+
+  if (!file.exists(file)) {
+    s <- rev(list(...))[[1]]
+    warning(paste(s, "documentation not found"))
+    return(NULL)
+  }
+
+  shiny::HTML(markdown::mark_html(file, output = FALSE, template = FALSE))
 }

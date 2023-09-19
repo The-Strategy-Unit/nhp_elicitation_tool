@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "R",
+      "code": [
+        "source('dev/watch.R')"
+      ],
+      "group": "none",
+      "isBackground": true,
+      "problemMatcher": [],
+      "label": "R: Run App (watch)"
+    },
+    {
+      "type": "R",
+      "code": [
+        "targets::tar_make()"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "label": "R: Run Targets"
+    },
+    {
+      "type": "R",
+      "code": [
+        "rsconnect::deployApp(appName='nhp_dev_elicitation_tool', forceUpdate=TRUE, launch.browser=FALSE)"
+      ],
+      "group": "none",
+      "isBackground": true,
+      "problemMatcher": [],
+      "label": "R: Deploy app"
+    }
+  ]
+}

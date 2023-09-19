@@ -11,9 +11,15 @@ app_ui <- function(request) {
     )
   )
 
-  sidebar <- bs4Dash::bs4DashSidebar()
+  sidebar <- bs4Dash::bs4DashSidebar(
+    collapsed = TRUE,
+    expandOnHover = FALSE
+  )
 
-  body <- bs4Dash::bs4DashBody()
+  body <- bs4Dash::bs4DashBody(
+    # temporary, should have a home module that leads to this page
+    mod_mitigator_ui("mitigator")
+  )
 
   page <- bs4Dash::bs4DashPage(
     title = "NHP Elicitation Tool",
@@ -26,6 +32,7 @@ app_ui <- function(request) {
   shiny::tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
+    shinyjs::useShinyjs(),
     # Your application UI logic
     page
   )
@@ -47,9 +54,7 @@ golem_add_external_resources <- function() {
     golem::favicon(),
     golem::bundle_resources(
       path = app_sys("app/www"),
-      app_title = "."
+      app_title = "NHP National Elicitation Tool"
     )
-    # Add here other external resources
-    # for example, you can add shinyalert::useShinyalert()
   )
 }
