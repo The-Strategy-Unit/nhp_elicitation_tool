@@ -1,3 +1,3 @@
 Patients with mental health problems admitted to hospital in an emergency can have longer lengths of stay due to added complexities this creates in treating and supporting such patients. Psychiatric liaison services (sometimes referred to as RAID) can help to reduce the LOS for such patients by providing support to ward staff whilst in hospital and facilitating timely discharge through the provision of appropriate post discharge support. 
 
-The model identifies patients who may benefit as those with a recorded mental or behavioral diagnosis.
+The model identifies patients who may benefit as those with a recorded mental or behavioral diagnosis in any diagnosis field.
