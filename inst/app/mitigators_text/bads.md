@@ -4,7 +4,7 @@ Day surgery represents high-quality patient care with excellent patient satisfac
 
 The British Association of Day Surgery (BADS) produce a Directory of Procedures which identifes surgical interventions that can be delivered in a day case or outpatient setting  instead of an elective ordinary inpatient setting which often results in an  overnight stay. For each procedure the directory provides an indication of the percentage of spells that could be carried out in each setting.
 
-The model identifies spells using the basket of procedures provided by BADS and classifies them into four categories based in the indicative percentages contained in the directory 
+The tool identifies spells using the basket of procedures provided by BADS and classifies them into four categories based in the indicative percentages contained in the directory 
 
 - Procedures predominantly (>66%) recommended to be carried out in a procedure room
 - Procedures predominantly (>66%) recommended to be carried out either in a day case or a procedure room (OP) setting

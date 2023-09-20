@@ -7,3 +7,9 @@ In some instances excess bed days may be avoidable for example where the excess 
 Trim Points are updated annually and can be found in the [national tariff workbooks][1].
 
 [1]: https://www.england.nhs.uk/publication/past-national-tariffs-documents-and-policies/
+
+The tool shows the average (mean) LOS for spells with excess bed days for the following groups:
+
+Elective admissions
+
+Emergency admissions

@@ -1,7 +1,9 @@
-These injuries are a common and serious problem for older people. People aged 65 and older have the highest risk of falling, with 30% of people older than 65 and 50% of people older than 80 falling at least once a year. Effective fall prevention strategies can reduce the number of people who fall, the rate of falls and the severity of injury should a fall occur. We identify admissions where the patient is 65 years-old or over, is admitted as an emergency, and at least one diagnosis code from the following three groups is present:
+Some falls that result in an emergency admission to hospital are potentially avoidable if the appropriate preventative services are in place. A range of evidence based services and interventions exist that can reduce falls in the elderly. Implementation across the country is variable and as such there remains significant scope to reduce the incidence of falls further. Examples of preventative services include home risk assessments for trip hazards, strength and balance training for those at risk and fall telemonitoring.
 
-* Explicit – where a fall is indicated as a cause (e.g. `W06 – fall involving bed`);
-* Implicit – where the patient is recorded as having a tendency to fall (`R296 – tendency to fall NEC`);
-* Implicit – fractures commonly resulting from a fall (e.g. `S424 – fracture of lower end of humerus`).
+Falls related admissions are identified in the tool in a number of ways:
 
-These three groups are not - by definition - exclusive of one another.
+spells where there is a falls related ICD10 cause code and a traumatic injury (explicit),
+Spells where the primary diagnosis is R296 (Tendancy to fall)
+spells where there is no external cause ICD10 code but there is a diagnosis of one of a number of fractures that are commonly associated with a fall such as a fractured wrist
+
+Within the tool the three sets of admissions are grouped, in this case, into a single factor.
