@@ -8,10 +8,9 @@ Not every outpatient appointment requires the patient to be physically present. 
 
 Within the tool 4 sub factors of this type are available:
 
-Surgical specialties
-Adults
-Children
-
-Non-Surgical specialties
-Adults
-Children
+* Surgical specialties
+  - Adults
+  - Children
+* Non-Surgical specialties
+  - Adults
+  - Children

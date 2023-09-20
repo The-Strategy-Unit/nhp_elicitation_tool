@@ -4,5 +4,5 @@ Enabling people to die at home can reduce the burden on hospital resources and o
 
 The tool classifies EOLC admissions into two groups:
 
-Patients who die within 0-2 days of admission
-Patients who die within 3-14 days of admission
+* Patients who die within 0-2 days of admission
+* Patients who die within 3-14 days of admission

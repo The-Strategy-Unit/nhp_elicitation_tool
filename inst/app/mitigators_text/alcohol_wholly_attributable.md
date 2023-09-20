@@ -8,8 +8,8 @@ Alcohol attributable condition codes are sourced from the 2020 PHE document [Alc
 
 These admissions have been grouped into 3 categories:
 
-wholly attributable to alcohol consumption (100%)
-partially attributable to alcohol consumption (Chronic conditions)
-partially attributable to alcohol consumption (Acute conditions)
+* wholly attributable to alcohol consumption (100%)
+* partially attributable to alcohol consumption (Chronic conditions)
+* partially attributable to alcohol consumption (Acute conditions)
 
 Whilst most activity mitigation strategies identify all spells based on the specified SQL coding for relevant conditions in this case the tool selects a proportion of spells based on the alcohol attributable fraction (AAF) for that condition. As an example the AAF for cancer of the oesophagus for males aged between 35 and 44 is 52% therefore the model randomly selects 52% of spells meeting these criteria. As such the data represents an estimate of the number of admissions that are caused by alcohol consumption. The AAFs are also sourced from the above referenced document. For those conditions that are wholly attributable the tool selects all admissions with the specified diagnoses as their AAF is 100%

@@ -2,8 +2,8 @@ Some falls that result in an emergency admission to hospital are potentially avo
 
 Falls related admissions are identified in the tool in a number of ways:
 
-spells where there is a falls related ICD10 cause code and a traumatic injury (explicit),
-Spells where the primary diagnosis is R296 (Tendancy to fall)
-spells where there is no external cause ICD10 code but there is a diagnosis of one of a number of fractures that are commonly associated with a fall such as a fractured wrist
+* spells where there is a falls related ICD10 cause code and a traumatic injury (explicit),
+* spells where the primary diagnosis is R296 (Tendancy to fall)
+* spells where there is no external cause ICD10 code but there is a diagnosis of one of a number of fractures that are commonly associated with a fall such as a fractured wrist
 
 Within the tool the three sets of admissions are grouped, in this case, into a single factor.
