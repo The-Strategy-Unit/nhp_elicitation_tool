@@ -1,10 +1,16 @@
 ACSC admissions are those that can potentially be avoided with effective management and treatment such as improved primary or community health care services such as screening, vaccination, immunisation and health monitoring. Admissions of this type are identified using a basket of ICD10 codes for 19 chronic and acute conditions.
 
-These conditions are categorised into three groups:
+These following acute conditions are included:
 
-* vaccine preventable conditions,
-* chronic conditions,
-* and acute conditions.
+* Dehydration and gastroenteritis
+* Pyelonephritis
+* Perforated/bleeding ulcer
+* Cellulitis
+* Pelvic inflammatory disease
+* Ear, nose and throat infections
+* Dental conditions
+* Convulsions and epilepsy
+* Gangrene
 
 The list of conditions used within this factor comes the [NHS Institute for Innovation and Improvement][1].
 

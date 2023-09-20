@@ -6,6 +6,18 @@
 - the patient has the best possible management during and after his/her operation
 - the patient experiences the best post-operative rehabilitation
 
-Whilst many procedures would benefit from adopting enhanced recovery approaches the most common specialties where enhanced recovery programmes have been implemented are MSK, colorectal surgery, gynaecology and urology as these were the areas targeted by the Department of Health enhanced recovery programme. The 2011 programme report specified a number of high volume procedures within these specialties that would be the focus of ER programmes and it is these that are included within th ER efficiency factors. In addition we have subsequently also included a number of breast surgery procedures as more recent [NHS][2] information identifies this as an area where ER programmes are commonly in place.
+Whilst many procedures would benefit from adopting enhanced recovery approaches the most common specialties where enhanced recovery programmes have been implemented are MSK, colorectal surgery, gynaecology and urology as these were the areas targeted by the Department of Health enhanced recovery programme. The 2011 programme report specified a number of high volume procedures within these specialties that would be the focus of ER programmes and it is these that are included within these ER efficiency factors. In addition we have subsequently also included a number of breast surgery procedures as more recent [NHS][2] information identifies this as an area where ER programmes are commonly in place.
 
 [2]: https://www.nhs.uk/conditions/enhanced-recovery/
+
+The tool shows the average (mean) LOS for the following procedures:
+
+* W37: Total prosthetic replacement of hip joint using cement
+* W38: Total prosthetic replacement of hip joint not using cement
+* W39: Other total prosthetic replacement of hip joint
+* W46: Prosthetic replacement of head of femur using cement
+* W47: Prosthetic replacement of head of femur not using cement
+* W48: Other prosthetic replacement of head of femur
+* W93: Hybrid prosthetic replacement of hip joint using cemented acetabular component
+* W94: Hybrid prosthetic replacement of hip joint using cemented femoral component
+* W95: Hybrid prosthetic replacement of hip joint using cement

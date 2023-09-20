@@ -5,3 +5,12 @@ Not every outpatient appointment requires the patient to be physically present. 
 - improving patient satisfaction,
 - reducing carbon emissions from travelling to appointments,
 - increased opportunities for flexible working for clinicians.
+
+Within the tool 4 sub factors of this type are available:
+
+* Surgical specialties
+  - Adults
+  - Children
+* Non-Surgical specialties
+  - Adults
+  - Children
