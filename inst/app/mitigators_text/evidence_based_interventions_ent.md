@@ -6,42 +6,10 @@ Codes used within the model to identify spells of this type can be found on the 
 
 [1]: https://www.aomrc.org.uk/ebi/
 
-The following shows the specialty groups are included within the tool along with the procedures included within each group:
+The procedures in this group are:
 
-ENT
-adenoids
-grommets
-rhinosinisitis procedures
-Snoring procedures
-tonsillectomy
-
-General Surgery
-apendectomy
-cholecystectomy
-haemorrhoid procedures
-hernia procedures
-
-GI surgery
-colonoscopy
-endoscopy
-
-MSK
-arthroscopic meniscal tear
-arthroscopic shoulder_compression
-back injections
-dupuytrens release
-fusion surgery
-ganglion
-knee arthroscopy
-lumbar disectomy
-radio frequency denervation
-trigger finger
-vertebral augmentation
-
-Urology
-cystoscopy
-prostatic hyperplasia
-
-
-Vascular
-varicose veins
+* Adenoids
+* Grommets
+* Rhinosinisitis procedures
+* Snoring procedures
+* Tonsillectomy

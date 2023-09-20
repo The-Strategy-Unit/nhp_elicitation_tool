@@ -2,10 +2,9 @@ Some ED attendances may not require the facilities or the highly skilled ED staf
 
 Within the tool 4 sub factors of this type are available:
 
-Walk in attendances
-Adults
-Children
-
-Ambulance attendances
-Adults
-Children
+* Walk in attendances
+  - Adults
+  - Children
+* Ambulance attendances
+  - Adults
+  - Children

@@ -2,10 +2,9 @@ A small percentage of patients leave A&E before being seen.At least some of thes
 
 Within the tool 4 sub factors of this type are available:
 
-Walk in attendances
-Adults
-Children
-
-Ambulance attendances
-Adults
-Children
+* Walk in attendances
+  - Adults
+  - Children
+* Ambulance attendances
+  - Adults
+  - Children
