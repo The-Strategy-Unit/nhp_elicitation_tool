@@ -131,7 +131,15 @@ mod_mitigator_server <- function(id) {
       dplyr::filter(.data[["year"]] >= 201011)
 
     strategies <- get_golem_config("strategies") |>
-      purrr::keep(~ .x$include %||% TRUE)
+      purrr::keep(~ .x$include %||% TRUE) |>
+      (\(.x) {
+        order <- .x |>
+          dplyr::bind_rows(.id = "id") |>
+          dplyr::arrange(.data[["label"]], .data[["name"]]) |>
+          dplyr::pull("id")
+
+        .x[order]
+      })()
 
     values <- do.call(
       shiny::reactiveValues,
