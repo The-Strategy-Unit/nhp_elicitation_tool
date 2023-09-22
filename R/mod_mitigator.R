@@ -247,8 +247,12 @@ mod_mitigator_server <- function(id) {
     })
 
     value_format <- shiny::reactive({
-      s <- selected_data_scale()
-      scales::number_format(accuracy = 0.1, scale = s)
+      s <- selected_strategy()
+      if (strategies[[s]]$label |> stringr::str_detect("\\%")) {
+        return(scales::percent_format(accuracy = 0.1))
+      }
+
+      scales::number_format(accuracy = 0.1, scale = selected_data_scale())
     })
 
     y_axis_title <- shiny::reactive({

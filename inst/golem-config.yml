@@ -23,16 +23,16 @@ default:
       label: "Rate per {n} Admissions"
     ambulatory_emergency_care_low:
       name: "Ambulatory Emergency Care (Low Potential)"
-      label: "Rate per {n} Admissions"
+      label: "% admissions with a 0-day length of stay"
     ambulatory_emergency_care_moderate:
       name: "Ambulatory Emergency Care (Moderate Potential)"
-      label: "Rate per {n} Admissions"
+      label: "% admissions with a 0-day length of stay"
     ambulatory_emergency_care_high:
       name: "Ambulatory Emergency Care (High Potential)"
-      label: "Rate per {n} Admissions"
+      label: "% admissions with a 0-day length of stay"
     ambulatory_emergency_care_very_high:
       name: "Ambulatory Emergency Care (Very High Potential)"
-      label: "Rate per {n} Admissions"
+      label: "% admissions with a 0-day length of stay"
     cancelled_operations:
       name: Cancelled Operations
       label: "Rate per {n} Admissions"
@@ -126,12 +126,9 @@ default:
     obesity_related_admissions:
       name: Obesity Related Admissions
       label: "Rate per {n} Admissions"
-    preop_los-1day:
-      name: Pre-op Length of Stay (1 day)
-      include: False
-    preop_los-2day:
-      name: Pre-op Length of Stay (2 days)
-      include: False
+    preop_los:
+      name: Pre-op Length of Stay of 1 or 2 days
+      label: "% of all operations with a pre-op Length of Stay of 1 or 2 days"
     raid_ae:
       name: Mental Health Admissions via Emergency Department
       label: "Rate per {n} Admissions"

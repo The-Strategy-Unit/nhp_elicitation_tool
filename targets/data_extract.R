@@ -1,4 +1,5 @@
 .data <- rlang::.data
+.env <- rlang::.env
 
 db_con <- function(database = Sys.getenv("DB_DATABASE"),
                    envir = parent.frame()) {
@@ -95,21 +96,27 @@ get_values_los <- function(strategy, fyear) {
 get_values_pcnts <- function(strategy, fyear) {
   con <- db_con()
 
-  n <- dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
+  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
     dplyr::filter(
       .data[["FYEAR"]] == fyear,
       !is.na(.data[["AGE"]])
     ) |>
-    dplyr::count(
-      .data[["FYEAR"]],
-      .data[["AGE"]],
-      .data[["SEX"]],
-      .data[["strategy"]],
-      wt = .data[["fraction"]]
+    dplyr::summarise(
+      n = sum(.data[["fraction"]], na.rm = TRUE),
+      d = dplyr::n(),
+      .by = c("FYEAR", "AGE", "SEX", "strategy")
     ) |>
     dplyr::collect() |>
     janitor::clean_names() |>
     fix_ages("strategy")
+}
+
+get_fixed_values_pcnts <- function(values_pcnts) {
+  values_pcnts |>
+    dplyr::summarise(
+      dplyr::across(c("n", "d"), sum),
+      .by = -c("n", "d")
+    )
 }
 
 get_total_admissions <- function(fyear) {
@@ -131,7 +138,7 @@ get_total_admissions <- function(fyear) {
     fix_ages()
 }
 
-get_age_standardised_rates <- function(values_rates, values_los,
+get_age_standardised_rates <- function(values_rates, values_los, values_pcnts,
                                        total_admissions) {
   dplyr::bind_rows(
     values_rates |>
@@ -141,7 +148,8 @@ get_age_standardised_rates <- function(values_rates, values_los,
         by = dplyr::join_by("fyear", "age", "sex")
       ),
     values_los |>
-      dplyr::rename(d = "n", n = "days")
+      dplyr::rename(d = "n", n = "days"),
+    values_pcnts
   ) |>
     tidyr::complete(
       .data[["fyear"]],

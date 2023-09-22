@@ -27,6 +27,7 @@ list(
     strategies_pcnts,
     get_strategies_subset(
       strategies_all,
+      "ambulatory_emergency_care_.*",
       "preop_los"
     )
   ),
@@ -56,12 +57,22 @@ list(
     get_values_los(strategies_los, fyears),
     pattern = cross(strategies_los, fyears)
   ),
+  tar_target(
+    values_pcnts,
+    get_values_pcnts(strategies_pcnts, fyears),
+    pattern = cross(strategies_pcnts, fyears)
+  ),
+  tar_target(
+    fixed_values_pcnts,
+    get_fixed_values_pcnts(values_pcnts)
+  ),
   # age standardisation ----
   tar_target(
     age_standardised_rates,
     get_age_standardised_rates(
       values_rates,
       values_los,
+      fixed_values_pcnts,
       total_admissions
     ),
   ),
