@@ -27,8 +27,8 @@ list(
     strategies_pcnts,
     get_strategies_subset(
       strategies_all,
-      "bads_daycase_occassional",
-      "bads_daycase",
+      "ambulatory_emergency_care_.*",
+      "bads",
       "preop_los"
     )
   ),
@@ -58,12 +58,27 @@ list(
     get_values_los(strategies_los, fyears),
     pattern = cross(strategies_los, fyears)
   ),
+  tar_target(
+    values_pcnts,
+    get_values_pcnts(strategies_pcnts, fyears),
+    pattern = cross(strategies_pcnts, fyears)
+  ),
+  tar_target(
+    values_pcnts_bads_opa,
+    get_values_pcnts_bads_opa(fyears),
+    pattern = map(fyears)
+  ),
+  tar_target(
+    fixed_values_pcnts,
+    get_fixed_values_pcnts(values_pcnts, values_pcnts_bads_opa)
+  ),
   # age standardisation ----
   tar_target(
     age_standardised_rates,
     get_age_standardised_rates(
       values_rates,
       values_los,
+    fixed_values_pcnts,
       total_admissions
     ),
   ),
