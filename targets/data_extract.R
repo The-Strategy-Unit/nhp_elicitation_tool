@@ -139,6 +139,7 @@ get_total_admissions <- function(fyear) {
 }
 
 get_age_standardised_rates <- function(values_rates, values_los, values_pcnts,
+                                       values_op, values_aae,
                                        total_admissions) {
   dplyr::bind_rows(
     values_rates |>
@@ -149,7 +150,9 @@ get_age_standardised_rates <- function(values_rates, values_los, values_pcnts,
       ),
     values_los |>
       dplyr::rename(d = "n", n = "days"),
-    values_pcnts
+    values_pcnts,
+    values_op,
+    values_aae
   ) |>
     tidyr::complete(
       .data[["fyear"]],
