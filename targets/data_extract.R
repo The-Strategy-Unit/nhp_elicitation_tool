@@ -150,7 +150,8 @@ get_values_pcnts_bads_opa <- function(fyear) {
     fix_ages("strategy") |>
     dplyr::mutate(
       dplyr::across("strategy", ~ paste0("bads_", .x)),
-      d = .data[["n"]]
+      d = .data[["n"]],
+      n = 0
     )
 }
 

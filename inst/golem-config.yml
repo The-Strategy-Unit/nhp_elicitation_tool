@@ -35,16 +35,16 @@ default:
       label: "% admissions with a 0-day length of stay"
     bads_daycase:
       name: "Elective surgery - recommended mainly day case"
-      label: "% performed as a day case"
+      label: "% performed as an overnight admission"
     bads_daycase_occasional:
       name: "Elective surgery - recommended occasional day case"
-      label: "% performed as a day case"
+      label: "% performed as an overnight admission"
     bads_outpatients:
       name: "Elective surgery - recommended mainly outpatient procedure"
-      label: "% performed in outpatients"
+      label: "% performed as an overnight admission or daycase"
     bads_outpatients_or_daycase:
       name: "Elective surgery - recommended mainly outpatient procedure or day case"
-      label: "% performed in outpatients"
+      label: "% performed as an overnight admission or daycase"
     cancelled_operations:
       name: Cancelled Operations
       label: "Rate per {n} Admissions"
