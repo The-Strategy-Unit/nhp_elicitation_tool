@@ -33,12 +33,22 @@ list(
     )
   ),
   tar_target(
+    strategies_op,
+    stringr::str_subset(strategies_all, "^op")
+  ),
+  tar_target(
+    strategies_aae,
+    stringr::str_subset(strategies_all, "^aae")
+  ),
+  tar_target(
     strategies_rates,
     setdiff(
       strategies_all,
       c(
         strategies_los,
-        strategies_pcnts
+        strategies_pcnts,
+        strategies_op,
+        strategies_aae
       )
     )
   ),
@@ -72,13 +82,43 @@ list(
     fixed_values_pcnts,
     get_fixed_values_pcnts(values_pcnts, values_pcnts_bads_opa)
   ),
+  tar_target(
+    op_consultant_referrals,
+    get_op_consultant_referrals(fyears),
+    pattern = map(fyears)
+  ),
+  tar_target(
+    op_followup_reduction,
+    get_op_followup_reduction(fyears),
+    pattern = map(fyears)
+  ),
+  tar_target(
+    op_tele_conversion,
+    get_op_tele_conversion(fyears),
+    pattern = map(fyears)
+  ),
+  tar_target(
+    values_op,
+    dplyr::bind_rows(
+      op_consultant_referrals,
+      op_followup_reduction,
+      op_tele_conversion,
+    )
+  ),
+  tar_target(
+    values_aae,
+    get_values_aae(strategies_aae, fyears),
+    pattern = cross(strategies_aae, fyears)
+  ),
   # age standardisation ----
   tar_target(
     age_standardised_rates,
     get_age_standardised_rates(
       values_rates,
       values_los,
-    fixed_values_pcnts,
+      fixed_values_pcnts,
+      values_op,
+      values_aae,
       total_admissions
     ),
   ),

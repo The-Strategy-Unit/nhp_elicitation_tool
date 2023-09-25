@@ -155,6 +155,95 @@ get_values_pcnts_bads_opa <- function(fyear) {
     )
 }
 
+get_op_consultant_referrals <- function(fyear) {
+  con <- db_con()
+
+  dplyr::tbl(
+    con,
+    dbplyr::in_schema(
+      "nhp_strategies",
+      "op_consultant_to_consultant_referrals"
+    )
+  ) |>
+    dplyr::filter(
+      .data[["fyear"]] == fyear,
+      !is.na(.data[["age"]])
+    ) |>
+    dplyr::summarise(
+      n = sum(.data[["fraction"]]),
+      d = dplyr::n(),
+      .by = c("fyear", "age", "sex", "strategy")
+    ) |>
+    dplyr::collect() |>
+    fix_ages("strategy")
+}
+
+get_op_followup_reduction <- function(fyear) {
+  con <- db_con()
+
+  dplyr::tbl(
+    con,
+    dbplyr::in_schema(
+      "nhp_strategies",
+      "op_followup_reduction"
+    )
+  ) |>
+    dplyr::filter(
+      .data[["fyear"]] == fyear,
+      !is.na(.data[["age"]])
+    ) |>
+    dplyr::summarise(
+      n = sum(.data[["fraction"]]),
+      d = dplyr::n(),
+      .by = c("fyear", "age", "sex", "strategy")
+    ) |>
+    dplyr::collect() |>
+    fix_ages("strategy") |>
+    dplyr::mutate(
+      dplyr::across("d", ~ .x - .data[["n"]])
+    )
+}
+
+get_op_tele_conversion <- function(fyear) {
+  con <- db_con()
+
+  dplyr::tbl(
+    con,
+    dbplyr::in_schema(
+      "nhp_strategies",
+      "op_tele_conversion"
+    )
+  ) |>
+    dplyr::filter(
+      .data[["fyear"]] == fyear,
+      !is.na(.data[["age"]])
+    ) |>
+    dplyr::summarise(
+      n = sum(.data[["fraction"]]),
+      d = dplyr::n(),
+      .by = c("fyear", "age", "sex", "strategy")
+    ) |>
+    dplyr::collect() |>
+    fix_ages("strategy")
+}
+
+get_values_aae <- function(strategy, fyear) {
+  con <- db_con()
+
+  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
+    dplyr::filter(
+      .data[["fyear"]] == fyear,
+      !is.na(.data[["age"]])
+    ) |>
+    dplyr::summarise(
+      n = sum(.data[["fraction"]]),
+      d = dplyr::n(),
+      .by = c("fyear", "age", "sex", "strategy")
+    ) |>
+    dplyr::collect() |>
+    fix_ages("strategy")
+}
+
 get_fixed_values_pcnts <- function(values_pcnts, values_pcnts_bads_opa) {
   values_pcnts |>
     dplyr::bind_rows(
@@ -186,6 +275,7 @@ get_total_admissions <- function(fyear) {
 }
 
 get_age_standardised_rates <- function(values_rates, values_los, values_pcnts,
+                                       values_op, values_aae,
                                        total_admissions) {
   dplyr::bind_rows(
     values_rates |>
@@ -196,7 +286,9 @@ get_age_standardised_rates <- function(values_rates, values_los, values_pcnts,
       ),
     values_los |>
       dplyr::rename(d = "n", n = "days"),
-    values_pcnts
+    values_pcnts,
+    values_op,
+    values_aae
   ) |>
     tidyr::complete(
       .data[["fyear"]],
