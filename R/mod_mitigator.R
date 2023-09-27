@@ -107,14 +107,6 @@ mod_mitigator_ui <- function(id) {
           shiny::uiOutput(ns("mitigator_text"))
         )
       )
-    ),
-    bs4Dash::box(
-      width = 6,
-      title = "Pilot: General Comments",
-      shiny::textAreaInput(
-        ns("general_comments"),
-        "General Comments about this mitigator"
-      )
     )
   )
 }
@@ -129,21 +121,6 @@ mod_mitigator_server <- function(id, email, strategies) {
     trend_data <- app_sys("app", "data", "trend_data.csv") |>
       readr::read_csv(col_types = "dcddd") |>
       dplyr::filter(.data[["year"]] >= 201011)
-
-    values <- shiny::reactiveValues()
-
-    shiny::observe({
-      s <- strategies()
-      for (i in names(s)) {
-        values[[i]] <- list(
-          values = c(lo = 0, hi = 100),
-          comments_lo = "",
-          comments_hi = "",
-          general_comments = ""
-        )
-      }
-    }) |>
-      shiny::bindEvent(strategies())
 
     min_year <- min(trend_data$year)
 
@@ -166,11 +143,47 @@ mod_mitigator_server <- function(id, email, strategies) {
       names(strategies())[[s]]
     })
 
+    shiny::observe({
+      e <- email()
+      s <- selected_strategy_id()
+
+      v <- get_latest_result(e, s)
+
+      v <- if (nrow(v) == 0) {
+        list(
+          lo = 0,
+          hi = 100,
+          comments_lo = "",
+          comments_hi = ""
+        )
+      } else {
+        as.list(v)
+      }
+
+      shinyWidgets::updateNoUiSliderInput(
+        session,
+        "param_values",
+        value = c(v$lo, v$hi)
+      )
+
+      shiny::updateTextAreaInput(session, "why_lo", value = v$comments_lo)
+      shiny::updateTextAreaInput(session, "why_hi", value = v$comments_hi)
+    }) |>
+      shiny::bindEvent(selected_strategy_id())
+
     output$strategy <- shiny::renderUI({
       shiny::tags$h2(selected_strategy_text())
     })
 
+    save_values <- function() {
+      s <- selected_strategy_id()
+
+      insert_data(email(), s, input$param_values, input$why_lo, input$why_hi)
+    }
+
     shiny::observe({
+      save_values()
+
       ls <- length(strategies())
       s <- pmin(selected_strategy() + 1, ls)
       selected_strategy(s)
@@ -183,6 +196,8 @@ mod_mitigator_server <- function(id, email, strategies) {
       shiny::bindEvent(input$next_strat)
 
     shiny::observe({
+      save_values()
+
       s <- pmax(selected_strategy() - 1, 1)
       selected_strategy(s)
       if (s == 1) {
@@ -196,10 +211,6 @@ mod_mitigator_server <- function(id, email, strategies) {
     shiny::observe({
       modal <- shiny::modalDialog(
         "are you finished?",
-        shiny::textInput(
-          session$ns("name"),
-          "Your name"
-        ),
         shiny::tableOutput(
           session$ns("results")
         ),
@@ -220,12 +231,16 @@ mod_mitigator_server <- function(id, email, strategies) {
       shiny::bindEvent(input$complete)
 
     output$results <- shiny::renderTable({
-      values |>
-        shiny::reactiveValuesToList() |>
-        tibble::enframe("strategy") |>
-        tidyr::unnest_wider("value") |>
-        tidyr::unnest_wider("values")
-    })
+      get_latest_results(email()) |>
+        dplyr::select(
+          "strategy",
+          "lo",
+          "hi",
+          "comments_lo",
+          "comments_hi"
+        )
+    }) |>
+      shiny::bindEvent(input$complete)
 
     selected_data <- shiny::reactive({
       s <- selected_strategy_id()
@@ -300,74 +315,9 @@ mod_mitigator_server <- function(id, email, strategies) {
     })
 
     shiny::observe({
-      s <- shiny::req(selected_strategy_id())
-      values[[s]]$values[["lo"]] <- input$param_values[[1]]
-      values[[s]]$values[["hi"]] <- input$param_values[[2]]
-    }) |>
-      shiny::bindEvent(input$param_values)
-
-    shiny::observe({
-      s <- shiny::req(selected_strategy_id())
-      values[[s]]$comments_lo <- input$why_lo
-    }) |>
-      shiny::bindEvent(input$why_lo)
-
-    shiny::observe({
-      s <- shiny::req(selected_strategy_id())
-      values[[s]]$comments_hi <- input$why_hi
-    }) |>
-      shiny::bindEvent(input$why_hi)
-
-    shiny::observe({
-      s <- shiny::req(selected_strategy_id())
-      values[[s]]$general_comments <- input$general_comments
-    }) |>
-      shiny::bindEvent(input$general_comments)
-
-    shiny::observe({
-      s <- shiny::req(selected_strategy_id())
-      v <- values[[s]]
-      shinyWidgets::updateNoUiSliderInput(
-        session,
-        "param_values",
-        value = unname(v$values)
-      )
-      shiny::updateTextAreaInput(
-        session,
-        "why_lo",
-        value = v$comments_lo
-      )
-      shiny::updateTextAreaInput(
-        session,
-        "why_hi",
-        value = v$comments_hi
-      )
-      shiny::updateTextAreaInput(
-        session,
-        "general_comments",
-        value = v$general_comments
-      )
-    }) |>
-      shiny::bindEvent(selected_strategy_id())
-
-    shiny::observe({
       shiny::removeModal()
 
-      filename <- file.path(
-        Sys.getenv("save_path", tempdir()),
-        paste0(
-          format(Sys.time(), "%Y%m%d_%H%M%S"),
-          "-",
-          snakecase::to_snake_case(input$name),
-          ".json"
-        )
-      )
-
       cat("saving:", filename, "\n")
-
-      values |>
-        shiny::reactiveValuesToList() |>
-        jsonlite::write_json(filename, auto_unbox = TRUE, pretty = TRUE)
     }) |>
       shiny::bindEvent(input$save_results)
   })
