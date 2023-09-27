@@ -1,12 +1,11 @@
 library(targets)
+library(tarchetypes)
 
 tar_source("targets")
 
 list(
-  tar_target(
-    fyears,
-    year_to_fyear(2010:2019)
-  ),
+  tar_target(start, 201011),
+  tar_target(end, 201920),
   # strategies ----
   tar_target(
     strategies_all,
@@ -16,28 +15,48 @@ list(
     strategies_los,
     get_strategies_subset(
       strategies_all,
-      "emergency_elderly",
-      "enhanced_recovery_.*",
-      "excess_beddays",
-      "raid_ip",
-      "stroke_early_supported_discharge"
+      paste0(
+        "^ip_(",
+        paste(
+          "emergency_elderly",
+          "enhanced_recovery_.*",
+          "excess_beddays",
+          "raid_ip",
+          "stroke_early_supported_discharge",
+          sep = "|"
+        ),
+        ")$"
+      )
     )
   ),
   tar_target(
     strategies_pcnts,
     get_strategies_subset(
       strategies_all,
-      "ambulatory_emergency_care_.*",
-      "preop_los"
+      paste0(
+        "^ip_(",
+        paste(
+          "ambulatory_emergency_care_.*",
+          "preop_los",
+          sep = "|"
+        ),
+        ")$"
+      )
     )
   ),
   tar_target(
     strategies_op,
-    stringr::str_subset(strategies_all, "^op")
+    get_strategies_subset(
+      strategies_all,
+      "^op"
+    )
   ),
   tar_target(
     strategies_aae,
-    stringr::str_subset(strategies_all, "^aae")
+    get_strategies_subset(
+      strategies_all,
+      "^aae"
+    )
   ),
   tar_target(
     strategies_rates,
@@ -54,23 +73,22 @@ list(
   # values ----
   tar_target(
     total_admissions,
-    get_total_admissions(fyears),
-    pattern = map(fyears)
+    get_total_admissions(start, end)
   ),
   tar_target(
     values_rates,
-    get_values(strategies_rates, fyears),
-    pattern = cross(strategies_rates, fyears)
+    get_values_rates(strategies_rates[[1]], start, end),
+    pattern = map(strategies_rates)
   ),
   tar_target(
     values_los,
-    get_values_los(strategies_los, fyears),
-    pattern = cross(strategies_los, fyears)
+    get_values_los(strategies_los[[1]], start, end),
+    pattern = map(strategies_los)
   ),
   tar_target(
     values_pcnts,
-    get_values_pcnts(strategies_pcnts, fyears),
-    pattern = cross(strategies_pcnts, fyears)
+    get_values_pcnts(strategies_pcnts[[1]], start, end),
+    pattern = map(strategies_pcnts)
   ),
   tar_target(
     fixed_values_pcnts,
@@ -93,16 +111,13 @@ list(
   ),
   tar_target(
     values_op,
-    dplyr::bind_rows(
-      op_consultant_referrals,
-      op_followup_reduction,
-      op_tele_conversion,
-    )
+    get_values_op(strategies_op[[1]], start, end),
+    pattern = map(strategies_op)
   ),
   tar_target(
     values_aae,
-    get_values_aae(strategies_aae, fyears),
-    pattern = cross(strategies_aae, fyears)
+    get_values_aae(strategies_aae[[1]], start, end),
+    pattern = cross(strategies_aae)
   ),
   # age standardisation ----
   tar_target(
