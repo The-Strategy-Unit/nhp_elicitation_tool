@@ -23,6 +23,7 @@ Imports:
     pkgload,
     plotly,
     readr,
+    rlang,
     RSQLite,
     scales,
     shiny (>= 1.7.4.1),
