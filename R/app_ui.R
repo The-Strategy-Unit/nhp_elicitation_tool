@@ -17,8 +17,18 @@ app_ui <- function(request) {
   )
 
   body <- bs4Dash::bs4DashBody(
-    # temporary, should have a home module that leads to this page
-    mod_mitigator_ui("mitigator")
+    shiny::tabsetPanel(
+      id = "tabset",
+      type = "hidden",
+      shiny::tabPanel(
+        "tab_home",
+        mod_home_ui("home")
+      ),
+      shiny::tabPanel(
+        "tab_mitigator",
+        mod_mitigator_ui("mitigator")
+      )
+    )
   )
 
   page <- bs4Dash::bs4DashPage(

@@ -122,7 +122,7 @@ mod_mitigator_ui <- function(id) {
 #' mitigator Server Functions
 #'
 #' @noRd
-mod_mitigator_server <- function(id) {
+mod_mitigator_server <- function(id, email, strategies) {
   shiny::moduleServer(id, function(input, output, session) {
     .data <- rlang::.data
 
@@ -130,32 +130,20 @@ mod_mitigator_server <- function(id) {
       readr::read_csv(col_types = "dcddd") |>
       dplyr::filter(.data[["year"]] >= 201011)
 
-    strategies <- get_golem_config("strategies") |>
-      purrr::map(\(at) {
-        at |>
-          purrr::keep(~ .x$include %||% TRUE) |>
-          (\(.x) {
-            order <- .x |>
-              dplyr::bind_rows(.id = "id") |>
-              dplyr::arrange(.data[["label"]], .data[["name"]]) |>
-              dplyr::pull("id")
+    values <- shiny::reactiveValues()
 
-            .x[order]
-          })()
-      }) |>
-      purrr::flatten()
-
-    values <- do.call(
-      shiny::reactiveValues,
-      purrr::map(
-        strategies, ~ list(
+    shiny::observe({
+      s <- strategies()
+      for (i in names(s)) {
+        values[[i]] <- list(
           values = c(lo = 0, hi = 100),
           comments_lo = "",
           comments_hi = "",
           general_comments = ""
         )
-      )
-    )
+      }
+    }) |>
+      shiny::bindEvent(strategies())
 
     min_year <- min(trend_data$year)
 
@@ -163,20 +151,19 @@ mod_mitigator_server <- function(id) {
 
     shiny::observe({
       s <- selected_strategy()
-      n <- length(strategies)
+      n <- length(strategies())
 
       shinyWidgets::updateProgressBar(session, "progress", s - 1, n)
     })
 
-
     selected_strategy_text <- shiny::reactive({
       s <- selected_strategy()
-      strategies[[s]]$name
+      strategies()[[s]]$name
     })
 
     selected_strategy_id <- shiny::reactive({
       s <- selected_strategy()
-      names(strategies)[[s]]
+      names(strategies())[[s]]
     })
 
     output$strategy <- shiny::renderUI({
@@ -184,7 +171,7 @@ mod_mitigator_server <- function(id) {
     })
 
     shiny::observe({
-      ls <- length(strategies)
+      ls <- length(strategies())
       s <- pmin(selected_strategy() + 1, ls)
       selected_strategy(s)
       if (s == ls) {
@@ -251,7 +238,7 @@ mod_mitigator_server <- function(id) {
 
     selected_data_scale <- shiny::reactive({
       s <- selected_strategy()
-      if (!strategies[[s]]$label |> stringr::str_detect("\\{n\\}")) {
+      if (!strategies()[[s]]$label |> stringr::str_detect("\\{n\\}")) {
         return(1)
       }
       v <- mean(selected_data()$rate)
@@ -260,7 +247,7 @@ mod_mitigator_server <- function(id) {
 
     value_format <- shiny::reactive({
       s <- selected_strategy()
-      if (strategies[[s]]$label |> stringr::str_detect("\\%")) {
+      if (strategies()[[s]]$label |> stringr::str_detect("\\%")) {
         return(scales::percent_format(accuracy = 0.1))
       }
 
@@ -270,7 +257,7 @@ mod_mitigator_server <- function(id) {
     y_axis_title <- shiny::reactive({
       s <- selected_strategy()
       n <- scales::comma(selected_data_scale()) # nolint
-      glue::glue(strategies[[s]]$label)
+      glue::glue(strategies()[[s]]$label)
     })
 
     param_table <- shiny::reactive({
