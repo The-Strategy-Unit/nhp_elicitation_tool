@@ -21,22 +21,21 @@ get_strategies <- function() {
 
   dplyr::tbl(con, dbplyr::in_schema("INFORMATION_SCHEMA", "VIEWS")) |>
     dplyr::filter(.data[["TABLE_SCHEMA"]] == "nhp_strategies") |>
-    dplyr::select("TABLE_NAME") |>
+    dplyr::select(name = "TABLE_NAME", view = "VIEW_DEFINITION") |>
     dplyr::collect() |>
-    dplyr::pull(1)
+    dplyr::mutate(
+      dplyr::across(
+        "view",
+        ~ purrr::map_chr(stringr::str_squish(.x), rlang::hash)
+      )
+    ) |>
+    purrr::array_tree()
 }
 
-get_strategies_subset <- function(strategies, ...) {
-  stringr::str_subset(
+get_strategies_subset <- function(strategies, pattern) {
+  purrr::keep(
     strategies,
-    paste0(
-      "^ip_(",
-      paste(
-        sep = "|",
-        ...
-      ),
-      ")$"
-    )
+    ~ stringr::str_detect(.x$name, pattern)
   )
 }
 
@@ -54,12 +53,12 @@ fix_ages <- function(x, ...) {
     )
 }
 
-get_values <- function(strategy, fyear) {
+get_values_rates <- function(strategy, start, end) {
   con <- db_con()
 
-  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
+  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy$name)) |>
     dplyr::filter(
-      .data[["FYEAR"]] == fyear,
+      .data[["FYEAR"]] |> dplyr::between(start, end),
       !is.na(.data[["AGE"]])
     ) |>
     dplyr::count(
@@ -74,12 +73,12 @@ get_values <- function(strategy, fyear) {
     fix_ages("strategy")
 }
 
-get_values_los <- function(strategy, fyear) {
+get_values_los <- function(strategy, start, end) {
   con <- db_con()
 
-  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
+  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy$name)) |>
     dplyr::filter(
-      .data[["FYEAR"]] == fyear,
+      .data[["FYEAR"]] |> dplyr::between(start, end),
       !is.na(.data[["AGE"]]),
       !is.na(.data[["SPELDUR"]])
     ) |>
@@ -93,12 +92,12 @@ get_values_los <- function(strategy, fyear) {
     fix_ages("strategy")
 }
 
-get_values_pcnts <- function(strategy, fyear) {
+get_values_pcnts <- function(strategy, start, end) {
   con <- db_con()
 
-  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
+  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy$name)) |>
     dplyr::filter(
-      .data[["FYEAR"]] == fyear,
+      .data[["FYEAR"]] |> dplyr::between(start, end),
       !is.na(.data[["AGE"]])
     ) |>
     dplyr::summarise(
@@ -111,14 +110,16 @@ get_values_pcnts <- function(strategy, fyear) {
     fix_ages("strategy")
 }
 
-get_values_pcnts_bads_opa <- function(fyear) {
+get_values_pcnts_bads_opa <- function(start, end) {
   con <- db_con()
 
   opa <- dplyr::tbl(
     con,
     dbplyr::in_schema("nhp_modelling", "outpatients")
   ) |>
-    dplyr::filter(.data[["fyear"]] == .env[["fyear"]])
+    dplyr::filter(
+      .data[["fyear"]] |> dplyr::between(start, end)
+    )
 
   opp <- dplyr::tbl(
     con,
@@ -129,7 +130,7 @@ get_values_pcnts_bads_opa <- function(fyear) {
     con,
     dbplyr::in_schema("nhp_modelling_reference", "bads_procedure_lists")
   ) |>
-    dplyr::filter(.data[["bads_type"]] %LIKE% "outpatients%")
+    dplyr::filter(.data[["bads_type"]] %LIKE% "outpatients%") # nolint
 
   opa |>
     dplyr::inner_join(
@@ -155,88 +156,44 @@ get_values_pcnts_bads_opa <- function(fyear) {
     )
 }
 
-get_op_consultant_referrals <- function(fyear) {
+get_values_op <- function(strategy, start, end, ffr = FALSE) {
   con <- db_con()
+
+  ffr <- strategy$name == "op_followup_reduction"
 
   dplyr::tbl(
     con,
     dbplyr::in_schema(
       "nhp_strategies",
-      "op_consultant_to_consultant_referrals"
+      strategy$name
     )
   ) |>
     dplyr::filter(
-      .data[["fyear"]] == fyear,
+      .data[["FYEAR"]] |> dplyr::between(start, end),
       !is.na(.data[["age"]])
     ) |>
     dplyr::summarise(
-      n = sum(.data[["fraction"]]),
-      d = dplyr::n(),
-      .by = c("fyear", "age", "sex", "strategy")
-    ) |>
-    dplyr::collect() |>
-    fix_ages("strategy")
-}
-
-get_op_followup_reduction <- function(fyear) {
-  con <- db_con()
-
-  dplyr::tbl(
-    con,
-    dbplyr::in_schema(
-      "nhp_strategies",
-      "op_followup_reduction"
-    )
-  ) |>
-    dplyr::filter(
-      .data[["fyear"]] == fyear,
-      !is.na(.data[["age"]])
-    ) |>
-    dplyr::summarise(
-      n = sum(.data[["fraction"]]),
+      n = sum(.data[["fraction"]], na.rm = TRUE),
       d = dplyr::n(),
       .by = c("fyear", "age", "sex", "strategy")
     ) |>
     dplyr::collect() |>
     fix_ages("strategy") |>
     dplyr::mutate(
-      dplyr::across("d", ~ .x - .data[["n"]])
+      dplyr::across("d", ~ .x - ifelse(ffr, .data[["n"]], 0))
     )
 }
 
-get_op_tele_conversion <- function(fyear) {
+get_values_aae <- function(strategy, start, end) {
   con <- db_con()
 
-  dplyr::tbl(
-    con,
-    dbplyr::in_schema(
-      "nhp_strategies",
-      "op_tele_conversion"
-    )
-  ) |>
+  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy$name)) |>
     dplyr::filter(
-      .data[["fyear"]] == fyear,
+      .data[["FYEAR"]] |> dplyr::between(start, end),
       !is.na(.data[["age"]])
     ) |>
     dplyr::summarise(
-      n = sum(.data[["fraction"]]),
-      d = dplyr::n(),
-      .by = c("fyear", "age", "sex", "strategy")
-    ) |>
-    dplyr::collect() |>
-    fix_ages("strategy")
-}
-
-get_values_aae <- function(strategy, fyear) {
-  con <- db_con()
-
-  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
-    dplyr::filter(
-      .data[["fyear"]] == fyear,
-      !is.na(.data[["age"]])
-    ) |>
-    dplyr::summarise(
-      n = sum(.data[["fraction"]]),
+      n = sum(.data[["fraction"]], na.rm = TRUE),
       d = dplyr::n(),
       .by = c("fyear", "age", "sex", "strategy")
     ) |>
@@ -255,12 +212,12 @@ get_fixed_values_pcnts <- function(values_pcnts, values_pcnts_bads_opa) {
     )
 }
 
-get_total_admissions <- function(fyear) {
+get_total_admissions <- function(start, end) {
   con <- db_con()
 
   dplyr::tbl(con, dbplyr::in_schema("nhp_modelling", "inpatients")) |>
     dplyr::filter(
-      .data[["FYEAR"]] == fyear,
+      .data[["FYEAR"]] |> dplyr::between(start, end),
       !is.na(.data[["AGE"]])
     ) |>
     dplyr::count(
