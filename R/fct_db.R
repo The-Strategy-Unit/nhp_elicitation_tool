@@ -36,16 +36,6 @@ get_db <- function(envir = parent.frame()) {
 }
 
 insert_data <- function(email, strategy, values, comments_lo, comments_hi) {
-  lo <- values[[1]]
-  hi <- values[[2]]
-  cat("****\n")
-  cat("* email:", email, "\n")
-  cat("* strategy:", strategy, "\n")
-  cat("* lo:", lo, "\n")
-  cat("* hi:", hi, "\n")
-  cat("* comments_lo:", comments_lo, "\n")
-  cat("* comments_hi:", comments_hi, "\n")
-  cat("****\n\n")
   DBI::dbAppendTable(
     get_db(),
     "results",
