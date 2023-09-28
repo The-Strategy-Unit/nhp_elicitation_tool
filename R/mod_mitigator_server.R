@@ -113,6 +113,21 @@ mod_mitigator_server <- function(id, email, strategies) {
       has_visited_all_strategies(v)
 
       shinyjs::toggle("complete", condition = v)
+
+      # skip the completed questions, unless we have 100% completed
+      if (completed < total) {
+        shinyjs::toggleState("prev_strat", TRUE)
+        # move to the first strategy not complete
+        selected_strategy(completed + 1)
+
+        # edge case, we have done all but one, so hide next, show complete
+        if (completed == total - 1) {
+          shinyjs::toggle("next", FALSE)
+          shinyjs::toggleState("next", FALSE)
+          shinyjs::toggle("complete", TRUE)
+          shinyjs::toggleState("complete", TRUE)
+        }
+      }
     })
 
     # update the progress bar when the selected strategy changes
