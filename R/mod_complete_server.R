@@ -12,8 +12,6 @@ mod_complete_server <- function(id, email, strategies) {
       s <- strategies() |>
         dplyr::bind_rows(.id = "strategy")
 
-      print(s)
-
       r <- get_latest_results(email()) |>
         dplyr::select(
           "strategy",
