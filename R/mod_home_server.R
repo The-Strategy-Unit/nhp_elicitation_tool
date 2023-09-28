@@ -21,9 +21,11 @@ mod_home_server <- function(id) {
     })
 
     output$selected_mitigators <- shiny::renderText({
-      selected_strategies() |>
+      n <- selected_strategies() |>
         purrr::map_dbl(length) |>
         sum()
+
+      paste("Selected", n, "mitigators")
     })
 
     shiny::reactive({
