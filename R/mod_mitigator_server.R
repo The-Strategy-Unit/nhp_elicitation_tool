@@ -236,7 +236,7 @@ mod_mitigator_server <- function(id, email, strategies) {
           # the strategies (again, it should be hidden if this isn't the case)
           shinyjs::toggleState("prev_strat", s > 1)
           shinyjs::toggleState("next_strat", s < ls)
-          shinyjs::toggleState()("complete", has_visited_all_strategies())
+          shinyjs::toggleState("complete", has_visited_all_strategies())
         })
     }
 
