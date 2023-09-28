@@ -6,7 +6,11 @@
 #'
 #' @noRd
 get_db <- function(envir = parent.frame()) {
-  con <- DBI::dbConnect(RSQLite::SQLite(), "nhp_eet.db")
+  db_path <- file.path(
+    Sys.getenv("save_path", "."),
+    "nhp_eet.db"
+  )
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
 
   withr::defer(DBI::dbDisconnect(con), envir = envir)
 
