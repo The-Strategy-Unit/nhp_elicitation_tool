@@ -51,31 +51,31 @@ default:
         label: "Rate per {n} Admissions"
       emergency_elderly:
         name: Emergency Admission of Older People
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       enhanced_recovery_bladder:
         name: Enhanced Recovery (Bladder)
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       enhanced_recovery_breast:
         name: Enhanced Recovery (Breast)
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       enhanced_recovery_colectomy:
         name: Enhanced Recovery (Colectomy)
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       enhanced_recovery_hip:
         name: Enhanced Recovery (Hip)
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       enhanced_recovery_hysterectomy:
         name: Enhanced Recovery (Hysterectomy)
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       enhanced_recovery_knee:
         name: Enhanced Recovery (Knee)
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       enhanced_recovery_prostate:
         name: Enhanced Recovery (Prostate)
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       enhanced_recovery_rectum:
         name: Enhanced Recovery (Rectum)
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       eol_care-0-2_days:
         name: End of Life Care Admissions (died within 2 days)
         label: "Rate per {n} Admissions"
@@ -102,10 +102,10 @@ default:
         label: "Rate per {n} Admissions"
       excess_beddays_elective:
         name: Excess Beddays (Elective Admissions)
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       excess_beddays_emergency:
         name: Excess Beddays (Emergency Admissions)
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       falls_related_admissions:
         name: Falls Related Admissions
         label: "Rate per {n} Admissions"
@@ -147,7 +147,7 @@ default:
         label: "Rate per {n} Admissions"
       raid_ip:
         name: Admissions with Mental Health Comorbidities
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       readmission_within_28_days:
         name: Emergency Readmissions Within 28 Days
         label: "Rate per {n} Admissions"
@@ -156,7 +156,7 @@ default:
         label: "Rate per {n} Admissions"
       stroke_early_supported_discharge:
         name: Stroke Early Supported Discharge
-        label: "Mean Length of Stay"
+        label: "Mean Length of Stay (days)"
       zero_los_no_procedure-adult:
         name: Admission With No Overnight Stay and No Procedure (Adults)
         label: "Rate per {n} Admissions"
