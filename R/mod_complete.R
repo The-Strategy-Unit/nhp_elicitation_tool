@@ -1,0 +1,47 @@
+#' complete UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd
+#'
+mod_complete_ui <- function(id) {
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    shiny::tags$h1("Complete"),
+    shiny::tags$p(
+      "Thank you for completing the exercise.",
+      "Your results are below, but you may",
+      shiny::actionLink(
+        ns("restart"),
+        "return"
+      ),
+      "back to the tool to update values."
+    ),
+    shiny::tableOutput(ns("results"))
+  )
+}
+
+#' complete Server Functions
+#'
+#' @noRd
+mod_complete_server <- function(id, email) {
+  shiny::moduleServer(id, function(input, output, session) {
+    shiny::observe({
+      session$userData$complete("restart")
+    }) |>
+      shiny::bindEvent(input$restart)
+
+    output$results <- shiny::renderTable({
+      get_latest_results(email()) |>
+        dplyr::select(
+          "strategy",
+          "lo",
+          "hi",
+          "comments_lo",
+          "comments_hi"
+        )
+    })
+  })
+}

@@ -125,6 +125,17 @@ mod_mitigator_server <- function(id, email, strategies) {
     min_year <- min(trend_data$year)
 
     selected_strategy <- shiny::reactiveVal(1)
+    has_visited_all_strategies <- shiny::reactiveVal()
+
+    shiny::observe({
+      completed <- nrow(get_latest_results(email()))
+      total <- length(strategies())
+
+      v <- completed == total
+      has_visited_all_strategies(v)
+
+      shinyjs::toggle("complete", condition = v)
+    })
 
     shiny::observe({
       s <- selected_strategy()
@@ -181,64 +192,41 @@ mod_mitigator_server <- function(id, email, strategies) {
       insert_data(email(), s, input$param_values, input$why_lo, input$why_hi)
     }
 
-    shiny::observe({
-      save_values()
-
-      ls <- length(strategies())
-      s <- pmin(selected_strategy() + 1, ls)
-      selected_strategy(s)
-      if (s == ls) {
-        shinyjs::disable("next_strat")
-        shinyjs::show("complete")
-      }
-      shinyjs::enable("prev_strat")
-    }) |>
+    shiny::observe(button_pressed(+1)) |>
       shiny::bindEvent(input$next_strat)
 
-    shiny::observe({
-      save_values()
-
-      s <- pmax(selected_strategy() - 1, 1)
-      selected_strategy(s)
-      if (s == 1) {
-        shinyjs::disable("prev_strat")
-      }
-      shinyjs::enable("next_strat")
-      shinyjs::hide("complete")
-    }) |>
+    shiny::observe(button_pressed(-1)) |>
       shiny::bindEvent(input$prev_strat)
 
-    shiny::observe({
-      modal <- shiny::modalDialog(
-        "are you finished?",
-        shiny::tableOutput(
-          session$ns("results")
-        ),
-        title = "Submit Values",
-        footer = shiny::tagList(
-          shiny::modalButton("Return"),
-          shinyWidgets::actionBttn(
-            session$ns("save_results"),
-            "Save and Exit",
-            style = "simple",
-            color = "success"
-          )
-        ),
-        size = "l"
-      )
-      shiny::showModal(modal)
-    }) |>
-      shiny::bindEvent(input$complete)
+    button_pressed <- function(n) {
+      save_values()
+      ls <- length(strategies())
+      s <- pmin(pmax(selected_strategy() + n, 1), ls)
+      selected_strategy(s)
 
-    output$results <- shiny::renderTable({
-      get_latest_results(email()) |>
-        dplyr::select(
-          "strategy",
-          "lo",
-          "hi",
-          "comments_lo",
-          "comments_hi"
-        )
+      if (s == ls) {
+        has_visited_all_strategies(TRUE)
+      }
+
+      shinyjs::toggle("next_strat", condition = s < ls)
+      shinyjs::toggle("complete", condition = has_visited_all_strategies())
+
+      shinyjs::disable("prev_strat")
+      shinyjs::disable("next_strat")
+      promises::future_promise({
+        if (is.finite(n)) {
+          Sys.sleep(1)
+        }
+      }) |>
+        promises::then(\(.x) {
+          shinyjs::toggleState("prev_strat", s > 1)
+          shinyjs::toggleState("next_strat", s < ls)
+        })
+    }
+
+    shiny::observe({
+      session$userData$complete("complete")
+      button_pressed(-Inf)
     }) |>
       shiny::bindEvent(input$complete)
 

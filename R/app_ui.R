@@ -27,6 +27,10 @@ app_ui <- function(request) {
       shiny::tabPanel(
         "tab_mitigator",
         mod_mitigator_ui("mitigator")
+      ),
+      shiny::tabPanel(
+        "tab_complete",
+        mod_complete_ui("complete")
       )
     )
   )
