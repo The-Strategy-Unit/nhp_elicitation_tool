@@ -10,7 +10,7 @@ app_server <- function(input, output, session) {
   strategies <- shiny::reactive(home()$strategies)
 
   mod_mitigator_server("mitigator", email, strategies)
-  mod_complete_server("complete", email)
+  mod_complete_server("complete", email, strategies)
 
   session$userData$complete <- shiny::reactiveVal(FALSE)
 
