@@ -19,6 +19,6 @@ mod_complete_ui <- function(id) {
       ),
       "back to the tool to update values."
     ),
-    shiny::tableOutput(ns("results"))
+    gt::gt_output(ns("results"))
   )
 }

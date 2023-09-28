@@ -19,6 +19,7 @@ Imports:
     future,
     ggplot2,
     golem (>= 0.4.1),
+    gt,
     jsonlite,
     markdown,
     pkgload,
