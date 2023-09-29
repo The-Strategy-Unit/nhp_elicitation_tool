@@ -3,6 +3,23 @@
 #' @noRd
 mod_home_server <- function(id) {
   shiny::moduleServer(id, function(input, output, session) {
+    # suppress lintr warnings
+    .data <- rlang::.data
+
+    shiny::observe({
+      shinyjs::runjs(
+        r"{
+          $(document).ready(() => {
+            email = localStorage.getItem("email");
+
+            if (email !== undefined) {
+              $("#home-email").val(email);
+            }
+          });
+        }"
+      )
+    })
+
     user_mappings <- app_sys("app", "data", "user_mappings.json") |>
       jsonlite::read_json(simplifyVector = TRUE)
 
@@ -36,6 +53,16 @@ mod_home_server <- function(id) {
             })()
         }) |>
         purrr::flatten()
+    })
+
+    shiny::observe({
+      shiny::req(selected_strategies())
+
+      shinyjs::runjs(
+        r"{
+          localStorage.setItem("email", $("#home-email").val());
+        }"
+      )
     })
 
     completed_strategies <- shiny::reactive({
