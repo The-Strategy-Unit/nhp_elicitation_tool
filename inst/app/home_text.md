@@ -1,4 +1,4 @@
-**please read carefully before starting this exercise**
+**Please read carefully before starting this exercise.**
 
 You are required to provide forecasts interval for the **percentage reduction** in certain types of hospital activity at the England level over a twenty-year time horizon. The focus here is exclusively on hospital activity which may be **mitigated**. _You must not incorporate factors which increase hospital activity into your judgements because such factors are accommodated elsewhere in the model._
 
