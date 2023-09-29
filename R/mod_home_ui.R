@@ -25,6 +25,9 @@ mod_home_ui <- function(id) {
         shiny::actionButton(
           ns("start"),
           "Start"
+        ),
+        gt::gt_output(
+          ns("selected_strategies")
         )
       ),
       bs4Dash::box(
