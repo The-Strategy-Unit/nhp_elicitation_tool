@@ -116,6 +116,10 @@ list(
     pattern = map(strategies_op)
   ),
   tar_target(
+    fixed_values_op,
+    get_fixed_values_op(values_op)
+  ),
+  tar_target(
     values_aae,
     get_values_aae(strategies_aae[[1]], start, end),
     pattern = cross(strategies_aae)
@@ -127,7 +131,7 @@ list(
       values_rates,
       values_los,
       fixed_values_pcnts,
-      values_op,
+      fixed_values_op,
       values_aae,
       total_admissions
     ),
