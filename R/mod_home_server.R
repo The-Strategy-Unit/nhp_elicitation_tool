@@ -8,10 +8,15 @@ mod_home_server <- function(id) {
 
     strategies <- get_golem_config("strategies")
 
-    selected_strategies <- shiny::reactive({
-      email <- shiny::req(input$email)
 
-      um <- user_mappings[[email]]
+    email_hashed <- shiny::reactive({
+      input$email |>
+        shiny::req() |>
+        hash_email()
+    })
+
+    selected_strategies <- shiny::reactive({
+      um <- user_mappings[[email_hashed()]]
 
       shiny::validate(
         shiny::need(!is.null(um), "unrecognised email address")
@@ -30,7 +35,7 @@ mod_home_server <- function(id) {
 
     shiny::reactive({
       list(
-        email = input$email,
+        email = email_hashed(),
         strategies = selected_strategies() |>
           shiny::req() |>
           # order by the y-axis label, then the name of the mitigator

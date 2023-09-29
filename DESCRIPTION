@@ -11,6 +11,7 @@ Authors@R: c(
 Description: A shiny app for the NHP national elicitation project
 License: MIT + file LICENSE
 Imports: 
+    base64enc,
     bs4Dash,
     config (>= 0.3.1),
     DBI,
@@ -22,6 +23,7 @@ Imports:
     gt,
     jsonlite,
     markdown,
+    openssl,
     pkgload,
     plotly,
     promises,
