@@ -30,6 +30,7 @@ mod_complete_server <- function(id, email, strategies) {
       results_data() |>
         gt::gt(groupname_col = "label", rowname_col = "strategy") |>
         gt::cols_label(
+          name = "Mitigator",
           lo = "Low",
           hi = "High",
           comments_lo = "Low",
@@ -37,7 +38,13 @@ mod_complete_server <- function(id, email, strategies) {
         ) |>
         gt::tab_spanner("Values", c("lo", "hi")) |>
         gt::tab_spanner("Comments", c("comments_lo", "comments_hi")) |>
-        gt::fmt_integer(c("lo", "hi"))
+        gt::fmt_integer(c("lo", "hi")) |>
+        gt::tab_options(
+          row_group.border.top.width = gt::px(2),
+          row_group.border.top.color = "black",
+          row_group.border.bottom.color = "black",
+          row_group.background.color = "#686f73",
+        )
     })
   })
 }
