@@ -69,6 +69,7 @@ golem_add_external_resources <- function() {
     golem::bundle_resources(
       path = app_sys("app/www"),
       app_title = "NHP National Elicitation Tool"
-    )
+    ),
+    shiny::tags$base(target = "_blank")
   )
 }
