@@ -38,16 +38,42 @@ mod_home_server <- function(id) {
         purrr::flatten()
     })
 
-    output$selected_mitigators <- shiny::renderText({
-      n <- length(selected_strategies())
+    completed_strategies <- shiny::reactive({
+      # only check if the email has been validated
+      selected_strategies() |>
+        shiny::req() |>
+        dplyr::bind_rows(.id = "strategy") |>
+        dplyr::transmute(
+          .data[["strategy"]],
+          complete = FALSE
+        ) |>
+        dplyr::rows_update(
+          email_hashed() |>
+            get_latest_results() |>
+            dplyr::transmute(
+              .data[["strategy"]],
+              complete = TRUE
+            ),
+          by = "strategy"
+        )
+    })
 
-      paste("Selected", n, "mitigators")
+    output$selected_mitigators <- shiny::renderText({
+      cs <- completed_strategies()
+      n <- sum(cs$complete)
+      d <- nrow(cs)
+
+      paste0(n, "/", d, " mitigators completed")
     })
 
     output$selected_strategies <- gt::render_gt({
       selected_strategies() |>
-        dplyr::bind_rows() |>
-        dplyr::select(-"min_year") |>
+        dplyr::bind_rows(.id = "strategy") |>
+        dplyr::left_join(
+          completed_strategies(),
+          by = dplyr::join_by("strategy")
+        ) |>
+        dplyr::select(-"strategy", -"min_year") |>
         gt::gt(groupname_col = "label") |>
         gt::cols_label(name = "Mitigator") |>
         gt::tab_options(
@@ -55,7 +81,16 @@ mod_home_server <- function(id) {
           row_group.border.top.color = "black",
           row_group.border.bottom.color = "black",
           row_group.background.color = "#686f73",
-        )
+        ) |>
+        gt::tab_style(
+          style = list(
+            gt::cell_fill(color = "#cccccc")
+          ),
+          locations = gt::cells_body(
+            rows = .data[["complete"]]
+          )
+        ) |>
+        gt::cols_hide("complete")
     })
 
     home_return <- shiny::reactive({
