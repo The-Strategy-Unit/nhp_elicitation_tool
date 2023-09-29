@@ -5,10 +5,14 @@
 ^data-raw$
 dev_history.R
 ^dev$
-$run_dev.*
+run_dev.*
 ^.here$
 ^LICENSE\.md$
 ^README\.Rmd$
 ^CODE_OF_CONDUCT\.md$
 ^app\.R$
 ^rsconnect$
+
+^recruitment.xlsx$
+^nhp_eet.db$
+^deploy.R$

@@ -2,6 +2,7 @@ library(targets)
 library(tarchetypes)
 
 tar_source("targets")
+source("R/ZZZ.R")
 
 list(
   tar_target(start, 201011),
@@ -127,6 +128,16 @@ list(
     create_trend_data(
       age_standardised_rates
     ),
+    format = "file"
+  ),
+  # generate user mappings ----
+  tar_target(
+    user_mapping_raw_excel,
+    "recruitment.xlsx"
+  ),
+  tar_target(
+    user_mapping_file,
+    generate_user_mappings(user_mapping_raw_excel),
     format = "file"
   )
 )
