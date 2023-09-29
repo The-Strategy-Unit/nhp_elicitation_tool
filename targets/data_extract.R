@@ -156,10 +156,8 @@ get_values_pcnts_bads_opa <- function(start, end) {
     )
 }
 
-get_values_op <- function(strategy, start, end, ffr = FALSE) {
+get_values_op <- function(strategy, start, end) {
   con <- db_con()
-
-  ffr <- strategy$name == "op_followup_reduction"
 
   dplyr::tbl(
     con,
@@ -178,9 +176,20 @@ get_values_op <- function(strategy, start, end, ffr = FALSE) {
       .by = c("fyear", "age", "sex", "strategy")
     ) |>
     dplyr::collect() |>
-    fix_ages("strategy") |>
+    fix_ages("strategy")
+}
+
+get_fixed_values_op <- function(values_op) {
+  values_op |>
     dplyr::mutate(
-      dplyr::across("d", ~ .x - ifelse(ffr, .data[["n"]], 0))
+      dplyr::across(
+        "d",
+        ~ .x - ifelse(
+          stringr::str_starts(.data[["strategy"]], "followup_reduction"),
+          .data[["n"]],
+          0
+        )
+      )
     )
 }
 
