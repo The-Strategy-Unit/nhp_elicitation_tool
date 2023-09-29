@@ -23,7 +23,7 @@ mod_complete_server <- function(id, email, strategies) {
 
       s |>
         dplyr::inner_join(r, by = dplyr::join_by("strategy")) |>
-        dplyr::select(-"strategy")
+        dplyr::select(-"strategy", -"min_year")
     })
 
     output$results <- gt::render_gt({
