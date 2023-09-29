@@ -6,7 +6,4 @@ The British Association of Day Surgery (BADS) produce a Directory of Procedures 
 
 The tool identifies spells using the basket of procedures provided by BADS and classifies them into four categories based in the indicative percentages contained in the directory 
 
-- Procedures predominantly (>66%) recommended to be carried out in a procedure room
-- Procedures predominantly (>66%) recommended to be carried out either in a day case or a procedure room (OP) setting
-- Procedures predominantly (>66%) recommended to be carried out in a day case setting
-- Procedures occasionally (5 to 33%) recommended to be carried out in a day case setting
+The tool identifies spells where the procedures are recommended by BADS to be performed in an outpatients procedure room (>66% of these procedures).

@@ -17,8 +17,22 @@ app_ui <- function(request) {
   )
 
   body <- bs4Dash::bs4DashBody(
-    # temporary, should have a home module that leads to this page
-    mod_mitigator_ui("mitigator")
+    shiny::tabsetPanel(
+      id = "tabset",
+      type = "hidden",
+      shiny::tabPanel(
+        "tab_home",
+        mod_home_ui("home")
+      ),
+      shiny::tabPanel(
+        "tab_mitigator",
+        mod_mitigator_ui("mitigator")
+      ),
+      shiny::tabPanel(
+        "tab_complete",
+        mod_complete_ui("complete")
+      )
+    )
   )
 
   page <- bs4Dash::bs4DashPage(
@@ -55,6 +69,7 @@ golem_add_external_resources <- function() {
     golem::bundle_resources(
       path = app_sys("app/www"),
       app_title = "NHP National Elicitation Tool"
-    )
+    ),
+    shiny::tags$base(target = "_blank")
   )
 }

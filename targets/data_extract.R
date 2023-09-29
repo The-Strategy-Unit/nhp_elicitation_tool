@@ -1,4 +1,5 @@
 .data <- rlang::.data
+.env <- rlang::.env
 
 db_con <- function(database = Sys.getenv("DB_DATABASE"),
                    envir = parent.frame()) {
@@ -20,22 +21,21 @@ get_strategies <- function() {
 
   dplyr::tbl(con, dbplyr::in_schema("INFORMATION_SCHEMA", "VIEWS")) |>
     dplyr::filter(.data[["TABLE_SCHEMA"]] == "nhp_strategies") |>
-    dplyr::select("TABLE_NAME") |>
+    dplyr::select(name = "TABLE_NAME", view = "VIEW_DEFINITION") |>
     dplyr::collect() |>
-    dplyr::pull(1)
+    dplyr::mutate(
+      dplyr::across(
+        "view",
+        ~ purrr::map_chr(stringr::str_squish(.x), rlang::hash)
+      )
+    ) |>
+    purrr::array_tree()
 }
 
-get_strategies_subset <- function(strategies, ...) {
-  stringr::str_subset(
+get_strategies_subset <- function(strategies, pattern) {
+  purrr::keep(
     strategies,
-    paste0(
-      "^ip_(",
-      paste(
-        sep = "|",
-        ...
-      ),
-      ")$"
-    )
+    ~ stringr::str_detect(.x$name, pattern)
   )
 }
 
@@ -53,12 +53,12 @@ fix_ages <- function(x, ...) {
     )
 }
 
-get_values <- function(strategy, fyear) {
+get_values_rates <- function(strategy, start, end) {
   con <- db_con()
 
-  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
+  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy$name)) |>
     dplyr::filter(
-      .data[["FYEAR"]] == fyear,
+      .data[["FYEAR"]] |> dplyr::between(start, end),
       !is.na(.data[["AGE"]])
     ) |>
     dplyr::count(
@@ -73,12 +73,12 @@ get_values <- function(strategy, fyear) {
     fix_ages("strategy")
 }
 
-get_values_los <- function(strategy, fyear) {
+get_values_los <- function(strategy, start, end) {
   con <- db_con()
 
-  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
+  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy$name)) |>
     dplyr::filter(
-      .data[["FYEAR"]] == fyear,
+      .data[["FYEAR"]] |> dplyr::between(start, end),
       !is.na(.data[["AGE"]]),
       !is.na(.data[["SPELDUR"]])
     ) |>
@@ -92,32 +92,141 @@ get_values_los <- function(strategy, fyear) {
     fix_ages("strategy")
 }
 
-get_values_pcnts <- function(strategy, fyear) {
+get_values_pcnts <- function(strategy, start, end) {
   con <- db_con()
 
-  n <- dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy)) |>
+  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy$name)) |>
     dplyr::filter(
-      .data[["FYEAR"]] == fyear,
+      .data[["FYEAR"]] |> dplyr::between(start, end),
       !is.na(.data[["AGE"]])
     ) |>
-    dplyr::count(
-      .data[["FYEAR"]],
-      .data[["AGE"]],
-      .data[["SEX"]],
-      .data[["strategy"]],
-      wt = .data[["fraction"]]
+    dplyr::summarise(
+      n = sum(.data[["fraction"]], na.rm = TRUE),
+      d = dplyr::n(),
+      .by = c("FYEAR", "AGE", "SEX", "strategy")
     ) |>
     dplyr::collect() |>
     janitor::clean_names() |>
     fix_ages("strategy")
 }
 
-get_total_admissions <- function(fyear) {
+get_values_pcnts_bads_opa <- function(start, end) {
+  con <- db_con()
+
+  opa <- dplyr::tbl(
+    con,
+    dbplyr::in_schema("nhp_modelling", "outpatients")
+  ) |>
+    dplyr::filter(
+      .data[["fyear"]] |> dplyr::between(start, end)
+    )
+
+  opp <- dplyr::tbl(
+    con,
+    "tbOutpatientsProcedures"
+  ) |>
+    dplyr::filter(.data[["OPORDER"]] == 1)
+  bpl <- dplyr::tbl(
+    con,
+    dbplyr::in_schema("nhp_modelling_reference", "bads_procedure_lists")
+  ) |>
+    dplyr::filter(.data[["bads_type"]] %LIKE% "outpatients%") # nolint
+
+  opa |>
+    dplyr::inner_join(
+      opp,
+      by = dplyr::join_by("attendkey")
+    ) |>
+    dplyr::inner_join(
+      bpl,
+      by = dplyr::join_by("opcode" == "procedure_code_1")
+    ) |>
+    dplyr::count(
+      .data[["fyear"]],
+      age = .data[["apptage"]],
+      .data[["sex"]],
+      strategy = .data[["bads_type"]]
+    ) |>
+    dplyr::collect() |>
+    fix_ages("strategy") |>
+    dplyr::mutate(
+      dplyr::across("strategy", ~ paste0("bads_", .x)),
+      d = .data[["n"]],
+      n = 0
+    )
+}
+
+get_values_op <- function(strategy, start, end) {
+  con <- db_con()
+
+  dplyr::tbl(
+    con,
+    dbplyr::in_schema(
+      "nhp_strategies",
+      strategy$name
+    )
+  ) |>
+    dplyr::filter(
+      .data[["FYEAR"]] |> dplyr::between(start, end),
+      !is.na(.data[["age"]])
+    ) |>
+    dplyr::summarise(
+      n = sum(.data[["fraction"]], na.rm = TRUE),
+      d = dplyr::n(),
+      .by = c("fyear", "age", "sex", "strategy")
+    ) |>
+    dplyr::collect() |>
+    fix_ages("strategy")
+}
+
+get_fixed_values_op <- function(values_op) {
+  values_op |>
+    dplyr::mutate(
+      dplyr::across(
+        "d",
+        ~ .x - ifelse(
+          stringr::str_starts(.data[["strategy"]], "followup_reduction"),
+          .data[["n"]],
+          0
+        )
+      )
+    )
+}
+
+get_values_aae <- function(strategy, start, end) {
+  con <- db_con()
+
+  dplyr::tbl(con, dbplyr::in_schema("nhp_strategies", strategy$name)) |>
+    dplyr::filter(
+      .data[["FYEAR"]] |> dplyr::between(start, end),
+      !is.na(.data[["age"]])
+    ) |>
+    dplyr::summarise(
+      n = sum(.data[["fraction"]], na.rm = TRUE),
+      d = dplyr::n(),
+      .by = c("fyear", "age", "sex", "strategy")
+    ) |>
+    dplyr::collect() |>
+    fix_ages("strategy")
+}
+
+get_fixed_values_pcnts <- function(values_pcnts, values_pcnts_bads_opa) {
+  values_pcnts |>
+    dplyr::bind_rows(
+      values_pcnts_bads_opa
+    ) |>
+    dplyr::summarise(
+      dplyr::across(c("n", "d"), sum),
+      .by = -c("n", "d")
+    )
+}
+
+get_total_admissions <- function(start, end) {
   con <- db_con()
 
   dplyr::tbl(con, dbplyr::in_schema("nhp_modelling", "inpatients")) |>
     dplyr::filter(
-      .data[["FYEAR"]] == fyear,
+      .data[["FYEAR"]] |> dplyr::between(start, end),
       !is.na(.data[["AGE"]])
     ) |>
     dplyr::count(
@@ -131,7 +240,8 @@ get_total_admissions <- function(fyear) {
     fix_ages()
 }
 
-get_age_standardised_rates <- function(values_rates, values_los,
+get_age_standardised_rates <- function(values_rates, values_los, values_pcnts,
+                                       values_op, values_aae,
                                        total_admissions) {
   dplyr::bind_rows(
     values_rates |>
@@ -141,7 +251,10 @@ get_age_standardised_rates <- function(values_rates, values_los,
         by = dplyr::join_by("fyear", "age", "sex")
       ),
     values_los |>
-      dplyr::rename(d = "n", n = "days")
+      dplyr::rename(d = "n", n = "days"),
+    values_pcnts,
+    values_op,
+    values_aae
   ) |>
     tidyr::complete(
       .data[["fyear"]],
