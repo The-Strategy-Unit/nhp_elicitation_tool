@@ -36,6 +36,11 @@ mod_mitigator_server <- function(id, email, strategies) {
       names(strategies())[[s]]
     })
 
+    selected_strategy_min_year <- shiny::reactive({
+      s <- selected_strategy()
+      strategies()[[s]]$min_year %||% min_year
+    })
+
     # when the selected_strategy changes, get the "group" to use for loading
     # the helper text. any strategy of the form a_b-c_d will be reduced to
     # a_b, so some strategies can share text files
@@ -47,11 +52,10 @@ mod_mitigator_server <- function(id, email, strategies) {
 
     # when the selected strategy changes, subset the data for that strategy
     selected_data <- shiny::reactive({
-      s <- selected_strategy_id()
-
       dplyr::filter(
         trend_data,
-        .data[["strategy"]] == s
+        .data[["strategy"]] == selected_strategy_id(),
+        .data[["year"]] >= selected_strategy_min_year()
       )
     })
 

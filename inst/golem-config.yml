@@ -16,6 +16,7 @@ default:
       ambulatory_care_conditions_acute:
         name: "Ambulatory Care Sensitive Admissions (Acute Conditions)"
         label: "Rate per {n} Admissions"
+        min_year: 201213
       ambulatory_care_conditions_chronic:
         name: "Ambulatory Care Sensitive Admissions (Chronic Conditions)"
         label: "Rate per {n} Admissions"
@@ -25,15 +26,19 @@ default:
       ambulatory_emergency_care_low:
         name: "Ambulatory Emergency Care (Low Potential)"
         label: "% admissions with a 0-day length of stay"
+        min_year: 201718
       ambulatory_emergency_care_moderate:
         name: "Ambulatory Emergency Care (Moderate Potential)"
         label: "% admissions with a 0-day length of stay"
+        min_year: 201718
       ambulatory_emergency_care_high:
         name: "Ambulatory Emergency Care (High Potential)"
         label: "% admissions with a 0-day length of stay"
+        min_year: 201718
       ambulatory_emergency_care_very_high:
         name: "Ambulatory Emergency Care (Very High Potential)"
         label: "% admissions with a 0-day length of stay"
+        min_year: 201718
       cancelled_operations:
         name: Cancelled Operations
         label: "Rate per {n} Admissions"
@@ -97,6 +102,7 @@ default:
       falls_related_admissions:
         name: Falls Related Admissions
         label: "Rate per {n} Admissions"
+        min_year: 201213
       frail_elderly-high:
         name: Frail Elderly Admissions (High Frailty Risk)
         label: "Rate per {n} Admissions"
@@ -118,6 +124,7 @@ default:
       medicines_related_admissions_implicit_benzodiasepines:
         name: Medicines Related Admissions (Implicit - Benzodiazepines)
         label: "Rate per {n} Admissions"
+        min_year: 201112
       medicines_related_admissions_implicit_diurectics:
         name: Medicines Related Admissions (Implicit - Diurectics)
         label: "Rate per {n} Admissions"
@@ -136,12 +143,14 @@ default:
       raid_ip:
         name: Admissions with Mental Health Comorbidities
         label: "Mean Length of Stay (days)"
+        min_year: 201112
       readmission_within_28_days:
         name: Emergency Readmissions Within 28 Days
         label: "Rate per {n} Admissions"
       smoking:
         name: Smoking Related Admissions
         label: "Rate per {n} Admissions"
+        min_year: 201213
       stroke_early_supported_discharge:
         name: Stroke Early Supported Discharge
         label: "Mean Length of Stay (days)"
@@ -192,15 +201,19 @@ default:
       frequent_attender-adult_ambulance:
         name: A&E Frequent Attenders (Adult, Ambulance Conveyed)
         label: "% of all Attendances"
+        min_year: 201314
       frequent_attender-adult_walk-in:
         name: A&E Frequent Attenders (Adult, Walk-in)
         label: "% of all Attendances"
+        min_year: 201314
       frequent_attender-child_ambulance:
         name: A&E Frequent Attenders (Children, Ambulance Conveyed)
         label: "% of all Attendances"
+        min_year: 201314
       frequent_attender-child_walk-in:
         name: A&E Frequent Attenders (Children, Walk-in)
         label: "% of all Attendances"
+        min_year: 201314
       left_before_treatment-adult_ambulance:
         name: A&E Patients Left Before Being Treated (Adult, Ambulance Conveyed)
         label: "% of all Attendances"
