@@ -12,8 +12,12 @@ mod_home_server <- function(id) {
           $(document).ready(() => {
             email = localStorage.getItem("email");
 
-            if (email !== undefined) {
+            if (email !== null) {
               $("#home-email").val(email);
+              $("#home-remember_email").prop("checked", true);
+
+              Shiny.setInputValue("home-email", email);
+              Shiny.setInputValue("home-remember_email", true);
             }
           });
         }"
@@ -56,7 +60,17 @@ mod_home_server <- function(id) {
     })
 
     shiny::observe({
+      if (!input$remember_email) {
+        shinyjs::runjs(
+          r"{
+            localStorage.removeItem("email");
+          }"
+        )
+        return()
+      }
+
       shiny::req(selected_strategies())
+      shiny::req(input$remember_email)
 
       shinyjs::runjs(
         r"{
