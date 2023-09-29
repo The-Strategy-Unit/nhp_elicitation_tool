@@ -110,7 +110,8 @@ mod_mitigator_server <- function(id, email, strategies) {
     # when the module loads, decide whether the user has visited all of the
     # strategies or not. if so, show the complete button
     shiny::observe({
-      completed <- nrow(get_latest_results(email()))
+      e <- shiny::req(email())
+      completed <- nrow(get_latest_results(e))
       total <- length(strategies())
 
       v <- completed == total
