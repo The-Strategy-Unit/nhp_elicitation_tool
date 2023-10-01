@@ -15,6 +15,7 @@ hash_email <- function(email, salt = Sys.getenv("NHP_SALT")) {
 
   email |>
     stringr::str_to_lower() |>
+    stringr::str_trim() |>
     openssl::bcrypt_pbkdf(s) |>
     base64enc::base64encode()
 }
