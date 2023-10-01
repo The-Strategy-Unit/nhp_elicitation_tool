@@ -12,12 +12,20 @@ mod_complete_ui <- function(id) {
     shiny::tags$h1("Complete"),
     shiny::tags$p(
       "Thank you for completing the exercise.",
-      "Your results are below, but you may",
+      "Your results are below.",
+      "You may",
       shiny::actionLink(
         ns("restart"),
         "return"
       ),
-      "back to the tool to update values."
+      "back to the tool to change any values if you wish."
+    ),
+    shiny::tags$p(
+      shiny::tags$strong(
+        "The app will close on Tuesday 17",
+        shiny::tags$sup("th"),
+        "October, 2023 (midnight)."
+      )
     ),
     gt::gt_output(ns("results"))
   )
