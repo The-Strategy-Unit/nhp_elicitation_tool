@@ -27,6 +27,8 @@ mod_complete_ui <- function(id) {
         "October, 2023 (midnight)."
       )
     ),
-    gt::gt_output(ns("results"))
+    shinycssloaders::withSpinner(
+      gt::gt_output(ns("results"))
+    )
   )
 }
