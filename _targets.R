@@ -147,7 +147,8 @@ list(
   # generate user mappings ----
   tar_target(
     user_mapping_raw_excel,
-    "recruitment.xlsx"
+    "recruitment.xlsx",
+    format = "file"
   ),
   tar_target(
     user_mapping_file,

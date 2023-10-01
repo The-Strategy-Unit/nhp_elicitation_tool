@@ -8,7 +8,7 @@ end|stem|546fadd1162246f0|f6fa49f027d748fa|ef46db3751d8e999|-1329297961||t19626.
 fix_ages|function|41eaf5693b57efe9|||||||||||||||
 fixed_values_op|stem|99ae2023baaf50fa|6a36928e6abef487|cc8febd27524788f|-926392157||t19629.5523386883s|3860ecce08c135f2|78746|rds|local|vector|||0.08||
 fixed_values_pcnts|stem|53f3e52026746a1b|9482e038bb8d909b|648f5498138065c2|-568437956||t19626.5986277979s|453fdf6517cfe152|63565|rds|local|vector|||0.06||
-generate_user_mappings|function|590ae88a886459c3|||||||||||||||
+generate_user_mappings|function|0b24af6d06d0dcd3|||||||||||||||
 get_age_standardised_los|function|61b81e1fd72750b1|||||||||||||||
 get_age_standardised_rates|function|557eab85ba09c60e|||||||||||||||
 get_england_population_by_year|function|8291e97bbb95ddf5|||||||||||||||
@@ -28,7 +28,7 @@ get_values_los|function|925b887d84559bef|||||||||||||||
 get_values_op|function|42b652246d28e3d2|||||||||||||||
 get_values_pcnts|function|de633e392d7aa250|||||||||||||||
 get_values_rates|function|98a5d43b2fe8cf3a|||||||||||||||
-hash_email|function|b1c18f431b28f2f5|||||||||||||||
+hash_email|function|8e281ee1d93758ea|||||||||||||||
 hex_string_to_raw|function|694f1202aaaa465f|||||||||||||||
 start|stem|0fb6fbee519ed739|d287d67df0d07460|ef46db3751d8e999|-2065946849||t19626.4043838042s|c9aaea90a821e608|53|rds|local|vector|||0||
 strategies_aae|stem|aaf04b71e6634e04|529d8f2f5d75a1d7|ffffd5514f13e7d9|-1247440668||t19626.6067476771s|0e833cdd3158622c|249|rds|local|vector||strategies_aae_f5f64e68*strategies_aae_cece2b3b*strategies_aae_048f515f|0.02||
@@ -38,9 +38,9 @@ strategies_op|stem|914ec2db6821e655|b7b35f6a8fb2dd8c|ffffd5514f13e7d9|324088757|
 strategies_pcnts|stem|b65464e41bcdc5d6|825614b28fa79238|340d42c7c7e9c9fc|-781719080||t19626.6067479201s|768af1b6380cf070|339|rds|local|vector||strategies_pcnts_6cf8a5a2*strategies_pcnts_782dbca1*strategies_pcnts_4040a339*strategies_pcnts_6dd27142*strategies_pcnts_f0326f14*strategies_pcnts_70077f80|0||
 strategies_rates|stem|5d733ce9bd62ef1e|0bde2ddd3a717bea|eaee567fc29aed3d|-287047129||t19626.6067494594s|8873a71d104e9f04|1139|rds|local|vector||strategies_rates_482b369c*strategies_rates_4774113c*strategies_rates_d7213147*strategies_rates_a02b099d*strategies_rates_fc97ce15*strategies_rates_59797e99*strategies_rates_046bb799*strategies_rates_f4548ae8*strategies_rates_9e8ec55c*strategies_rates_7b8011a4*strategies_rates_3e6a6fc7*strategies_rates_924e8ee8*strategies_rates_8fabdd54*strategies_rates_2db95274*strategies_rates_4ca0e52a*strategies_rates_6be80da5*strategies_rates_7b52517f*strategies_rates_167dde97*strategies_rates_a1c8a335*strategies_rates_6ae1f7f7*strategies_rates_5410f9f2*strategies_rates_4497759a*strategies_rates_8309a848*strategies_rates_92d63a4c*strategies_rates_43e13e19*strategies_rates_1de976f8*strategies_rates_b1a17e2d|0.02||
 total_admissions|stem|383d6848346a4d55|54cdda05e1b7a091|172b629d06d0dd44|-278941700||t19626.4055066495s|6751f50e16117a8f|6217|rds|local|vector|||91.61||
-trend_data|stem|0ddafc3641bd6234|e9d2937cb9de598b|e9692bf4ffb26bc7|935743775|inst/app/data/trend_data.csv|t19629.5523498186s|645fdbc48b635299|61432|file|local|vector|||0.33||
-user_mapping_file|stem|a74ad2d54e4fc26d|2ff71557ca6a66e5|b24598710e57c1dd|1854263990|inst/app/data/user_mappings.json|t19629.5556971835s|6ac45ccf6246834d|135759|file|local|vector|||4.93||
-user_mapping_raw_excel|stem|be22485ec4ba5c71|3c445d901bab52bb|ef46db3751d8e999|1531984604||t19629.4165981686s|d586f792a395948c|68|rds|local|vector|||0||
+trend_data|stem|0ddafc3641bd6234|e9d2937cb9de598b|e9692bf4ffb26bc7|935743775|inst/app/data/trend_data.csv|t19629.8119386611s|645fdbc48b635299|61432|file|local|vector|||0.33||
+user_mapping_file|stem|c131b34c8268243f|2ff71557ca6a66e5|244e90000cbe3482|1854263990|inst/app/data/user_mappings.json|t19631.8134399185s|496c026f5068d171|149810|file|local|vector|||12.76||
+user_mapping_raw_excel|stem|e5867e63235004b8|3c445d901bab52bb|ef46db3751d8e999|1531984604|recruitment.xlsx|t19631.801124793s|2297755266f6ab0e|20735|file|local|vector|||0.02||
 values_aae|pattern|c746cfa774b05a77|43c196b901848e91||-1140014760||||63256|rds|local|vector||values_aae_e759e381*values_aae_e72e7cd6*values_aae_88569a3c|260.58||
 values_aae_88569a3c|branch|4165a61ef94a9286|43c196b901848e91|c08004f84ca83a45|796359827||t19626.4715359078s|b03cb9232f122012|20428|rds|local|vector|values_aae||167.76||
 values_aae_e72e7cd6|branch|f894a64939d3308a|43c196b901848e91|d44afa08b98e7e4a|-917986023||t19626.4695939808s|283caf6a43fcdde7|21253|rds|local|vector|values_aae||40.01||
