@@ -13,6 +13,7 @@ app_server <- function(input, output, session) {
   mod_complete_server("complete", email, strategies)
 
   session$userData$complete <- shiny::reactiveVal(FALSE)
+  session$userData$last_saved <- shiny::reactiveVal()
 
   shiny::observe({
     shiny::updateTabsetPanel(

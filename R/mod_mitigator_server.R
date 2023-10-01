@@ -203,7 +203,15 @@ mod_mitigator_server <- function(id, email, strategies) {
     save_values <- function() {
       s <- selected_strategy_id()
 
-      insert_data(email(), s, input$param_values, input$why_lo, input$why_hi)
+      session$userData$last_saved(
+        insert_data(
+          email(),
+          s,
+          input$param_values,
+          input$why_lo,
+          input$why_hi
+        )
+      )
     }
 
     # when the user presses one of the buttons
