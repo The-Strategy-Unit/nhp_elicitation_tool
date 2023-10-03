@@ -11,6 +11,7 @@ app_server <- function(input, output, session) {
 
   mod_mitigator_server("mitigator", email, strategies)
   mod_complete_server("complete", email, strategies)
+  mod_view_results_server("view_results")
 
   session$userData$complete <- shiny::reactiveVal(FALSE)
   session$userData$last_saved <- shiny::reactiveVal()
@@ -43,4 +44,22 @@ app_server <- function(input, output, session) {
     }
   }) |>
     shiny::bindEvent(session$userData$complete())
+
+  shiny::observe({
+    is_local <- Sys.getenv("SHINY_PORT") == ""
+
+    if (!is_local) {
+      shiny::req(session$user)
+    }
+
+    query <- shiny::parseQueryString(session$clientData$url_search)
+
+    if ("results" %in% names(query)) {
+      shiny::updateTabsetPanel(
+        session,
+        "tabset",
+        "tab_results"
+      )
+    }
+  })
 }

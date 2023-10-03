@@ -61,6 +61,29 @@ insert_data <- function(email, strategy, values, comments_lo, comments_hi) {
   return(list(id, timestamp))
 }
 
+get_all_users_results <- function(strategy) {
+  # TODO: remove this, for test purposes only
+  if (strategy == "test") {
+    return({
+      tibble::tibble(
+        lo = rbinom(100, 100, 0.2),
+        hi = rbinom(100, 100, 0.8)
+      ) |>
+        dplyr::mutate(
+          hi = pmax(.data[["lo"]], .data[["hi"]])
+        )
+    })
+  }
+
+  dplyr::tbl(get_db(), "results") |>
+    dplyr::filter(
+      .data[["strategy"]] == .env[["strategy"]]
+    ) |>
+    dplyr::slice_max(order_by = timestamp, n = 1) |>
+    dplyr::select("lo", "hi") |>
+    dplyr::collect()
+}
+
 get_latest_results <- function(email) {
   dplyr::tbl(get_db(), "results") |>
     dplyr::filter(

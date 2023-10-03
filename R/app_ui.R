@@ -31,6 +31,10 @@ app_ui <- function(request) {
       shiny::tabPanel(
         "tab_complete",
         mod_complete_ui("complete")
+      ),
+      shiny::tabPanel(
+        "tab_results",
+        mod_view_results_ui("view_results")
       )
     )
   )
