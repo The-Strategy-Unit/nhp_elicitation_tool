@@ -53,3 +53,5 @@ If you are completely uncertain, then this is best recorded as a 0% to 100% inte
 5) Upon completion you will see the final "completed" screen.
 
 6) Your work is automatically saved and the app will remember your progress.
+
+7) If you have any queries please email [strategy.unit@nhs.net](mailto:strategy.unit@nhs.net) with NHP in the the subject.

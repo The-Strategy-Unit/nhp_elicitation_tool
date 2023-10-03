@@ -25,6 +25,10 @@ mod_home_ui <- function(id) {
           ns("email"),
           "Email"
         ),
+        shiny::checkboxInput(
+          ns("remember_email"),
+          "Remember me (using cookies)"
+        ),
         shiny::textOutput(
           ns("selected_mitigators")
         ),

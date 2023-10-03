@@ -40,13 +40,16 @@ get_db <- function(envir = parent.frame()) {
 }
 
 insert_data <- function(email, strategy, values, comments_lo, comments_hi) {
+  id <- uuid::UUIDgenerate()
+  timestamp <- as.integer(Sys.time())
+
   DBI::dbAppendTable(
     get_db(),
     "results",
     data.frame(
-      id = uuid::UUIDgenerate(),
+      id = id,
       email = email,
-      timestamp = as.integer(Sys.time()),
+      timestamp = timestamp,
       strategy = strategy,
       lo = values[[1]],
       hi = values[[2]],
@@ -54,6 +57,8 @@ insert_data <- function(email, strategy, values, comments_lo, comments_hi) {
       comments_hi = comments_hi
     )
   )
+
+  return(list(id, timestamp))
 }
 
 get_latest_results <- function(email) {
