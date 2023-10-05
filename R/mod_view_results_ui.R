@@ -19,10 +19,12 @@ mod_view_results_ui <- function(id) {
 
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::selectInput(
-      ns("strategies"),
-      "Strategies",
-      c(Test = "test", strategies)
+    shiny::fluidRow(
+      shiny::selectInput(
+        ns("strategy"),
+        "Strategies",
+        strategies
+      )
     ),
     shiny::fluidRow(
       bs4Dash::bs4Card(
@@ -38,12 +40,47 @@ mod_view_results_ui <- function(id) {
         shiny::plotOutput(ns("individuals"), height = "600px")
       ),
       bs4Dash::bs4Card(
-        title = "Table",
+        title = "Completed",
         width = 4,
         collapsible = FALSE,
-        gt::gt_output(
-          ns("table")
+        shiny::fluidRow(
+          bs4Dash::infoBox(
+            "Total Users",
+            shiny::textOutput(ns("total_users")),
+            icon = shiny::icon(
+              "user",
+              lib = "glyphicon"
+            ),
+            color = "primary"
+          ),
+          bs4Dash::infoBox(
+            "Partialy Completed",
+            shiny::textOutput(ns("partially_completed")),
+            icon = shiny::icon(
+              "flag",
+              lib = "glyphicon"
+            ),
+            color = "warning"
+          ),
+          bs4Dash::infoBox(
+            "Fully Completed",
+            shiny::textOutput(ns("fully_completed")),
+            icon = shiny::icon(
+              "ok",
+              lib = "glyphicon"
+            ),
+            color = "success"
+          )
+        ),
+        shiny::plotOutput(
+          ns("completed_plot")
         )
+      )
+    ),
+    shiny::fluidRow(
+      shiny::downloadButton(
+        ns("download_results"),
+        "Download results"
       )
     )
   )
