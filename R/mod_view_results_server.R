@@ -33,7 +33,10 @@ mod_view_results_server <- function(id) {
         tidyr::replace_na(list(n = 0)) |>
         dplyr::mutate(
           pcnt = .data[["n"]] / .data[["total"]],
-          dplyr::across("email", \(.x) forcats::fct_reorder(.x, .data[["pcnt"]]))
+          dplyr::across(
+            "email",
+            \(.x) forcats::fct_reorder(.x, .data[["pcnt"]])
+          )
         ) |>
         dplyr::arrange(dplyr::desc(.data[["pcnt"]]))
     })
