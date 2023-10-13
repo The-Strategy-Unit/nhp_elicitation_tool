@@ -152,17 +152,21 @@ mod_mitigator_server <- function(id, email, strategies) {
       e <- email()
       s <- selected_strategy_id()
 
-      v <- get_latest_result(e, s)
+      v <- get_latest_results(e, s)
 
       # if no rows of data are returned, then the user has not yet saved
       # values, so use some default values instead
       v <- if (nrow(v) == 0) {
-        list(
-          lo = 0,
-          hi = 100,
-          comments_lo = "",
-          comments_hi = ""
-        )
+        if (is_phase_1()) {
+          list(
+            lo = 0,
+            hi = 100,
+            comments_lo = "",
+            comments_hi = ""
+          )
+        } else {
+          v <- as.list(get_latest_results(e, s, TRUE))
+        }
       } else {
         as.list(v)
       }
@@ -299,6 +303,23 @@ mod_mitigator_server <- function(id, email, strategies) {
 
       plotly::ggplotly(p, tooltip = "text")
     })
+
+    if (!is_phase_1()) {
+      output$results_plot <- plotly::renderPlotly({
+        p <- suppressWarnings(
+          mitigator_results_plot(
+            get_all_users_results(
+              phase_1 = TRUE,
+              strategy = selected_strategy_id()
+            ),
+            input$param_values,
+            email()
+          )
+        )
+
+        plotly::ggplotly(p, tooltip = "text")
+      })
+    }
 
     # return -------------------------------------------------------------------
     # no need to return anything from this module
