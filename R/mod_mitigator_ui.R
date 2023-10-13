@@ -84,7 +84,12 @@ mod_mitigator_ui <- function(id) {
                 )
               )
             )
-          )
+          ),
+          if (!is_phase_1()) {
+            shinycssloaders::withSpinner(
+              plotly::plotlyOutput(ns("results_plot"), height = "400px")
+            )
+          }
         )
       )
     ),
