@@ -83,3 +83,50 @@ mitigator_trend_plot <- function(data, param_table, value_format, min_year, y_ti
       )
     )
 }
+
+mitigator_results_plot <- function(data, values, email) {
+  data |>
+    dplyr::filter(.data[["email"]] != .env[["email"]]) |>
+    dplyr::mutate(mean = (.data[["lo"]] + .data[["hi"]]) / 2) |>
+    dplyr::arrange(.data[["mean"]]) |>
+    dplyr::mutate(
+      y = dplyr::row_number()
+    ) |>
+    ggplot2::ggplot(
+      ggplot2::aes(
+        y = .data[["y"]]
+      )
+    ) +
+    ggplot2::geom_rect(
+      xmin = values[[1]],
+      xmax = values[[2]],
+      ymin = 0, ymax = nrow(data) + 1,
+      fill = "#fcdf83"
+    ) +
+    ggplot2::geom_vline(xintercept = values[[1]]) +
+    ggplot2::geom_vline(xintercept = values[[2]]) +
+    ggplot2::geom_point(
+      ggplot2::aes(
+        x = .data[["lo"]],
+        text = .data[["comments_lo"]]
+      )
+    ) +
+    ggplot2::geom_point(
+      ggplot2::aes(
+        x = .data[["hi"]],
+        text = .data[["comments_hi"]]
+      )
+    ) +
+    ggplot2::geom_segment(
+      ggplot2::aes(
+        x = .data[["lo"]], xend = .data[["hi"]],
+        yend = .data[["y"]]
+      )
+    ) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      axis.text.y = ggplot2::element_blank(),
+      axis.ticks.y = ggplot2::element_blank(),
+      axis.title = ggplot2::element_blank()
+    )
+}
