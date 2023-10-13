@@ -8,7 +8,7 @@ In total there are 77 parameters to forecast.
 The app will only offer you those parameters which you opted to select in the consent form (if you selected all options then you will have 77 parameters to forecast).
 All the parameters are presented at the England level.
 
-**The app will automatically close on Tue 17 Oct 2023 (midnight).**
+**The app will automatically close on {get_phase_1_end()}.**
 **Please try and complete your assignment before then.**
 **If you do not complete all the assignment, we will still endeavour to use what we can.**
 

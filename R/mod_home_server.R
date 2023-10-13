@@ -39,10 +39,14 @@ mod_home_server <- function(id) {
       um <- user_mappings[[email_hashed()]]
 
       shiny::validate(
-        shiny::need(!is.null(um), "unrecognised email address")
+        shiny::need(!is.null(um), "unrecognised email address"),
+        shiny::need(
+          is_phase_1() || nrow(phase_1_results()) > 0,
+          "did not complete phase 1"
+        )
       )
 
-      purrr::imap(um, \(t, s) strategies[[s]][t]) |>
+      s <- purrr::imap(um, \(t, s) strategies[[s]][t]) |>
         # order by the y-axis label, then the name of the mitigator
         purrr::map(\(at) {
           at |>
@@ -57,6 +61,14 @@ mod_home_server <- function(id) {
             })()
         }) |>
         purrr::flatten()
+
+      if (!is_phase_1()) {
+        p1r <- phase_1_results()
+
+        s <- s[p1r$strategy]
+      }
+
+      s
     })
 
     shiny::observe({
@@ -77,6 +89,10 @@ mod_home_server <- function(id) {
           localStorage.setItem("email", $("#home-email").val());
         }"
       )
+    })
+
+    phase_1_results <- shiny::reactive({
+      get_latest_results(email_hashed(), TRUE)
     })
 
     completed_strategies <- shiny::reactive({
