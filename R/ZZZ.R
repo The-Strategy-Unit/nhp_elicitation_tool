@@ -11,6 +11,10 @@ hex_string_to_raw <- function(s) {
 }
 
 hash_email <- function(email, salt = Sys.getenv("NHP_SALT")) {
+  if (Sys.getenv("SKIP_HASHING") != "") {
+    return(email)
+  }
+
   s <- hex_string_to_raw(salt)
 
   email |>
