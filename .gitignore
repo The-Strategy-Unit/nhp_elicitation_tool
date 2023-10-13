@@ -8,3 +8,4 @@ inst/doc
 *.db
 inst/app/data/user_mappings.json
 recruitment.xlsx
+.Renviron
