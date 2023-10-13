@@ -75,27 +75,27 @@ lazy_get_latest_results <- function(
     dplyr::slice_max(order_by = timestamp, n = 1, by = c("email", "strategy"))
 }
 
-get_all_users_results <- function(phase_1 = is_phase_1()) {
-  lazy_get_latest_results(phase_1) |>
-    dplyr::select(-"id", -"timestamp") |>
-    dplyr::collect()
+get_all_users_results <- function(phase_1 = is_phase_1(), strategy) {
+  r <- lazy_get_latest_results(phase_1) |>
+    dplyr::select(-"id", -"timestamp")
+
+  if (!missing(strategy)) {
+    r <- dplyr::filter(r, .data[["strategy"]] == .env[["strategy"]])
+  }
+
+  dplyr::collect(r)
 }
 
-get_latest_results <- function(email, phase_1 = is_phase_1()) {
-  lazy_get_latest_results(phase_1) |>
+get_latest_results <- function(email, strategy, phase_1 = is_phase_1()) {
+  r <- lazy_get_latest_results(phase_1) |>
     dplyr::filter(
       .data[["email"]] == .env[["email"]]
     ) |>
-    dplyr::select("strategy", tidyselect::matches("(lo|hi)$")) |>
-    dplyr::collect()
-}
+    dplyr::select("strategy", tidyselect::matches("(lo|hi)$"))
 
-get_latest_result <- function(email, strategy, phase_1 = is_phase_1()) {
-  lazy_get_latest_results(phase_1) |>
-    dplyr::filter(
-      .data[["email"]] == .env[["email"]],
-      .data[["strategy"]] == .env[["strategy"]]
-    ) |>
-    dplyr::select(tidyselect::matches("(lo|hi)$")) |>
-    dplyr::collect()
+  if (!missing(strategy)) {
+    r <- dplyr::filter(r, .data[["strategy"]] == .env[["strategy"]])
+  }
+
+  dplyr::collect(r)
 }
