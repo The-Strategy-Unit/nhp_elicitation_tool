@@ -92,7 +92,7 @@ mod_home_server <- function(id) {
     })
 
     phase_1_results <- shiny::reactive({
-      get_latest_results(email_hashed(), TRUE)
+      get_latest_results(email_hashed(), phase_1 = TRUE)
     })
 
     completed_strategies <- shiny::reactive({
