@@ -301,7 +301,11 @@ mod_mitigator_server <- function(id, email, strategies) {
         )
       )
 
-      plotly::ggplotly(p, tooltip = "text")
+      plotly::ggplotly(p, tooltip = "text") |>
+        plotly::config(
+          displayModeBar = FALSE,
+          displaylogo = FALSE
+        )
     })
 
     if (!is_phase_1()) {
@@ -317,7 +321,11 @@ mod_mitigator_server <- function(id, email, strategies) {
           )
         )
 
-        plotly::ggplotly(p, tooltip = "text")
+        plotly::ggplotly(p, tooltip = "text") |>
+          plotly::config(
+            displayModeBar = FALSE,
+            displaylogo = FALSE
+          )
       })
     }
 
