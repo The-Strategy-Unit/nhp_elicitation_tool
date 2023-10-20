@@ -86,45 +86,64 @@ mitigator_trend_plot <- function(data, param_table, value_format, min_year, y_ti
 
 mitigator_results_plot <- function(data, values, email) {
   data |>
-    dplyr::filter(.data[["email"]] != .env[["email"]]) |>
-    dplyr::mutate(mean = (.data[["lo"]] + .data[["hi"]]) / 2) |>
+    dplyr::mutate(
+      is_me = .data[["email"]] == .env[["email"]],
+      mean = (.data[["lo"]] + .data[["hi"]]) / 2
+    ) |>
+    dplyr::filter(
+      .data[["is_me"]] | !(
+        .data[["lo"]] == 0 & .data[["hi"]] == 100
+      )
+    ) |>
     dplyr::arrange(.data[["mean"]]) |>
     dplyr::mutate(
       y = dplyr::row_number()
     ) |>
     ggplot2::ggplot(
       ggplot2::aes(
-        y = .data[["y"]]
+        y = .data[["y"]],
+        colour = .data[["is_me"]]
       )
     ) +
     ggplot2::geom_rect(
       xmin = values[[1]],
       xmax = values[[2]],
       ymin = 0, ymax = nrow(data) + 1,
-      fill = "#fcdf83"
+      fill = "#fef2cd",
+      show.legend = FALSE
     ) +
-    ggplot2::geom_vline(xintercept = values[[1]]) +
-    ggplot2::geom_vline(xintercept = values[[2]]) +
+    ggplot2::geom_vline(xintercept = values[[1]], colour = "#fcdf83") +
+    ggplot2::geom_vline(xintercept = values[[2]], colour = "#fcdf83") +
     ggplot2::geom_point(
       ggplot2::aes(
         x = .data[["lo"]],
         text = .data[["comments_lo"]]
-      )
+      ),
+      size = 3,
+      show.legend = FALSE
     ) +
     ggplot2::geom_point(
       ggplot2::aes(
         x = .data[["hi"]],
         text = .data[["comments_hi"]]
-      )
+      ),
+      size = 3,
+      show.legend = FALSE
     ) +
     ggplot2::geom_segment(
       ggplot2::aes(
         x = .data[["lo"]], xend = .data[["hi"]],
         yend = .data[["y"]]
-      )
+      ),
+      lwd = 1.5,
+      show.legend = FALSE
+    ) +
+    ggplot2::scale_colour_manual(
+      values = c("TRUE" = "#5881c1", "FALSE" = "#9d928a")
     ) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
+      legend.position = "none",
       axis.text.y = ggplot2::element_blank(),
       axis.ticks.y = ggplot2::element_blank(),
       axis.title = ggplot2::element_blank()
