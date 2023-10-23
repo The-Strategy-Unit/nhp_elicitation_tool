@@ -30,6 +30,10 @@ get_phase_1_end <- function() {
   as.POSIXct(Sys.getenv("PHASE_1_END", "2038-01-19 03:14:07"), "Europe/London")
 }
 
+format_datetime_as_string <- function(d) {
+  format(d, tz = "Europe/London", "%a %d %B, %Y at %H:%M:%S")
+}
+
 is_phase_1 <- function() {
   Sys.time() <= get_phase_1_end()
 }
