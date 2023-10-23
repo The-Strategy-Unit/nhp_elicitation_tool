@@ -4,6 +4,10 @@
 #'     DO NOT REMOVE.
 #' @noRd
 app_server <- function(input, output, session) {
+  if (!is_phase_1() && Sys.getenv("PHASE_2_LIVE") == "") {
+    return(NULL)
+  }
+
   home <- mod_home_server("home")
 
   email <- shiny::reactive(home()$email)
