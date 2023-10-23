@@ -27,7 +27,7 @@ hash_email <- function(email, salt = Sys.getenv("NHP_SALT")) {
 get_phase_1_end <- function() {
   # if the phase 1 end date isn't set, default to maximum value that can be
   # stored as an integer
-  as.POSIXct(Sys.getenv("PHASE_1_END", "2038-01-19 03:14:07"))
+  as.POSIXct(Sys.getenv("PHASE_1_END", "2038-01-19 03:14:07"), "Europe/London")
 }
 
 is_phase_1 <- function() {

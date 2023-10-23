@@ -15,7 +15,14 @@ mod_home_ui <- function(id) {
         title = "Instructions",
         collapsible = FALSE,
         width = 8,
-        md_file_to_html("app", "home_text.md")
+        md_file_to_html(
+          "app",
+          ifelse(
+            is_phase_1(),
+            "home_text_phase_1.md",
+            "home_text_phase_2.md"
+          )
+        )
       ),
       bs4Dash::box(
         title = "Enter your email",

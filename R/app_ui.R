@@ -16,7 +16,31 @@ app_ui <- function(request) {
     expandOnHover = FALSE
   )
 
-  body <- bs4Dash::bs4DashBody(
+  body <- if (!is_phase_1() && Sys.getenv("PHASE_2_LIVE") == "") {
+    body_disabled()
+  } else {
+    body_app()
+  }
+
+  page <- bs4Dash::bs4DashPage(
+    title = "NHP Elicitation Tool",
+    header = header,
+    sidebar = sidebar,
+    body = body
+  )
+
+
+  shiny::tagList(
+    # Leave this function for adding external resources
+    golem_add_external_resources(),
+    shinyjs::useShinyjs(),
+    # Your application UI logic
+    page
+  )
+}
+
+body_app <- function() {
+  bs4Dash::bs4DashBody(
     shiny::tabsetPanel(
       id = "tabset",
       type = "hidden",
@@ -38,23 +62,18 @@ app_ui <- function(request) {
       )
     )
   )
+}
 
-  page <- bs4Dash::bs4DashPage(
-    title = "NHP Elicitation Tool",
-    header = header,
-    sidebar = sidebar,
-    body = body
-  )
-
-
-  shiny::tagList(
-    # Leave this function for adding external resources
-    golem_add_external_resources(),
-    shinyjs::useShinyjs(),
-    # Your application UI logic
-    page
+body_disabled <- function() {
+  bs4Dash::bs4DashBody(
+    shiny::tags$h1("Phase 1 has finished"),
+    shiny::tags$p(
+      "The app is now closed to add new values in phase 1.",
+      "We will let you know when phase 2 is open."
+    )
   )
 }
+
 
 #' Add external Resources to the Application
 #'
