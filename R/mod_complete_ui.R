@@ -22,9 +22,14 @@ mod_complete_ui <- function(id) {
     ),
     shiny::tags$p(
       shiny::tags$strong(
-        "The app will close on Tuesday 17",
-        shiny::tags$sup("th"),
-        "October, 2023 (midnight)."
+        "The app will close on",
+        format_datetime_as_string(
+          if (is_phase_1()) {
+            get_phase_1_end()
+          } else {
+            get_phase_2_end()
+          }
+        )
       )
     ),
     shinycssloaders::withSpinner(

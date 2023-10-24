@@ -61,34 +61,41 @@ insert_data <- function(email, strategy, values, comments_lo, comments_hi) {
   return(list(id, timestamp))
 }
 
-get_all_users_results <- function() {
-  dplyr::tbl(get_db(), "results") |>
-    dplyr::slice_max(
-      order_by = timestamp,
-      n = 1,
-      by = c("email", "strategy")
+lazy_get_latest_results <- function(
+    phase_1 = TRUE,
+    con = get_db(parent.frame())) {
+  # make sure con is owned by the calling function
+  comp_fn <- ifelse(phase_1, `<=`, `>`)
+  cutoff <- as.integer(get_phase_1_end())
+
+  dplyr::tbl(con, "results") |>
+    dplyr::filter(
+      (!!comp_fn)(.data[["timestamp"]], cutoff)
     ) |>
-    dplyr::select(-"id", -"timestamp") |>
-    dplyr::collect()
+    dplyr::slice_max(order_by = timestamp, n = 1, by = c("email", "strategy"))
 }
 
-get_latest_results <- function(email) {
-  dplyr::tbl(get_db(), "results") |>
+get_all_users_results <- function(phase_1 = is_phase_1(), strategy) {
+  r <- lazy_get_latest_results(phase_1) |>
+    dplyr::select(-"id", -"timestamp")
+
+  if (!missing(strategy)) {
+    r <- dplyr::filter(r, .data[["strategy"]] == .env[["strategy"]])
+  }
+
+  dplyr::collect(r)
+}
+
+get_latest_results <- function(email, strategy, phase_1 = is_phase_1()) {
+  r <- lazy_get_latest_results(phase_1) |>
     dplyr::filter(
       .data[["email"]] == .env[["email"]]
     ) |>
-    dplyr::slice_max(order_by = timestamp, n = 1, by = "strategy") |>
-    dplyr::select("strategy", tidyselect::matches("(lo|hi)$")) |>
-    dplyr::collect()
-}
+    dplyr::select("strategy", tidyselect::matches("(lo|hi)$"))
 
-get_latest_result <- function(email, strategy) {
-  dplyr::tbl(get_db(), "results") |>
-    dplyr::filter(
-      .data[["email"]] == .env[["email"]],
-      .data[["strategy"]] == .env[["strategy"]]
-    ) |>
-    dplyr::slice_max(order_by = timestamp, n = 1) |>
-    dplyr::select(tidyselect::matches("(lo|hi)$")) |>
-    dplyr::collect()
+  if (!missing(strategy)) {
+    r <- dplyr::filter(r, .data[["strategy"]] == .env[["strategy"]])
+  }
+
+  dplyr::collect(r)
 }

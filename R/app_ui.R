@@ -16,7 +16,32 @@ app_ui <- function(request) {
     expandOnHover = FALSE
   )
 
-  body <- bs4Dash::bs4DashBody(
+  body <- if (app_is_live()) {
+    body_app()
+  } else if (is_finished()) {
+    body_finished()
+  } else {
+    body_disabled()
+  }
+
+  page <- bs4Dash::bs4DashPage(
+    title = "NHP Elicitation Tool",
+    header = header,
+    sidebar = sidebar,
+    body = body
+  )
+
+  shiny::tagList(
+    # Leave this function for adding external resources
+    golem_add_external_resources(),
+    shinyjs::useShinyjs(),
+    # Your application UI logic
+    page
+  )
+}
+
+body_app <- function() {
+  bs4Dash::bs4DashBody(
     shiny::tabsetPanel(
       id = "tabset",
       type = "hidden",
@@ -38,23 +63,32 @@ app_ui <- function(request) {
       )
     )
   )
+}
 
-  page <- bs4Dash::bs4DashPage(
-    title = "NHP Elicitation Tool",
-    header = header,
-    sidebar = sidebar,
-    body = body
-  )
-
-
-  shiny::tagList(
-    # Leave this function for adding external resources
-    golem_add_external_resources(),
-    shinyjs::useShinyjs(),
-    # Your application UI logic
-    page
+body_disabled <- function() {
+  bs4Dash::bs4DashBody(
+    shiny::tags$h1("Phase 1 has finished"),
+    shiny::tags$p(
+      "Thank you so much for your participation in this exercise.",
+      "Round 1 of the exercise is now closed."
+    ),
+    shiny::tags$p(
+      "Round 2 will open shortly.",
+      "In Round 2 you will be able to review your data alongside that of your peers and make any final changes."
+    )
   )
 }
+
+body_finished <- function() {
+  bs4Dash::bs4DashBody(
+    shiny::tags$h1("Phase 2 has finished"),
+    shiny::tags$p(
+      "Thank you so much for your participation in this exercise.",
+      "Round 2 of the exercise is now closed."
+    )
+  )
+}
+
 
 #' Add external Resources to the Application
 #'

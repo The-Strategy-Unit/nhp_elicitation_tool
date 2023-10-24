@@ -4,6 +4,10 @@
 #'     DO NOT REMOVE.
 #' @noRd
 app_server <- function(input, output, session) {
+  if (!app_is_live()) {
+    return(NULL)
+  }
+
   home <- mod_home_server("home")
 
   email <- shiny::reactive(home()$email)

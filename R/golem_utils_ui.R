@@ -388,5 +388,8 @@ md_file_to_html <- function(...) {
     return(NULL)
   }
 
-  shiny::HTML(markdown::mark_html(file, output = FALSE, template = FALSE))
+  file |>
+    markdown::mark_html(output = FALSE, template = FALSE) |>
+    glue::glue() |>
+    shiny::HTML()
 }
