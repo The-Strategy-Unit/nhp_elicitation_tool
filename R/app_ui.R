@@ -16,10 +16,12 @@ app_ui <- function(request) {
     expandOnHover = FALSE
   )
 
-  body <- if (!is_phase_1() && Sys.getenv("PHASE_2_LIVE") == "") {
-    body_disabled()
-  } else {
+  body <- if (app_is_live()) {
     body_app()
+  } else if (is_finished()) {
+    body_finished()
+  } else {
+    body_disabled()
   }
 
   page <- bs4Dash::bs4DashPage(
@@ -28,7 +30,6 @@ app_ui <- function(request) {
     sidebar = sidebar,
     body = body
   )
-
 
   shiny::tagList(
     # Leave this function for adding external resources
@@ -68,8 +69,22 @@ body_disabled <- function() {
   bs4Dash::bs4DashBody(
     shiny::tags$h1("Phase 1 has finished"),
     shiny::tags$p(
-      "The app is now closed to add new values in phase 1.",
-      "We will let you know when phase 2 is open."
+      "Thank you so much for your participation in this exercise.",
+      "Round 1 of the exercise is now closed."
+    ),
+    shiny::tags$p(
+      "Round 2 will open shortly.",
+      "In Round 2 you will be able to review your data alongside that of your peers and make any final changes."
+    )
+  )
+}
+
+body_finished <- function() {
+  bs4Dash::bs4DashBody(
+    shiny::tags$h1("Phase 2 has finished"),
+    shiny::tags$p(
+      "Thank you so much for your participation in this exercise.",
+      "Round 2 of the exercise is now closed."
     )
   )
 }

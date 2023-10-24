@@ -4,7 +4,7 @@
 #'     DO NOT REMOVE.
 #' @noRd
 app_server <- function(input, output, session) {
-  if (!is_phase_1() && Sys.getenv("PHASE_2_LIVE") == "") {
+  if (!app_is_live()) {
     return(NULL)
   }
 
