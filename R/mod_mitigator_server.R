@@ -14,6 +14,30 @@ mod_mitigator_server <- function(id, email, strategies) {
     # range on the x-axis
     min_year <- min(trend_data$year)
 
+    # admin stuff --------------------------------------------------------------
+    shiny::observe({
+      is_local <- Sys.getenv("SHINY_PORT") == ""
+
+      if (!is_local) {
+        shiny::req(session$user)
+      }
+
+      shinyjs::show("change_strat")
+
+      s <- purrr::map(strategies(), "name")
+
+      shiny::updateSelectInput(
+        session,
+        "change_strat",
+        choices = purrr::set_names(names(s), unname(s))
+      )
+    })
+
+    shiny::observe({
+      s <- shiny::req(input$change_strat)
+      selected_strategy(which(s == names(strategies())))
+    })
+
     # reactives ----------------------------------------------------------------
 
     # this reactive value holds the index of the currently selected strategy
