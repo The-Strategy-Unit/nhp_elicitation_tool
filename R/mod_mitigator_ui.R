@@ -35,6 +35,13 @@ mod_mitigator_ui <- function(id) {
           color = "success"
         )
       ),
+      shinyjs::hidden(
+        shiny::selectInput(
+          ns("change_strat"),
+          "Strategy",
+          NULL
+        )
+      ),
       shiny::tags$p("")
     ),
     col_9(
