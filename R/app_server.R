@@ -4,50 +4,50 @@
 #'     DO NOT REMOVE.
 #' @noRd
 app_server <- function(input, output, session) {
-  if (!app_is_live()) {
-    return(NULL)
-  }
-
   home <- mod_home_server("home")
 
-  email <- shiny::reactive(home()$email)
-  strategies <- shiny::reactive(home()$strategies)
+  if (app_is_live()) {
+    email <- shiny::reactive(home()$email)
+    strategies <- shiny::reactive(home()$strategies)
 
-  mod_mitigator_server("mitigator", email, strategies)
-  mod_complete_server("complete", email, strategies)
-  mod_view_results_server("view_results")
+    session$userData$complete <- shiny::reactiveVal(FALSE)
+    session$userData$last_saved <- shiny::reactiveVal()
 
-  session$userData$complete <- shiny::reactiveVal(FALSE)
-  session$userData$last_saved <- shiny::reactiveVal()
+    mod_mitigator_server("mitigator", email, strategies)
+    mod_complete_server("complete", email, strategies)
 
-  shiny::observe({
-    shiny::updateTabsetPanel(
-      session,
-      "tabset",
-      "tab_mitigator"
-    )
-  }) |>
-    shiny::bindEvent(strategies())
-
-  shiny::observe({
-    c <- session$userData$complete()
-    shiny::req(c)
-
-    if (c == "complete") {
-      shiny::updateTabsetPanel(
-        session,
-        "tabset",
-        "tab_complete"
-      )
-    } else if (c == "restart") {
+    shiny::observe({
       shiny::updateTabsetPanel(
         session,
         "tabset",
         "tab_mitigator"
       )
-    }
-  }) |>
-    shiny::bindEvent(session$userData$complete())
+    }) |>
+      shiny::bindEvent(strategies())
+
+    shiny::observe({
+      complete <- session$userData$complete()
+      shiny::req(complete)
+
+      if (complete == "complete") {
+        shiny::updateTabsetPanel(
+          session,
+          "tabset",
+          "tab_complete"
+        )
+      } else if (complete == "restart") {
+        shiny::updateTabsetPanel(
+          session,
+          "tabset",
+          "tab_mitigator"
+        )
+      }
+    }) |>
+      shiny::bindEvent(session$userData$complete())
+  }
+
+  mod_view_results_server("view_results")
+
 
   shiny::observe({
     is_local <- Sys.getenv("SHINY_PORT") == ""

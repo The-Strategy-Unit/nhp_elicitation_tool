@@ -17,36 +17,34 @@ mod_home_ui <- function(id) {
         width = 8,
         md_file_to_html(
           "app",
-          ifelse(
-            is_phase_1(),
-            "home_text_phase_1.md",
-            "home_text_phase_2.md"
-          )
+          paste0("home_text_", app_state(), ".md")
         )
       ),
-      bs4Dash::box(
-        title = "Enter your email",
-        collapsible = FALSE,
-        width = 4,
-        shiny::textInput(
-          ns("email"),
-          "Email"
-        ),
-        shiny::checkboxInput(
-          ns("remember_email"),
-          "Remember me (using cookies)"
-        ),
-        shiny::textOutput(
-          ns("selected_mitigators")
-        ),
-        shiny::actionButton(
-          ns("start"),
-          "Start"
-        ),
-        gt::gt_output(
-          ns("selected_strategies")
+      if (app_is_live()) {
+        bs4Dash::box(
+          title = "Enter your email",
+          collapsible = FALSE,
+          width = 4,
+          shiny::textInput(
+            ns("email"),
+            "Email"
+          ),
+          shiny::checkboxInput(
+            ns("remember_email"),
+            "Remember me (using cookies)"
+          ),
+          shiny::textOutput(
+            ns("selected_mitigators")
+          ),
+          shiny::actionButton(
+            ns("start"),
+            "Start"
+          ),
+          gt::gt_output(
+            ns("selected_strategies")
+          )
         )
-      )
+      }
     )
   )
 }
