@@ -16,13 +16,32 @@ app_ui <- function(request) {
     expandOnHover = FALSE
   )
 
-  body <- if (app_is_live()) {
-    body_app()
-  } else if (is_finished()) {
-    body_finished()
-  } else {
-    body_disabled()
-  }
+  body <- bs4Dash::bs4DashBody(
+    shiny::tabsetPanel(
+      id = "tabset",
+      type = "hidden",
+      shiny::tabPanel(
+        "tab_home",
+        mod_home_ui("home")
+      ),
+      if (app_is_live()) {
+        shiny::tabPanel(
+          "tab_mitigator",
+          mod_mitigator_ui("mitigator")
+        )
+      },
+      if (app_is_live()) {
+        shiny::tabPanel(
+          "tab_complete",
+          mod_complete_ui("complete")
+        )
+      },
+      shiny::tabPanel(
+        "tab_results",
+        mod_view_results_ui("view_results")
+      )
+    )
+  )
 
   page <- bs4Dash::bs4DashPage(
     title = "NHP Elicitation Tool",
@@ -39,56 +58,6 @@ app_ui <- function(request) {
     page
   )
 }
-
-body_app <- function() {
-  bs4Dash::bs4DashBody(
-    shiny::tabsetPanel(
-      id = "tabset",
-      type = "hidden",
-      shiny::tabPanel(
-        "tab_home",
-        mod_home_ui("home")
-      ),
-      shiny::tabPanel(
-        "tab_mitigator",
-        mod_mitigator_ui("mitigator")
-      ),
-      shiny::tabPanel(
-        "tab_complete",
-        mod_complete_ui("complete")
-      ),
-      shiny::tabPanel(
-        "tab_results",
-        mod_view_results_ui("view_results")
-      )
-    )
-  )
-}
-
-body_disabled <- function() {
-  bs4Dash::bs4DashBody(
-    shiny::tags$h1("Phase 1 has finished"),
-    shiny::tags$p(
-      "Thank you so much for your participation in this exercise.",
-      "Round 1 of the exercise is now closed."
-    ),
-    shiny::tags$p(
-      "Round 2 will open shortly.",
-      "In Round 2 you will be able to review your data alongside that of your peers and make any final changes."
-    )
-  )
-}
-
-body_finished <- function() {
-  bs4Dash::bs4DashBody(
-    shiny::tags$h1("Phase 2 has finished"),
-    shiny::tags$p(
-      "Thank you so much for your participation in this exercise.",
-      "Round 2 of the exercise is now closed."
-    )
-  )
-}
-
 
 #' Add external Resources to the Application
 #'

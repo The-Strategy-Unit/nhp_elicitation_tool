@@ -6,6 +6,10 @@ mod_home_server <- function(id) {
     # suppress lintr warnings
     .data <- rlang::.data
 
+    if (!app_is_live()) {
+      return(NULL)
+    }
+
     shiny::observe({
       shinyjs::runjs(
         r"{

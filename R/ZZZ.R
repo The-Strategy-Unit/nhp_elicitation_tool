@@ -54,3 +54,15 @@ is_phase_2 <- function() {
 is_finished <- \() Sys.time() > get_phase_2_end()
 
 app_is_live <- \() is_phase_1() || is_phase_2()
+
+app_state <- function() {
+  if (is_phase_1()) {
+    "phase_1"
+  } else if (is_phase_2()) {
+    "phase_2"
+  } else if (is_finished()) {
+    "finished"
+  } else {
+    "disabled"
+  }
+}
