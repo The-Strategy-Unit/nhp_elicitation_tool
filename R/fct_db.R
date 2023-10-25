@@ -62,20 +62,26 @@ insert_data <- function(email, strategy, values, comments_lo, comments_hi) {
 }
 
 lazy_get_latest_results <- function(
-    phase_1 = TRUE,
+    phase_1,
     con = get_db(parent.frame())) {
-  # make sure con is owned by the calling function
-  comp_fn <- ifelse(phase_1, `<=`, `>`)
-  cutoff <- as.integer(get_phase_1_end())
+  res <- dplyr::tbl(con, "results")
 
-  dplyr::tbl(con, "results") |>
-    dplyr::filter(
-      (!!comp_fn)(.data[["timestamp"]], cutoff)
-    ) |>
+  if (!missing(phase_1)) {
+    # make sure con is owned by the calling function
+    comp_fn <- ifelse(phase_1, `<=`, `>`)
+    cutoff <- as.integer(get_phase_1_end())
+
+    res <- res |>
+      dplyr::filter(
+        (!!comp_fn)(.data[["timestamp"]], cutoff)
+      )
+  }
+
+  res |>
     dplyr::slice_max(order_by = timestamp, n = 1, by = c("email", "strategy"))
 }
 
-get_all_users_results <- function(phase_1 = is_phase_1(), strategy) {
+get_all_users_results <- function(phase_1, strategy) {
   r <- lazy_get_latest_results(phase_1) |>
     dplyr::select(-"id", -"timestamp")
 
