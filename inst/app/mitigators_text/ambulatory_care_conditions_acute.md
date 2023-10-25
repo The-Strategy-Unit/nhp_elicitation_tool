@@ -14,7 +14,7 @@ These following acute conditions are included:
 
 The list of conditions used within this factor comes the [NHS Institute for Innovation and Improvement][1].
 
-[1]: https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/innovative-uses-of-data/demand-on-healthcare/ambulatory-care-sensitive-conditions
+[1]: https://web.archive.org/web/20211202093530/https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/innovative-uses-of-data/demand-on-healthcare/ambulatory-care-sensitive-conditions
 
 The full condition list and coding logic can be found within the [appendix][2].
 
