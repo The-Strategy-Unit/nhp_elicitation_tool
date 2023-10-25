@@ -30,19 +30,19 @@ default:
         min_year: 201011
       ambulatory_emergency_care_low:
         name: "Ambulatory Emergency Care (Low Potential)"
-        label: "% admissions with a 0-day length of stay"
+        label: "% admissions with a greater than 0-day length of stay"
         min_year: 201718
       ambulatory_emergency_care_moderate:
         name: "Ambulatory Emergency Care (Moderate Potential)"
-        label: "% admissions with a 0-day length of stay"
+        label: "% admissions with a greater than 0-day length of stay"
         min_year: 201718
       ambulatory_emergency_care_high:
         name: "Ambulatory Emergency Care (High Potential)"
-        label: "% admissions with a 0-day length of stay"
+        label: "% admissions with a greater than 0-day length of stay"
         min_year: 201718
       ambulatory_emergency_care_very_high:
         name: "Ambulatory Emergency Care (Very High Potential)"
-        label: "% admissions with a 0-day length of stay"
+        label: "% admissions with a greater than 0-day length of stay"
         min_year: 201718
       cancelled_operations:
         name: Cancelled Operations
