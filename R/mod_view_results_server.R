@@ -6,7 +6,15 @@ mod_view_results_server <- function(id) {
     .data <- rlang::.data
 
     all_data <- shiny::reactive({
-      get_all_users_results()
+      get_all_users_results() |>
+        dplyr::mutate(
+          which_phase = ifelse(
+            .data[["timestamp"]] <= get_phase_1_end(),
+            1,
+            2
+          ),
+          .after = "timestamp"
+        )
     })
 
     output$download_results <- shiny::downloadHandler(
