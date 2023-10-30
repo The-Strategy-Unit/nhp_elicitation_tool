@@ -83,13 +83,17 @@ lazy_get_latest_results <- function(
 
 get_all_users_results <- function(phase_1, strategy) {
   r <- lazy_get_latest_results(phase_1) |>
-    dplyr::select(-"id", -"timestamp")
+    dplyr::select(-"id")
 
   if (!missing(strategy)) {
     r <- dplyr::filter(r, .data[["strategy"]] == .env[["strategy"]])
   }
 
-  dplyr::collect(r)
+  r |>
+    dplyr::collect() |>
+    dplyr::mutate(
+      dplyr::across("timestamp", as.POSIXct)
+    )
 }
 
 get_latest_results <- function(email, strategy, phase_1 = is_phase_1()) {
