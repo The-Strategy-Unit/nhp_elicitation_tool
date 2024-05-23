@@ -1,0 +1,3 @@
+Emergency admissions of elderly patients often result in extended stays in hospital due to the challenges in organising for the timely provision of home support or residential/nursing accommodation upon discharge. SUch delays are referred to as delayed transfers of care. Ensuring that patients stay in hospital only as long as is clinically necessary is particularly important for elderly patients as even short stays in hospital can result in rapid irreversible decompensation. In addition minimising the LOS for such patients would also free up capacity within the hospital.
+
+This factor shows the average (mean) LOS for all emergency admissions for patients aged over 74

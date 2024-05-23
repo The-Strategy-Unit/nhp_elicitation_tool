@@ -1,0 +1,5 @@
+Obesity is a factor that increases the risk of developing a wide range of conditions. Reducing the level of obesity within the population though greater investment in lifestyle management services and health promotion would reduce the number of admissions for conditions that are at least in part attributable to obesity.
+
+The National Audit Office publication Tackling Obesity in England 2001 identified conditions that are attributable to obesity. The publication provides an indication, for each condition, of the proportion of cases that may be attributable to obesity.
+
+Whilst most activity mitigation factors identify all spells based on the specified SQL coding, in this case the model only selects a proportion of spells based on the obesity attributable fraction (OAF) for that condition. As an example the OAF for hypertension is 36% therefore the tool randomly selects 36% of spells meeting these criteria. The OAFs are also sourced from the above referenced document.

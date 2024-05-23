@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto
+inst/doc
+*.db
+inst/app/data/user_mappings.json
+recruitment.xlsx
+.Renviron

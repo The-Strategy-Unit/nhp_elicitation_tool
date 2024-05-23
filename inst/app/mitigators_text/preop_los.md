@@ -1,0 +1,1 @@
+In most cases patients do not need to be admitted before the day of surgery. This tool identifies elective admissions that are admitted either 1 day prior to surgery or 2 days prior to surgery. Patients who are admitted more than 2 days prior to surgery are not included as it is assumed that in these cases there is a valid clinical reason for the extended pre op LOS.
