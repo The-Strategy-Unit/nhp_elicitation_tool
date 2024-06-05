@@ -24,6 +24,7 @@ list(
           "excess_beddays",
           "raid_ip",
           "stroke_early_supported_discharge",
+          "virtual_wards_efficiencies_.*",
           sep = "|"
         ),
         ")$"
