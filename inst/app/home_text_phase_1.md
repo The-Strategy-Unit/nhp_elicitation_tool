@@ -18,11 +18,7 @@ For each parameter
 
 2)  There is a plot of historical trends across England. All the parameters are presented at the England level. The plots show data based on routinely collected Hospital Episode Statistics (HES) data. The trends are provided for information only.
 
-**Please pay close attention to the vertical axis on each chart as this will tell you the type of change you are forecasting, in many cases it will be the rate of admissions or attendances, but some parameters require different assumptions, for example, about how length of stay might reduce or how the proportion of cases that are undertaken in a particular setting might reduce.**  <br />
-
-    In some instances, the plots may show an unusual change or pattern.
-This is likely to reflect data quality issues and/or a change in the clinical coding process.
-Please discount these unusual patterns.
+**Please pay close attention to the vertical axis on each chart as this will tell you the type of change you are forecasting, in many cases it will be the rate of admissions or attendances, but some parameters require different assumptions, for example, about how length of stay might reduce or how the proportion of cases that are undertaken in a particular setting might reduce.**<br/>
 
 #### Your task
 
