@@ -7,7 +7,7 @@
 #' @noRd
 mod_mitigator_ui <- function(id) {
   ns <- shiny::NS(id)
-
+  
   shiny::fluidRow(
     col_12(
       shiny::uiOutput(ns("strategy")),
@@ -53,7 +53,7 @@ mod_mitigator_ui <- function(id) {
           shiny::fluidRow(
             col_8(
               shinycssloaders::withSpinner(
-                plotly::plotlyOutput(ns("trend_plot"), height = "600px")
+                plotly::plotlyOutput(ns("trend_plot"), height = "950px")
               )
             ),
             col_1(
@@ -66,7 +66,7 @@ mod_mitigator_ui <- function(id) {
                 step = 1,
                 orientation = "vertical",
                 width = "100%",
-                height = "500px",
+                height = "950px",
                 color = "#fcdf83",
                 format = shinyWidgets::wNumbFormat(decimals = 0)
               )
@@ -76,7 +76,14 @@ mod_mitigator_ui <- function(id) {
                 style = "position: absolute; top: 0px; width: 95%",
                 shiny::textAreaInput(
                   ns("why_lo"),
-                  label = "What factors make it a surprisingly low % reduction",
+                  label = HTML("Please provide a rationale for your forecasted range in the box below. <br> <br>
+                  Please consider using 'MIRE' as a prompt for structuring your rationale: <br>
+                  <ul>
+                  <li>Mechanism (e.g. Prevent, Redirect, Substitute, Relocate, Efficiencies, De-adoption)</li>
+                  <li>Intervention (the interventions or strategies being implemented)</li>
+                  <li>Resource (the workforce, estate, digital infrastructure, financial requirements/implications)</li>
+                  <li>Evidence (published evidence or experience/knowledge of intervention impact)</li>
+                  </ul>"),
                   width = "100%",
                   height = "200px"
                 )
@@ -85,7 +92,7 @@ mod_mitigator_ui <- function(id) {
                 style = "position: absolute; bottom: 0px; width: 95%",
                 shiny::textAreaInput(
                   ns("why_hi"),
-                  label = "What factors make it a surprisingly high % reduction", # nolint
+                  label = "Please describe any factors and/or barriers which may explain your surprisingly low percentage reduction value (or p10 value).", # nolint
                   width = "100%",
                   height = "200px"
                 )
