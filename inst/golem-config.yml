@@ -136,6 +136,14 @@ default:
         name: Frail Elderly Admissions (Intermediate Frailty Risk)
         label: "Rate per {n} Admissions"
         min_year: 201011
+      general_los_reduction_elective:
+        name: General LoS Reduction (Elective)
+        label: "Mean Length of Stay (days)"
+        min_year: 201011
+      general_los_reduction_emergency:
+        name: General LoS Reduction (Emergency)
+        label: "Mean Length of Stay (days)"
+        min_year: 201011
       intentional_self_harm:
         name: Intentional Self Harm Admissions
         label: "Rate per {n} Admissions"
@@ -192,6 +200,22 @@ default:
         name: Stroke Early Supported Discharge
         label: "Mean Length of Stay (days)"
         min_year: 201011
+      virtual_wards_activity_avoidance_ari:
+        name: Virtual Wards Admission Avoidance (Acute Respiratory Infection)
+        label: "Rate per {n} Admissions"
+        min_year: 201516
+      virtual_wards_efficiencies_ari:
+        name: Virtual Wards LoS Reduction (Acute Respiratory Infection)
+        label: "Mean Length of Stay (days)"
+        min_year: 201516
+      virtual_wards_activity_avoidance_heart_failure:
+        name: Virtual Wards Admission Avoidance (Heart Failure)
+        label: "Rate per {n} Admissions"
+        min_year: 201516
+      virtual_wards_efficiencies_heart_failure:
+        name: Virtual Wards LoS Reduction (Heart Failure)
+        label: "Mean Length of Stay (days)"
+        min_year: 201516
       zero_los_no_procedure-adult:
         name: Admission With No Overnight Stay and No Procedure (Adults)
         label: "Rate per {n} Admissions"
