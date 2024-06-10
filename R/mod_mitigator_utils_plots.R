@@ -117,7 +117,7 @@ mitigator_results_plot <- function(data, values, email) {
     ggplot2::geom_point(
       ggplot2::aes(
         x = .data[["lo"]],
-        text = .data[["comments_lo"]]
+        text = .data[["comments_hi"]]
       ),
       size = 3,
       show.legend = FALSE
@@ -125,7 +125,7 @@ mitigator_results_plot <- function(data, values, email) {
     ggplot2::geom_point(
       ggplot2::aes(
         x = .data[["hi"]],
-        text = .data[["comments_hi"]]
+        text = .data[["comments_lo"]]
       ),
       size = 3,
       show.legend = FALSE

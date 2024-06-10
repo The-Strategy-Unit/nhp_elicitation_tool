@@ -34,8 +34,8 @@ mod_complete_server <- function(id, email, strategies) {
           name = "Mitigator",
           lo = "Low",
           hi = "High",
-          comments_lo = "Low",
-          comments_hi = "High"
+          comments_lo = "High",
+          comments_hi = "Low"
         ) |>
         gt::tab_spanner("Values", c("lo", "hi")) |>
         gt::tab_spanner("Comments", c("comments_lo", "comments_hi")) |>
