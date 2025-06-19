@@ -11,10 +11,10 @@ mod_home_ui <- function(id) {
   shiny::tagList(
     shiny::fluidRow(
       bslib::layout_columns(
-        col_widths = c(8, 4),
+        col_widths = c(6, 6),
         bslib::card(
           bslib::card_title(
-            "Instructions"
+            ""
           ),
           bslib::card_body(
             md_file_to_html(
@@ -42,7 +42,8 @@ mod_home_ui <- function(id) {
               ),
               shiny::actionButton(
                 ns("start"),
-                "Start"
+                "Start",
+                width = "400px"
               ),
               gt::gt_output(
                 ns("selected_strategies")
