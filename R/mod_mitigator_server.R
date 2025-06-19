@@ -87,6 +87,24 @@ mod_mitigator_server <- function(id, email, strategies) {
       paste0(round(low_avg(), 1), "%")
     })
 
+    proj <- reactive({
+      #req(high1(), high2(), low1(), low2(), valid1(), valid2())
+      years <- 2025:2034
+      data.frame(
+        Year = years,
+        Low = c(rep(input$low_0_5, 5), rep(input$low_6_10, 5)),
+        High = c(rep(input$high_0_5, 5), rep(input$high_6_10, 5))
+      )
+    })
+
+    output$index_plot <- plotly::renderPlotly({
+      index_plot(hist_data, disc_data, proj())
+    })
+
+    output$growth_plot <- plotly::renderPlotly({
+      growth_plot(hist_data, disc_data, proj())
+    })
+
     # update the progress bar when the selected strategy changes
     # it indicates the % through based on the currently selected strategy, so
     # it will decrement when the user presses the previous button

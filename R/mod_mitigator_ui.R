@@ -17,7 +17,7 @@ mod_mitigator_ui <- function(id) {
     )
 
   bslib::layout_columns(
-    col_widths = c(8, 4, 6, 6, 12, 12),
+    col_widths = c(8, 4, 4, 4, 4, 12, 12),
     bslib::card(
       bslib::card_title(shiny::textOutput(ns("strategy"))),
       shiny::uiOutput(ns("mitigator_text"))
@@ -86,7 +86,16 @@ mod_mitigator_ui <- function(id) {
 
     bslib::card(
       bslib::card_header("Graph"),
-      bslib::card_body("Graphs here")
+      bslib::card_body(
+        plotly::plotlyOutput(ns("growth_plot"), height = "400px")
+      )
+    ),
+
+    bslib::card(
+      bslib::card_header("Graph"),
+      bslib::card_body(
+        plotly::plotlyOutput(ns("index_plot"), height = "400px")
+      )
     ),
 
     bslib::card(
