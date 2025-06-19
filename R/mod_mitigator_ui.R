@@ -50,12 +50,14 @@ mod_mitigator_ui <- function(id) {
               ns("high_0_5"),
               label = NULL,
               value = 0,
+              step = 0.1,
               width = "80px"
             )),
             tags$td(shiny::numericInput(
               ns("high_6_10"),
               label = NULL,
               value = 0,
+              step = 0.1,
               width = "80px"
             )),
             tags$td(shiny::textOutput(ns("high_avg")))
@@ -66,12 +68,14 @@ mod_mitigator_ui <- function(id) {
               ns("low_0_5"),
               label = NULL,
               value = 0,
+              step = 0.1,
               width = "80px"
             )),
             tags$td(shiny::numericInput(
               ns("low_6_10"),
               label = NULL,
               value = 0,
+              step = 0.1,
               width = "80px"
             )),
             tags$td(shiny::textOutput(ns("low_avg")))
