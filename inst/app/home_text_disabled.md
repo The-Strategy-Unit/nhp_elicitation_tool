@@ -1,4 +1,4 @@
-# Phase 1 has finished
+# Round 1 has finished
 
 Thank you so much for your participation in this exercise.
 Round 1 of the exercise is now closed.
