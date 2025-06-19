@@ -52,18 +52,18 @@ mod_home_server <- function(id) {
 
       s <- purrr::imap(um, \(t, s) strategies[[s]][t]) |>
         # order by the y-axis label, then the name of the mitigator
-        purrr::map(\(at) {
-          at |>
-            purrr::keep(~ .x$include %||% TRUE) |>
-            (\(.x) {
-              order <- .x |>
-                dplyr::bind_rows(.id = "id") |>
-                dplyr::arrange(.data[["label"]], .data[["name"]]) |>
-                dplyr::pull("id")
+        #purrr::map(\(at) {
+        #  at |>
+        #    purrr::keep(~ .x$include %||% TRUE) |>
+        #    (\(.x) {
+        #      order <- .x |>
+        #        dplyr::bind_rows(.id = "id") |>
+        #        dplyr::arrange(.data[["label"]], .data[["name"]]) |>
+        #        dplyr::pull("id")
 
-              .x[order]
-            })()
-        }) |>
+        #      .x[order]
+        #    })()
+        #}) |>
         purrr::flatten()
 
       if (!is_phase_1()) {
@@ -124,7 +124,7 @@ mod_home_server <- function(id) {
       n <- sum(cs$complete)
       d <- nrow(cs)
 
-      paste0(n, "/", d, " mitigators completed")
+      paste0(n, "/", d, " completed")
     })
 
     output$selected_strategies <- gt::render_gt({
@@ -136,7 +136,7 @@ mod_home_server <- function(id) {
         ) |>
         dplyr::select(-"strategy", -"min_year") |>
         gt::gt(groupname_col = "label") |>
-        gt::cols_label(name = "Mitigator") |>
+        gt::cols_label(name = "Service Area") |>
         gt::tab_options(
           row_group.border.top.width = gt::px(2),
           row_group.border.top.color = "black",

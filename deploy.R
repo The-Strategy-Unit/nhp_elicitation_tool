@@ -11,8 +11,4 @@ deploy <- function(name) {
   )
 }
 
-# prod
-deploy("nhp_elicitation_tool_prod")
-
-# dev
-deploy("nhp_elicitation_tool")
+deploy("nhp_elicitation_thf")

@@ -12,7 +12,7 @@ Description: A shiny app for the NHP national elicitation project
 License: MIT + file LICENSE
 Imports: 
     base64enc,
-    bs4Dash,
+    bslib,
     config (>= 0.3.1),
     DBI,
     dbplyr,

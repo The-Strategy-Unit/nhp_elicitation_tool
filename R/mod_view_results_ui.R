@@ -18,70 +18,35 @@ mod_view_results_ui <- function(id) {
 
 
   ns <- shiny::NS(id)
-  shiny::tagList(
-    shiny::fluidRow(
+
+  bslib::layout_columns(
+    col_widths = c(3, 3, 3, 3, 12),
+    bslib::value_box(
+      title = "Total Users",
+      value = shiny::textOutput(ns("total_users")),
+      showcase = bsicons::bs_icon("people")
+    ),
+    bslib::value_box(
+      title = "Partially Completed",
+      value = shiny::textOutput(ns("partially_completed")),
+      showcase = bsicons::bs_icon("flag")
+    ),
+    bslib::value_box(
+      title = "Fully Completed",
+      value = shiny::textOutput(ns("fully_completed")),
+      showcase = bsicons::bs_icon("check")
+    ),
+    bslib::card(
+      shiny::downloadButton(ns("download_results"), "Download results")
+    ),
+    bslib::card(
+      bslib::card_header("Results"),
       shiny::selectInput(
         ns("strategy"),
         "Strategies",
         strategies
-      )
-    ),
-    shiny::fluidRow(
-      bs4Dash::bs4Card(
-        title = "Distributions",
-        width = 4,
-        collapsible = FALSE,
-        shiny::plotOutput(ns("distributions"), height = "600px")
       ),
-      bs4Dash::bs4Card(
-        title = "Individuals",
-        width = 4,
-        collapsible = FALSE,
-        shiny::plotOutput(ns("individuals"), height = "600px")
-      ),
-      bs4Dash::bs4Card(
-        title = "Completed",
-        width = 4,
-        collapsible = FALSE,
-        shiny::fluidRow(
-          bs4Dash::infoBox(
-            "Total Users",
-            shiny::textOutput(ns("total_users")),
-            icon = shiny::icon(
-              "user",
-              lib = "glyphicon"
-            ),
-            color = "primary"
-          ),
-          bs4Dash::infoBox(
-            "Partialy Completed",
-            shiny::textOutput(ns("partially_completed")),
-            icon = shiny::icon(
-              "flag",
-              lib = "glyphicon"
-            ),
-            color = "warning"
-          ),
-          bs4Dash::infoBox(
-            "Fully Completed",
-            shiny::textOutput(ns("fully_completed")),
-            icon = shiny::icon(
-              "ok",
-              lib = "glyphicon"
-            ),
-            color = "success"
-          )
-        ),
-        shiny::plotOutput(
-          ns("completed_plot")
-        )
-      )
-    ),
-    shiny::fluidRow(
-      shiny::downloadButton(
-        ns("download_results"),
-        "Download results"
-      )
+      shiny::plotOutput(ns("individuals"))
     )
   )
 }

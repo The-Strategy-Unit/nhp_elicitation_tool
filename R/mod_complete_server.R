@@ -15,10 +15,10 @@ mod_complete_server <- function(id, email, strategies) {
       r <- get_latest_results(email()) |>
         dplyr::select(
           "strategy",
-          "lo",
-          "hi",
-          "comments_lo",
-          "comments_hi"
+          "low_avg",
+          "high_avg",
+          "comments_low",
+          "comments_high"
         )
 
       s |>
@@ -31,15 +31,15 @@ mod_complete_server <- function(id, email, strategies) {
       results_data() |>
         gt::gt(groupname_col = "label", rowname_col = "strategy") |>
         gt::cols_label(
-          name = "Mitigator",
-          lo = "Low",
-          hi = "High",
-          comments_lo = "Low",
-          comments_hi = "High"
+          name = "Service Area",
+          low_avg = "Low",
+          high_avg = "High",
+          comments_low = "Low",
+          comments_high = "High"
         ) |>
-        gt::tab_spanner("Values", c("lo", "hi")) |>
-        gt::tab_spanner("Comments", c("comments_lo", "comments_hi")) |>
-        gt::fmt_integer(c("lo", "hi")) |>
+        gt::tab_spanner("Values", c("low_avg", "high_avg")) |>
+        gt::tab_spanner("Comments", c("comments_low", "comments_high")) |>
+        gt::fmt_number(c("lo", "hi"), decimals = 1) |>
         gt::tab_options(
           row_group.border.top.width = gt::px(2),
           row_group.border.top.color = "black",

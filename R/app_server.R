@@ -17,11 +17,7 @@ app_server <- function(input, output, session) {
     mod_complete_server("complete", email, strategies)
 
     shiny::observe({
-      shiny::updateTabsetPanel(
-        session,
-        "tabset",
-        "tab_mitigator"
-      )
+      bslib::nav_select("panels", "tab_mitigator")
     }) |>
       shiny::bindEvent(strategies())
 
@@ -30,24 +26,15 @@ app_server <- function(input, output, session) {
       shiny::req(complete)
 
       if (complete == "complete") {
-        shiny::updateTabsetPanel(
-          session,
-          "tabset",
-          "tab_complete"
-        )
+        bslib::nav_select("panels", "tab_complete")
       } else if (complete == "restart") {
-        shiny::updateTabsetPanel(
-          session,
-          "tabset",
-          "tab_mitigator"
-        )
+        bslib::nav_select("panels", "tab_mitigator")
       }
     }) |>
       shiny::bindEvent(session$userData$complete())
   }
 
   mod_view_results_server("view_results")
-
 
   shiny::observe({
     is_local <- Sys.getenv("SHINY_PORT") == ""
@@ -59,11 +46,7 @@ app_server <- function(input, output, session) {
     query <- shiny::parseQueryString(session$clientData$url_search)
 
     if ("results" %in% names(query)) {
-      shiny::updateTabsetPanel(
-        session,
-        "tabset",
-        "tab_results"
-      )
+      bslib::nav_select("panels", "tab_results")
     }
   })
 }

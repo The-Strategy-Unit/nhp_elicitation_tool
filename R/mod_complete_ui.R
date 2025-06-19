@@ -31,9 +31,10 @@ mod_complete_ui <- function(id) {
           }
         )
       )
-    ),
-    shinycssloaders::withSpinner(
-      gt::gt_output(ns("results"))
-    )
+    ) #,
+    # shinycssloaders::withSpinner(
+    #   "Hi"
+    #   #gt::gt_output(ns("results"))
+    # )
   )
 }

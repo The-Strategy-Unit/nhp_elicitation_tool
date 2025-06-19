@@ -6,38 +6,6 @@ mod_mitigator_server <- function(id, email, strategies) {
     # suppresses lintr warnings in vscode
     .data <- rlang::.data
 
-    # load the data
-    trend_data <- app_sys("app", "data", "trend_data.csv") |>
-      readr::read_csv(col_types = "dcddd")
-
-    # keep track of the minimum year in the data, so we always show the same
-    # range on the x-axis
-    min_year <- min(trend_data$year)
-
-    # admin stuff --------------------------------------------------------------
-    shiny::observe({
-      is_local <- Sys.getenv("SHINY_PORT") == ""
-
-      if (!is_local) {
-        shiny::req(session$user)
-      }
-
-      shinyjs::show("change_strat")
-
-      s <- purrr::map(strategies(), "name")
-
-      shiny::updateSelectInput(
-        session,
-        "change_strat",
-        choices = purrr::set_names(names(s), unname(s))
-      )
-    })
-
-    shiny::observe({
-      s <- shiny::req(input$change_strat)
-      selected_strategy(which(s == names(strategies())))
-    })
-
     # reactives ----------------------------------------------------------------
 
     # this reactive value holds the index of the currently selected strategy
@@ -47,22 +15,11 @@ mod_mitigator_server <- function(id, email, strategies) {
     # have been visited, and is used to show/hide the complete button
     has_visited_all_strategies <- shiny::reactiveVal()
 
-    # when the selected_strategy changes, get the name to display in the title
-    selected_strategy_text <- shiny::reactive({
-      s <- selected_strategy()
-      strategies()[[s]]$name
-    })
-
     # when the selected_strategy changes, get the id of the strategy to use
     # for selecting data
     selected_strategy_id <- shiny::reactive({
       s <- selected_strategy()
       names(strategies())[[s]]
-    })
-
-    selected_strategy_min_year <- shiny::reactive({
-      s <- selected_strategy()
-      strategies()[[s]]$min_year %||% min_year
     })
 
     # when the selected_strategy changes, get the "group" to use for loading
@@ -72,61 +29,6 @@ mod_mitigator_server <- function(id, email, strategies) {
       selected_strategy_id() |>
         shiny::req() |>
         stringr::str_remove("-.*$")
-    })
-
-    # when the selected strategy changes, subset the data for that strategy
-    selected_data <- shiny::reactive({
-      dplyr::filter(
-        trend_data,
-        .data[["strategy"]] == selected_strategy_id(),
-        .data[["year"]] >= selected_strategy_min_year()
-      )
-    })
-
-    # for charts that show a rate per N admissions, figure out what scale to
-    # use for N. for all othe charts, the scale is 1.
-    selected_data_scale <- shiny::reactive({
-      s <- selected_strategy()
-      if (!strategies()[[s]]$label |> stringr::str_detect("\\{n\\}")) {
-        return(1)
-      }
-      v <- mean(selected_data()$rate)
-      10^round(1 - log10(v))
-    })
-
-    # choose the format to use for the y-axis values in the chart. if the
-    # y-axis label contains a % character, then format as a percentage.
-    # otherwise, format as a number using the scale determined by
-    # selected_data_scale
-    value_format <- shiny::reactive({
-      s <- selected_strategy()
-      if (strategies()[[s]]$label |> stringr::str_detect("\\%")) {
-        return(scales::percent_format(accuracy = 0.1))
-      }
-
-      scales::number_format(accuracy = 0.1, scale = selected_data_scale())
-    })
-
-    # get the title to use for the y-axis
-    y_axis_title <- shiny::reactive({
-      s <- selected_strategy()
-      n <- scales::comma(selected_data_scale())
-      glue::glue(strategies()[[s]]$label)
-    })
-
-    # for the chart, figure out what the future values are to display on the
-    # chart as the yellow highlighted area
-    param_table <- shiny::reactive({
-      last_year <- selected_data() |>
-        dplyr::slice_tail(n = 1)
-
-      p <- 1 - input$param_values / 100
-
-      tibble::tibble(
-        year = last_year$year + c(0, 2020),
-        value_lo = last_year$rate * c(1, p[[1]]),
-        value_hi = last_year$rate * c(1, p[[2]])
-      )
     })
 
     # observers ----------------------------------------------------------------
@@ -159,6 +61,22 @@ mod_mitigator_server <- function(id, email, strategies) {
       }
     })
 
+    high_avg <- shiny::reactive({
+      (input$high_0_5 + input$high_6_10) / 2
+    })
+
+    output$high_avg <- shiny::renderText({
+      paste0(round(high_avg(), 1), "%")
+    })
+
+    low_avg <- shiny::reactive({
+      (input$low_0_5 + input$low_6_10) / 2
+    })
+
+    output$low_avg <- shiny::renderText({
+      paste0(round(low_avg(), 1), "%")
+    })
+
     # update the progress bar when the selected strategy changes
     # it indicates the % through based on the currently selected strategy, so
     # it will decrement when the user presses the previous button
@@ -166,7 +84,7 @@ mod_mitigator_server <- function(id, email, strategies) {
       s <- selected_strategy()
       n <- length(strategies())
 
-      shinyWidgets::updateProgressBar(session, "progress", s - 1, n)
+      shinyWidgets::updateProgressBar(session, "progress", s, n)
     })
 
     # when the selected strategy is changed, get the data from the db and
@@ -183,10 +101,14 @@ mod_mitigator_server <- function(id, email, strategies) {
       v <- if (nrow(v) == 0) {
         if (is_phase_1()) {
           list(
-            lo = 0,
-            hi = 100,
-            comments_lo = "",
-            comments_hi = ""
+            low_0_5 = 0,
+            low_6_10 = 0,
+            low_avg = 0,
+            high_0_5 = 0,
+            high_6_10 = 0,
+            high_avg = 0,
+            comments_low = "",
+            comments_high = ""
           )
         } else {
           v <- as.list(get_latest_results(e, s, TRUE))
@@ -195,16 +117,42 @@ mod_mitigator_server <- function(id, email, strategies) {
         as.list(v)
       }
 
-      shinyWidgets::updateNoUiSliderInput(
+      shiny::updateNumericInput(
         session,
-        "param_values",
-        value = c(v$lo, v$hi)
+        "low_0_5",
+        value = v$low_0_5
       )
 
-      shiny::updateTextAreaInput(session, "why_lo", value = v$comments_lo)
-      shiny::updateTextAreaInput(session, "why_hi", value = v$comments_hi)
+      shiny::updateNumericInput(
+        session,
+        "low_6_10",
+        value = v$low_6_10
+      )
+
+      shiny::updateNumericInput(
+        session,
+        "high_0_5",
+        value = v$high_0_5
+      )
+
+      shiny::updateNumericInput(
+        session,
+        "high_6_10",
+        value = v$high_6_10
+      )
+
+      shiny::updateTextAreaInput(
+        session,
+        "comments_low",
+        value = v$comments_low
+      )
+      shiny::updateTextAreaInput(
+        session,
+        "comments_high",
+        value = v$comments_high
+      )
     }) |>
-      shiny::bindEvent(selected_strategy_id())
+      shiny::bindEvent(selected_strategy_id(), strategies())
 
     # handle the next/previous buttons
     # in both cases, these call the `button_pressed` helper with a value that
@@ -235,9 +183,14 @@ mod_mitigator_server <- function(id, email, strategies) {
         insert_data(
           email(),
           s,
-          input$param_values,
-          input$why_lo,
-          input$why_hi
+          input$low_0_5,
+          input$low_6_10,
+          low_avg(),
+          input$high_0_5,
+          input$high_6_10,
+          high_avg(),
+          input$comments_low,
+          input$comments_high
         )
       )
     }
@@ -299,8 +252,8 @@ mod_mitigator_server <- function(id, email, strategies) {
     # output renderers ---------------------------------------------------------
 
     # the title displayed at the top of the page
-    output$strategy <- shiny::renderUI({
-      shiny::tags$h2(selected_strategy_text())
+    output$strategy <- shiny::renderText({
+      strategies()[[selected_strategy()]]$name
     })
 
     # the box next to the chart which shows the text describing the selected
@@ -311,27 +264,6 @@ mod_mitigator_server <- function(id, email, strategies) {
       md_file_to_html("app", "mitigators_text", paste0(s, ".md"))
     })
 
-    # the main plot that shows the trend data and the selected range of values
-    output$trend_plot <- plotly::renderPlotly({
-      # ggplot throws a warning about an unknown aesthetic, because we override
-      # the plotly tooltip.
-      p <- suppressWarnings(
-        mitigator_trend_plot(
-          selected_data(),
-          param_table(),
-          value_format(),
-          min_year,
-          y_axis_title()
-        )
-      )
-
-      plotly::ggplotly(p, tooltip = "text") |>
-        plotly::config(
-          displayModeBar = FALSE,
-          displaylogo = FALSE
-        )
-    })
-
     if (!is_phase_1()) {
       output$results_plot <- plotly::renderPlotly({
         p <- suppressWarnings(
@@ -340,18 +272,30 @@ mod_mitigator_server <- function(id, email, strategies) {
               phase_1 = TRUE,
               strategy = selected_strategy_id()
             ),
-            input$param_values,
+            values = list(low_avg(), high_avg()), # input$param_values,
             email()
           )
         )
 
         plotly::ggplotly(p, tooltip = "text") |>
+          plotly::style(hoverinfo = "none", traces = 2) |>
           plotly::config(
             displayModeBar = FALSE,
             displaylogo = FALSE
           )
       })
     }
+
+    output$results_table <- shiny::renderTable({
+      mitigator_results_table(
+        get_all_users_results(
+          phase_1 = TRUE,
+          strategy = selected_strategy_id()
+        ),
+        values = list(low_avg(), high_avg()), # input$param_values,
+        email()
+      )
+    })
 
     # return -------------------------------------------------------------------
     # no need to return anything from this module

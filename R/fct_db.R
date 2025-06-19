@@ -23,10 +23,14 @@ get_db <- function(envir = parent.frame()) {
         email = "TEXT NOT NULL",
         timestamp = "INT NOT NULL",
         strategy = "TEXT NOT NULL",
-        lo = "REAL NOT NULL",
-        hi = "REAL NOT NULL",
-        comments_lo = "TEXT NOT NULL",
-        comments_hi = "TEXT NOT NULL"
+        low_0_5 = "REAL NOT NULL",
+        low_6_10 = "REAL NOT NULL",
+        low_avg = "REAL NOT NULL",
+        high_0_5 = "REAL NOT NULL",
+        high_6_10 = "REAL NOT NULL",
+        high_avg = "REAL NOT NULL",
+        comments_low = "TEXT NOT NULL",
+        comments_high = "TEXT NOT NULL"
       )
     )
 
@@ -39,7 +43,18 @@ get_db <- function(envir = parent.frame()) {
   return(con)
 }
 
-insert_data <- function(email, strategy, values, comments_lo, comments_hi) {
+insert_data <- function(
+  email,
+  strategy,
+  low_0_5,
+  low_6_10,
+  low_avg,
+  high_0_5,
+  high_6_10,
+  high_avg,
+  comments_low,
+  comments_high
+) {
   id <- uuid::UUIDgenerate()
   timestamp <- as.integer(Sys.time())
 
@@ -51,10 +66,14 @@ insert_data <- function(email, strategy, values, comments_lo, comments_hi) {
       email = email,
       timestamp = timestamp,
       strategy = strategy,
-      lo = values[[1]],
-      hi = values[[2]],
-      comments_lo = comments_lo,
-      comments_hi = comments_hi
+      low_0_5 = low_0_5,
+      low_6_10 = low_6_10,
+      low_avg = low_avg,
+      high_0_5 = high_0_5,
+      high_6_10 = high_6_10,
+      high_avg = high_avg,
+      comments_low = comments_low,
+      comments_high = comments_high
     )
   )
 
@@ -62,8 +81,9 @@ insert_data <- function(email, strategy, values, comments_lo, comments_hi) {
 }
 
 lazy_get_latest_results <- function(
-    phase_1,
-    con = get_db(parent.frame())) {
+  phase_1,
+  con = get_db(parent.frame())
+) {
   res <- dplyr::tbl(con, "results")
 
   if (!missing(phase_1)) {
