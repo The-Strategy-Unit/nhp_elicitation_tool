@@ -6,6 +6,16 @@ mod_mitigator_server <- function(id, email, strategies) {
     # suppresses lintr warnings in vscode
     .data <- rlang::.data
 
+    # load the data
+    hist_data <- app_sys("app", "data", "hist_data.csv") |>
+      readr::read_csv()
+
+    cagr_data <- app_sys("app", "data", "cagr_data.csv") |>
+      readr::read_csv()
+
+    disc_data <- app_sys("app", "data", "disc_data.csv") |>
+      readr::read_csv()
+
     # reactives ----------------------------------------------------------------
 
     # this reactive value holds the index of the currently selected strategy
