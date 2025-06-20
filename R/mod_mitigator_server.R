@@ -97,6 +97,10 @@ mod_mitigator_server <- function(id, email, strategies) {
       )
     })
 
+    output$cagr_table <- shiny::renderTable(
+      cagr_data
+    )
+
     output$index_plot <- plotly::renderPlotly({
       index_plot(hist_data, disc_data, proj())
     })
