@@ -79,24 +79,27 @@ mod_mitigator_server <- function(id, email, strategies) {
 
     high_avg <- shiny::reactive({
       shiny::req(valid_inputs())
-      (((1 + input$high_0_5 / 100)^5 * (1 + input$high_6_10 / 100)^5)^(1 / 10) -
+      ((((1 + input$high_0_5 / 100)^5 * (1 + input$high_6_10 / 100)^5)^(1 /
+        10) -
         1) *
-        100
+        100) |>
+        round(1)
     })
 
     output$high_avg <- shiny::renderText({
-      paste0(round(high_avg(), 1), "%")
+      paste0(high_avg(), "%")
     })
 
     low_avg <- shiny::reactive({
       shiny::req(valid_inputs())
-      (((1 + input$low_0_5 / 100)^5 * (1 + input$low_6_10 / 100)^5)^(1 / 10) -
+      ((((1 + input$low_0_5 / 100)^5 * (1 + input$low_6_10 / 100)^5)^(1 / 10) -
         1) *
-        100
+        100) |>
+        round(1)
     })
 
     output$low_avg <- shiny::renderText({
-      paste0(round(low_avg(), 1), "%")
+      paste0(low_avg(), "%")
     })
 
     proj <- reactive({
