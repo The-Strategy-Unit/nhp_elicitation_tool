@@ -126,7 +126,7 @@ If these values vary across the two time periods, please provide an explanation 
             plotly::plotlyOutput(ns("results_plot"), height = "400px")
           ),
 
-          shiny::tableOutput(ns("results_table"))
+          reactable::reactableOutput(ns("results_table"))
         )
       )
     }

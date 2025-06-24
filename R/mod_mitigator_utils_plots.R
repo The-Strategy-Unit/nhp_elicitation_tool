@@ -2,13 +2,13 @@ mitigator_results_table <- function(data, values, email) {
   data |>
     dplyr::mutate(
       is_me = .data[["email"]] == .env[["email"]],
-      mean = (.data[["low_avg"]] + .data[["high_avg"]]) / 2
+      mean = (.data[["low_avg"]] + .data[["high_avg"]]) / 2 # This mean is just used for arranging the rows
     ) |>
     dplyr::arrange(.data[["mean"]]) |>
     dplyr::mutate(
       y = dplyr::row_number()
     ) |>
-    dplyr::select(-y, -email, -timestamp, -strategy)
+    dplyr::select(-y, -email, -timestamp, -strategy, -mean)
 }
 
 mitigator_results_plot <- function(data, values, email) {
@@ -72,7 +72,8 @@ mitigator_results_plot <- function(data, values, email) {
       axis.text.y = ggplot2::element_blank(),
       axis.ticks.y = ggplot2::element_blank(),
       axis.title = ggplot2::element_blank()
-    )
+    ) +
+    ggplot2::scale_y_reverse()
 }
 
 index_plot <- function(hist_data, disc_data, proj) {

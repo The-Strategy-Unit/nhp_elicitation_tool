@@ -349,7 +349,7 @@ mod_mitigator_server <- function(id, email, strategies) {
       })
     }
 
-    output$results_table <- shiny::renderTable({
+    output$results_table <- reactable::renderReactable({
       mitigator_results_table(
         get_all_users_results(
           phase_1 = TRUE,
@@ -357,7 +357,37 @@ mod_mitigator_server <- function(id, email, strategies) {
         ),
         values = list(low_avg(), high_avg()), # input$param_values,
         email()
-      )
+      ) |>
+        reactable::reactable(
+          columns = list(
+            low_0_5 = colDef(name = "Low (0–5 yrs)"),
+            low_6_10 = colDef(name = "Low (6–10 yrs)"),
+            low_avg = colDef(
+              name = "Low (10-yr avg)",
+              style = list(fontWeight = "bold")
+            ),
+            high_0_5 = colDef(name = "High (0–5 yrs)"),
+            high_6_10 = colDef(name = "High (6–10 yrs)"),
+            high_avg = colDef(
+              name = "High (10-yr avg)",
+              style = list(fontWeight = "bold")
+            ),
+            comments_low = colDef(name = "Low rationale"),
+            comments_high = colDef(name = "High rationale"),
+            is_me = colDef(show = FALSE)
+          ),
+          rowStyle = reactable::JS(
+            "
+          function(rowInfo) {
+            if (rowInfo.row.is_me) {
+              return { backgroundColor: '#5881c1', color: '#ffffff' }
+            } else {
+              return { backgroundColor: '#ffffff', color: '#000000' }
+            }
+          }
+        "
+          )
+        )
     })
 
     # return -------------------------------------------------------------------
