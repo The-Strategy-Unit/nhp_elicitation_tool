@@ -14,12 +14,11 @@ mod_view_results_server <- function(id) {
             2
           ),
           .after = "timestamp"
-        ) |>
-        dplyr::mutate(group = get_golem_config("group"))
+        )
     })
 
     output$download_results <- shiny::downloadHandler(
-      file = paste0(get_golem_config("group"), "_results.csv"),
+      "results.csv",
       content = \(filename) {
         readr::write_csv(all_data(), filename)
       }
@@ -89,10 +88,12 @@ mod_view_results_server <- function(id) {
 
     output$individuals <- shiny::renderPlot({
       results_data() |>
-        #dplyr::filter(
-        #  !(.data[["lo"]] == get_golem_config("range")$low &
-        #    .data[["hi"]] == get_golem_config("range")$high)
-        #) |> # Remove any values left at default
+        dplyr::filter(
+          !(.data[["low_0_5"]] == 0 &
+            .data[["low_6_10"]] == 0 &
+            .data[["high_0_5"]] == 0 &
+            .data[["high_6_10"]] == 0)
+        ) |> # Remove any values left at default
         ggplot2::ggplot(
           ggplot2::aes(x = .data[["low_avg"]], y = .data[["rn"]])
         ) +
@@ -106,10 +107,6 @@ mod_view_results_server <- function(id) {
           size = 4
         ) +
         ggplot2::theme_minimal(base_size = 16) +
-        #ggplot2::xlim(
-        #  get_golem_config("range")$low,
-        #  get_golem_config("range")$high
-        #) +
         ggplot2::theme(
           axis.text.y = ggplot2::element_blank(),
           axis.title = ggplot2::element_blank(),

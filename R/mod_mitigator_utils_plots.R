@@ -17,11 +17,6 @@ mitigator_results_plot <- function(data, values, email) {
       is_me = .data[["email"]] == .env[["email"]],
       mean = (.data[["low_avg"]] + .data[["high_avg"]]) / 2
     ) |>
-    #dplyr::filter(
-    #  .data[["is_me"]] |
-    #    !(.data[["lo"]] == get_golem_config("range")$low &
-    #      .data[["hi"]] == get_golem_config("range")$high)
-    #) |>
     dplyr::arrange(.data[["mean"]]) |>
     dplyr::mutate(
       y = dplyr::row_number()
@@ -70,10 +65,6 @@ mitigator_results_plot <- function(data, values, email) {
     ) +
     ggplot2::scale_colour_manual(
       values = c("TRUE" = "#5881c1", "FALSE" = "#9d928a")
-    ) +
-    ggplot2::xlim(
-      get_golem_config("range")$low,
-      get_golem_config("range")$high
     ) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
@@ -151,7 +142,7 @@ growth_plot <- function(hist_data, disc_data, proj) {
     ggplot2::geom_col(position = "identity", alpha = 0.8) +
     ggplot2::geom_hline(
       yintercept = 0,
-      #yintercept = long_term_avg, FIX
+      #yintercept = long_term_avg, #TODO
       linetype = "dotted",
       color = "#333"
     ) +

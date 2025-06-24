@@ -2,10 +2,6 @@ default:
   golem_name: nhp.elicitation.tool
   golem_version: 0.0.0.9000
   app_prod: no
-  range:
-    low: -10
-    high: 10
-  group: "team_a"
   strategies:
     thf:
       a_productivity:
