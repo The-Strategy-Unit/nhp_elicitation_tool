@@ -10,6 +10,10 @@ hex_string_to_raw <- function(s) {
     as.raw()
 }
 
+is_valid_number <- function(x) {
+  !is.null(x) && is.numeric(x) && !is.na(x)
+}
+
 hash_email <- function(email, salt = Sys.getenv("NHP_SALT")) {
   if (Sys.getenv("SKIP_HASHING") != "") {
     return(email)

@@ -71,7 +71,10 @@ mod_mitigator_server <- function(id, email, strategies) {
       }
     })
 
+    # Validation
+
     high_avg <- shiny::reactive({
+      shiny::req(valid_inputs())
       (((1 + input$high_0_5 / 100)^5 * (1 + input$high_6_10 / 100)^5)^(1 / 10) -
         1) *
         100
@@ -82,6 +85,7 @@ mod_mitigator_server <- function(id, email, strategies) {
     })
 
     low_avg <- shiny::reactive({
+      shiny::req(valid_inputs())
       (((1 + input$low_0_5 / 100)^5 * (1 + input$low_6_10 / 100)^5)^(1 / 10) -
         1) *
         10
@@ -92,7 +96,7 @@ mod_mitigator_server <- function(id, email, strategies) {
     })
 
     proj <- reactive({
-      #req(high1(), high2(), low1(), low2(), valid1(), valid2()) # TODO
+      shiny::req(valid_inputs())
       years <- 2025:2034
       data.frame(
         Year = years,
@@ -123,9 +127,30 @@ mod_mitigator_server <- function(id, email, strategies) {
       shinyWidgets::updateProgressBar(session, "progress", s, n)
     })
 
+    # Validation
+
+    valid_inputs <- reactive({
+      is_valid_number(input$low_0_5) &
+        is_valid_number(input$low_6_10) &
+        is_valid_number(input$high_0_5) &
+        is_valid_number(input$high_6_10) &
+        (input$high_6_10 >= input$low_6_10) &
+        (input$high_0_5 >= input$low_0_5)
+    })
+
+    output$validation_status <- shiny::renderText({
+      text <- ifelse(
+        !valid_inputs(),
+        "Please enter a numeric value for all estimates. Your surprisingly low estimate must be lower than your surprisingly high estimate for each time period.",
+        ""
+      )
+      text
+    })
+
     # Enforce rounding to 1dp
 
     shiny::observeEvent(input$low_0_5, {
+      shiny::req(valid_inputs())
       rounded_val <- round(input$low_0_5, 1)
       if (rounded_val != input$low_0_5) {
         shiny::updateNumericInput(session, "low_0_5", value = rounded_val)
@@ -133,6 +158,7 @@ mod_mitigator_server <- function(id, email, strategies) {
     })
 
     shiny::observeEvent(input$high_0_5, {
+      shiny::req(valid_inputs())
       rounded_val <- round(input$high_0_5, 1)
       if (rounded_val != input$high_0_5) {
         shiny::updateNumericInput(session, "high_0_5", value = rounded_val)
@@ -140,6 +166,7 @@ mod_mitigator_server <- function(id, email, strategies) {
     })
 
     shiny::observeEvent(input$low_6_10, {
+      shiny::req(valid_inputs())
       rounded_val <- round(input$low_6_10, 1)
       if (rounded_val != input$low_6_10) {
         shiny::updateNumericInput(session, "low_6_10", value = rounded_val)
@@ -147,6 +174,7 @@ mod_mitigator_server <- function(id, email, strategies) {
     })
 
     shiny::observeEvent(input$high_6_10, {
+      shiny::req(valid_inputs())
       rounded_val <- round(input$high_6_10, 1)
       if (rounded_val != input$high_6_10) {
         shiny::updateNumericInput(session, "high_6_10", value = rounded_val)
@@ -158,6 +186,7 @@ mod_mitigator_server <- function(id, email, strategies) {
     # update the inputs, or use default values if the user has not yet saved
     # anything for this strategy
     shiny::observe({
+      shiny::req(valid_inputs())
       e <- email()
       s <- selected_strategy_id()
 
@@ -364,21 +393,21 @@ mod_mitigator_server <- function(id, email, strategies) {
       ) |>
         reactable::reactable(
           columns = list(
-            low_0_5 = colDef(name = "Low (0–5 yrs)"),
-            low_6_10 = colDef(name = "Low (6–10 yrs)"),
-            low_avg = colDef(
+            low_0_5 = reactable::colDef(name = "Low (0–5 yrs)"),
+            low_6_10 = reactable::colDef(name = "Low (6–10 yrs)"),
+            low_avg = reactable::colDef(
               name = "Low (10-yr avg)",
               style = list(fontWeight = "bold")
             ),
-            high_0_5 = colDef(name = "High (0–5 yrs)"),
-            high_6_10 = colDef(name = "High (6–10 yrs)"),
-            high_avg = colDef(
+            high_0_5 = reactable::colDef(name = "High (0–5 yrs)"),
+            high_6_10 = reactable::colDef(name = "High (6–10 yrs)"),
+            high_avg = reactable::colDef(
               name = "High (10-yr avg)",
               style = list(fontWeight = "bold")
             ),
-            comments_low = colDef(name = "Low rationale"),
-            comments_high = colDef(name = "High rationale"),
-            is_me = colDef(show = FALSE)
+            comments_low = reactable::colDef(name = "Low rationale"),
+            comments_high = reactable::colDef(name = "High rationale"),
+            is_me = reactable::colDef(show = FALSE)
           ),
           rowStyle = reactable::JS(
             "

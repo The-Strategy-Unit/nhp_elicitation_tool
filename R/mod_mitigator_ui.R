@@ -69,7 +69,8 @@ mod_mitigator_ui <- function(id) {
             tags$td(shiny::textOutput(ns("low_avg")))
           )
         )
-      )
+      ),
+      shiny::textOutput(ns("validation_status"))
     ),
 
     bslib::card(
