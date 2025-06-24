@@ -30,8 +30,8 @@ mitigator_results_plot <- function(data, values, email) {
     ggplot2::geom_rect(
       xmin = values[[1]],
       xmax = values[[2]],
-      ymin = 0,
-      ymax = nrow(data) + 1,
+      ymax = 0,
+      ymin = -(nrow(data) + 1),
       fill = "#fef2cd",
       text = "hi",
       show.legend = FALSE
