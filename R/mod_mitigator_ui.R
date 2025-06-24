@@ -17,7 +17,7 @@ mod_mitigator_ui <- function(id) {
     )
 
   bslib::layout_columns(
-    col_widths = c(6, 6, 4, 4, 4, 12),
+    col_widths = c(6, 6, 6, 6, 12),
     bslib::card(
       bslib::card_title(shiny::textOutput(ns("strategy"))),
       shiny::uiOutput(ns("mitigator_text")),
@@ -78,28 +78,28 @@ mod_mitigator_ui <- function(id) {
         "Please provide a rationale for your surprisingly low and surprisingly high values, including any main enablers and barriers to productivity.
 If these values vary across the two time periods, please provide an explanation for this."
       ),
-      bslib::layout_column_wrap(
-        width = 1 / 2,
-        shiny::textAreaInput(
-          ns("comments_low"),
-          label = "Surpringly low",
-          width = "100%",
-          height = "200px"
-        ),
-        shiny::textAreaInput(
-          ns("comments_high"),
-          label = "Surprisingly high",
-          width = "100%",
-          height = "200px"
-        )
+
+      shiny::textAreaInput(
+        ns("comments_high"),
+        label = "Surprisingly high",
+        width = "100%",
+        height = "100px"
       ),
+
+      shiny::textAreaInput(
+        ns("comments_low"),
+        label = "Surpringly low",
+        width = "100%",
+        height = "100px"
+      ),
+
       complete_button
     ),
 
-    bslib::card(
-      bslib::card_header("Long term historic averages (CAGR % per annum)"),
-      shiny::tableOutput(ns("cagr_table"))
-    ),
+    # bslib::card(
+    #   bslib::card_header("Long term historic averages (CAGR % per annum)"),
+    #   shiny::tableOutput(ns("cagr_table"))
+    # ),
 
     bslib::card(
       bslib::card_header("Growth plot"),
