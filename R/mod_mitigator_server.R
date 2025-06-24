@@ -72,7 +72,9 @@ mod_mitigator_server <- function(id, email, strategies) {
     })
 
     high_avg <- shiny::reactive({
-      (input$high_0_5 + input$high_6_10) / 2 #TODO
+      (((1 + input$high_0_5 / 100)^5 * (1 + input$high_6_10 / 100)^5)^(1 / 10) -
+        1) *
+        100
     })
 
     output$high_avg <- shiny::renderText({
@@ -80,7 +82,9 @@ mod_mitigator_server <- function(id, email, strategies) {
     })
 
     low_avg <- shiny::reactive({
-      (input$low_0_5 + input$low_6_10) / 2 # TODO
+      (((1 + input$low_0_5 / 100)^5 * (1 + input$low_6_10 / 100)^5)^(1 / 10) -
+        1) *
+        10
     })
 
     output$low_avg <- shiny::renderText({
