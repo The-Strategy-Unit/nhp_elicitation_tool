@@ -11,4 +11,4 @@ deploy <- function(name) {
   )
 }
 
-deploy("nhp_elicitation_thf")
+deploy("nhp_elicitation_thf_test")

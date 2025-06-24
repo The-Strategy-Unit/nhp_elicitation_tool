@@ -1,0 +1,10 @@
+name: nhp_elicitation_thf_test
+title:
+username: rhian.davies
+account: rhian.davies
+server: connect.strategyunitwm.nhs.uk
+hostUrl: https://connect.strategyunitwm.nhs.uk/__api__
+appId: 146
+bundleId: 387
+url: https://connect.strategyunitwm.nhs.uk/content/ce5ba477-2f10-420c-b289-6ffdeb920fe5/
+version: 1
