@@ -1,1 +1,1 @@
-### Round 1 - Team A
+### Round 1
