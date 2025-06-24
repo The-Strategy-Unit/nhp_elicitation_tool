@@ -121,7 +121,7 @@ get_latest_results <- function(email, strategy, phase_1 = is_phase_1()) {
     dplyr::filter(
       .data[["email"]] == .env[["email"]]
     ) |>
-    dplyr::select("strategy", tidyselect::matches("(lo|hi)$"))
+    dplyr::select("strategy", tidyselect::matches("(lo|hi)"))
 
   if (!missing(strategy)) {
     r <- dplyr::filter(r, .data[["strategy"]] == .env[["strategy"]])
