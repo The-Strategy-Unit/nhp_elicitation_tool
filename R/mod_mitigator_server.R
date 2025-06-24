@@ -13,6 +13,10 @@ mod_mitigator_server <- function(id, email, strategies) {
     cagr_data <- app_sys("app", "data", "cagr_data.csv") |>
       readr::read_csv()
 
+    long_term_avg <- cagr_data |>
+      dplyr::filter(Metric == "Long-term CAGR avg") |>
+      dplyr::pull("Including Covid (1995/96 to present)")
+
     disc_data <- app_sys("app", "data", "disc_data.csv") |>
       readr::read_csv()
 
@@ -114,7 +118,7 @@ mod_mitigator_server <- function(id, email, strategies) {
     })
 
     output$growth_plot <- plotly::renderPlotly({
-      growth_plot(hist_data, disc_data, proj())
+      growth_plot(hist_data, disc_data, proj(), long_term_avg = long_term_avg)
     })
 
     # update the progress bar when the selected strategy changes

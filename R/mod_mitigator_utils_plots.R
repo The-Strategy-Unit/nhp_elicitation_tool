@@ -129,7 +129,7 @@ index_plot <- function(hist_data, disc_data, proj) {
 }
 
 
-growth_plot <- function(hist_data, disc_data, proj) {
+growth_plot <- function(hist_data, disc_data, proj, long_term_avg) {
   df_bar <- dplyr::bind_rows(
     hist_data |>
       dplyr::filter(!is.na(Growth) & Year <= 2021) |>
@@ -142,8 +142,7 @@ growth_plot <- function(hist_data, disc_data, proj) {
   p <- ggplot2::ggplot(df_bar, ggplot2::aes(Year, Growth, fill = Source)) +
     ggplot2::geom_col(position = "identity", alpha = 0.8) +
     ggplot2::geom_hline(
-      yintercept = 0,
-      #yintercept = long_term_avg, #TODO
+      yintercept = long_term_avg,
       linetype = "dotted",
       color = "#333"
     ) +
