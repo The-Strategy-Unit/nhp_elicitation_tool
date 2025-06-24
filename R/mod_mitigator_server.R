@@ -92,7 +92,7 @@ mod_mitigator_server <- function(id, email, strategies) {
       shiny::req(valid_inputs())
       (((1 + input$low_0_5 / 100)^5 * (1 + input$low_6_10 / 100)^5)^(1 / 10) -
         1) *
-        10
+        100
     })
 
     output$low_avg <- shiny::renderText({
@@ -193,7 +193,6 @@ mod_mitigator_server <- function(id, email, strategies) {
       shiny::req(valid_inputs())
       e <- email()
       s <- selected_strategy_id()
-
       v <- get_latest_results(e, s)
 
       # if no rows of data are returned, then the user has not yet saved
