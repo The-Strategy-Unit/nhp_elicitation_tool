@@ -72,7 +72,7 @@ mod_mitigator_server <- function(id, email, strategies) {
     })
 
     high_avg <- shiny::reactive({
-      (input$high_0_5 + input$high_6_10) / 2
+      (input$high_0_5 + input$high_6_10) / 2 #TODO
     })
 
     output$high_avg <- shiny::renderText({
@@ -80,7 +80,7 @@ mod_mitigator_server <- function(id, email, strategies) {
     })
 
     low_avg <- shiny::reactive({
-      (input$low_0_5 + input$low_6_10) / 2
+      (input$low_0_5 + input$low_6_10) / 2 # TODO
     })
 
     output$low_avg <- shiny::renderText({
@@ -88,7 +88,7 @@ mod_mitigator_server <- function(id, email, strategies) {
     })
 
     proj <- reactive({
-      #req(high1(), high2(), low1(), low2(), valid1(), valid2())
+      #req(high1(), high2(), low1(), low2(), valid1(), valid2()) # TODO
       years <- 2025:2034
       data.frame(
         Year = years,
@@ -121,34 +121,35 @@ mod_mitigator_server <- function(id, email, strategies) {
 
     # Enforce rounding to 1dp
 
-    observeEvent(input$low_0_5, {
+    shiny::observeEvent(input$low_0_5, {
       rounded_val <- round(input$low_0_5, 1)
       if (rounded_val != input$low_0_5) {
-        updateNumericInput(session, "low_0_5", value = rounded_val)
+        shiny::updateNumericInput(session, "low_0_5", value = rounded_val)
       }
     })
 
-    observeEvent(input$high_0_5, {
+    shiny::observeEvent(input$high_0_5, {
       rounded_val <- round(input$high_0_5, 1)
       if (rounded_val != input$high_0_5) {
-        updateNumericInput(session, "high_0_5", value = rounded_val)
+        shiny::updateNumericInput(session, "high_0_5", value = rounded_val)
       }
     })
 
-    observeEvent(input$low_6_10, {
+    shiny::observeEvent(input$low_6_10, {
       rounded_val <- round(input$low_6_10, 1)
       if (rounded_val != input$low_6_10) {
-        updateNumericInput(session, "low_6_10", value = rounded_val)
+        shiny::updateNumericInput(session, "low_6_10", value = rounded_val)
       }
     })
 
-    observeEvent(input$high_6_10, {
+    shiny::observeEvent(input$high_6_10, {
       rounded_val <- round(input$high_6_10, 1)
       if (rounded_val != input$high_6_10) {
-        updateNumericInput(session, "high_6_10", value = rounded_val)
+        shiny::updateNumericInput(session, "high_6_10", value = rounded_val)
       }
     })
 
+    #TODO
     # when the selected strategy is changed, get the data from the db and
     # update the inputs, or use default values if the user has not yet saved
     # anything for this strategy
