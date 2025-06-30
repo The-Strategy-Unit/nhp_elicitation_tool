@@ -26,9 +26,9 @@ mod_mitigator_ui <- function(id) {
         tags$thead(
           tags$tr(
             tags$th(""),
-            tags$th("0–5 yrs"),
-            tags$th("6–10 yrs"),
-            tags$th("Implied 10-yr avg")
+            tags$th("CAGR 0-5 years"),
+            tags$th("CAGR 5-10 years"),
+            tags$th("CAGR 0-10 years (derived)")
           )
         ),
         tags$tbody(
@@ -42,7 +42,7 @@ mod_mitigator_ui <- function(id) {
               width = "80px"
             )),
             tags$td(shiny::numericInput(
-              ns("high_6_10"),
+              ns("high_5_10"),
               label = NULL,
               value = 0,
               step = 0.1,
@@ -60,7 +60,7 @@ mod_mitigator_ui <- function(id) {
               width = "80px"
             )),
             tags$td(shiny::numericInput(
-              ns("low_6_10"),
+              ns("low_5_10"),
               label = NULL,
               value = 0,
               step = 0.1,

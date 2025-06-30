@@ -54,10 +54,10 @@ mod_view_results_server <- function(id) {
         dplyr::filter(.data[["strategy"]] == input$strategy) |>
         dplyr::select(
           #"low_0_5",
-          #"low_6_10",
+          #"low_5_10",
           "low_avg",
           #"high_0_5",
-          #"high_6_10",
+          #"high_5_10",
           "high_avg"
         ) |>
         dplyr::arrange(.data[["low_avg"]], .data[["high_avg"]]) |>
@@ -90,9 +90,9 @@ mod_view_results_server <- function(id) {
       results_data() |>
         dplyr::filter(
           !(.data[["low_0_5"]] == 0 &
-            .data[["low_6_10"]] == 0 &
+            .data[["low_5_10"]] == 0 &
             .data[["high_0_5"]] == 0 &
-            .data[["high_6_10"]] == 0)
+            .data[["high_5_10"]] == 0)
         ) |> # Remove any values left at default
         ggplot2::ggplot(
           ggplot2::aes(x = .data[["low_avg"]], y = .data[["rn"]])

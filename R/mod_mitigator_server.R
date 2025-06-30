@@ -79,7 +79,7 @@ mod_mitigator_server <- function(id, email, strategies) {
 
     high_avg <- shiny::reactive({
       shiny::req(valid_inputs())
-      ((((1 + input$high_0_5 / 100)^5 * (1 + input$high_6_10 / 100)^5)^(1 /
+      ((((1 + input$high_0_5 / 100)^5 * (1 + input$high_5_10 / 100)^5)^(1 /
         10) -
         1) *
         100) |>
@@ -92,7 +92,7 @@ mod_mitigator_server <- function(id, email, strategies) {
 
     low_avg <- shiny::reactive({
       shiny::req(valid_inputs())
-      ((((1 + input$low_0_5 / 100)^5 * (1 + input$low_6_10 / 100)^5)^(1 / 10) -
+      ((((1 + input$low_0_5 / 100)^5 * (1 + input$low_5_10 / 100)^5)^(1 / 10) -
         1) *
         100) |>
         round(1)
@@ -107,8 +107,8 @@ mod_mitigator_server <- function(id, email, strategies) {
       years <- 2025:2034
       data.frame(
         Year = years,
-        Low = c(rep(input$low_0_5, 5), rep(input$low_6_10, 5)),
-        High = c(rep(input$high_0_5, 5), rep(input$high_6_10, 5))
+        Low = c(rep(input$low_0_5, 5), rep(input$low_5_10, 5)),
+        High = c(rep(input$high_0_5, 5), rep(input$high_5_10, 5))
       )
     })
 
@@ -138,10 +138,10 @@ mod_mitigator_server <- function(id, email, strategies) {
 
     valid_inputs <- reactive({
       is_valid_number(input$low_0_5) &
-        is_valid_number(input$low_6_10) &
+        is_valid_number(input$low_5_10) &
         is_valid_number(input$high_0_5) &
-        is_valid_number(input$high_6_10) &
-        (input$high_6_10 >= input$low_6_10) &
+        is_valid_number(input$high_5_10) &
+        (input$high_5_10 >= input$low_5_10) &
         (input$high_0_5 >= input$low_0_5)
     })
 
@@ -172,19 +172,19 @@ mod_mitigator_server <- function(id, email, strategies) {
       }
     })
 
-    shiny::observeEvent(input$low_6_10, {
+    shiny::observeEvent(input$low_5_10, {
       shiny::req(valid_inputs())
-      rounded_val <- round(input$low_6_10, 1)
-      if (rounded_val != input$low_6_10) {
-        shiny::updateNumericInput(session, "low_6_10", value = rounded_val)
+      rounded_val <- round(input$low_5_10, 1)
+      if (rounded_val != input$low_5_10) {
+        shiny::updateNumericInput(session, "low_5_10", value = rounded_val)
       }
     })
 
-    shiny::observeEvent(input$high_6_10, {
+    shiny::observeEvent(input$high_5_10, {
       shiny::req(valid_inputs())
-      rounded_val <- round(input$high_6_10, 1)
-      if (rounded_val != input$high_6_10) {
-        shiny::updateNumericInput(session, "high_6_10", value = rounded_val)
+      rounded_val <- round(input$high_5_10, 1)
+      if (rounded_val != input$high_5_10) {
+        shiny::updateNumericInput(session, "high_5_10", value = rounded_val)
       }
     })
 
@@ -204,10 +204,10 @@ mod_mitigator_server <- function(id, email, strategies) {
         if (is_phase_1()) {
           list(
             low_0_5 = 0,
-            low_6_10 = 0,
+            low_5_10 = 0,
             low_avg = 0,
             high_0_5 = 0,
-            high_6_10 = 0,
+            high_5_10 = 0,
             high_avg = 0,
             comments_low = "",
             comments_high = ""
@@ -227,8 +227,8 @@ mod_mitigator_server <- function(id, email, strategies) {
 
       shiny::updateNumericInput(
         session,
-        "low_6_10",
-        value = v$low_6_10
+        "low_5_10",
+        value = v$low_5_10
       )
 
       shiny::updateNumericInput(
@@ -239,8 +239,8 @@ mod_mitigator_server <- function(id, email, strategies) {
 
       shiny::updateNumericInput(
         session,
-        "high_6_10",
-        value = v$high_6_10
+        "high_5_10",
+        value = v$high_5_10
       )
 
       shiny::updateTextAreaInput(
@@ -286,10 +286,10 @@ mod_mitigator_server <- function(id, email, strategies) {
           email(),
           s,
           input$low_0_5,
-          input$low_6_10,
+          input$low_5_10,
           low_avg(),
           input$high_0_5,
-          input$high_6_10,
+          input$high_5_10,
           high_avg(),
           input$comments_low,
           input$comments_high
@@ -399,16 +399,16 @@ mod_mitigator_server <- function(id, email, strategies) {
       ) |>
         reactable::reactable(
           columns = list(
-            low_0_5 = reactable::colDef(name = "Low (0–5 yrs)"),
-            low_6_10 = reactable::colDef(name = "Low (6–10 yrs)"),
+            low_0_5 = reactable::colDef(name = "Low CAGR 0-5 years"),
+            low_5_10 = reactable::colDef(name = "Low CAGR 5-10 years"),
             low_avg = reactable::colDef(
-              name = "Low (10-yr avg)",
+              name = "Low CAGR 0-10 years (derived)",
               style = list(fontWeight = "bold")
             ),
-            high_0_5 = reactable::colDef(name = "High (0–5 yrs)"),
-            high_6_10 = reactable::colDef(name = "High (6–10 yrs)"),
+            high_0_5 = reactable::colDef(name = "High CAGR 0-5 years"),
+            high_5_10 = reactable::colDef(name = "High CAGR 5-10 years"),
             high_avg = reactable::colDef(
-              name = "High (10-yr avg)",
+              name = "High CAGR 0-10 years (derived)",
               style = list(fontWeight = "bold")
             ),
             comments_low = reactable::colDef(name = "Low rationale"),
