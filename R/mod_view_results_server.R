@@ -88,12 +88,6 @@ mod_view_results_server <- function(id) {
 
     output$individuals <- shiny::renderPlot({
       results_data() |>
-        dplyr::filter(
-          !(.data[["low_0_5"]] == 0 &
-            .data[["low_5_10"]] == 0 &
-            .data[["high_0_5"]] == 0 &
-            .data[["high_5_10"]] == 0)
-        ) |> # Remove any values left at default
         ggplot2::ggplot(
           ggplot2::aes(x = .data[["low_avg"]], y = .data[["rn"]])
         ) +

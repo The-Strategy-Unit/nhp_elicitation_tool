@@ -13,6 +13,12 @@ mod_complete_server <- function(id, email, strategies) {
         dplyr::bind_rows(.id = "strategy")
 
       r <- get_latest_results(email()) |>
+        dplyr::filter(
+          !(.data[["low_0_5"]] == 0 &
+            .data[["low_5_10"]] == 0 &
+            .data[["high_0_5"]] == 0 &
+            .data[["high_5_10"]] == 0)
+        ) |>
         dplyr::select(
           "strategy",
           "low_avg",
