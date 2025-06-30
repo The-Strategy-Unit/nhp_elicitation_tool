@@ -97,7 +97,11 @@ index_plot <- function(hist_data, disc_data, proj) {
     ggplot2::scale_linetype_manual(
       values = c(Historical = "solid", Estimate = "twodash")
     ) +
-    ggplot2::theme_minimal()
+    ggplot2::theme_minimal() +
+    ggplot2::labs(
+      title = "Cumulative productivity growth (NQA) index (1995/96 = 100)",
+      y = "Index"
+    )
 
   dfp <- proj
   lo <- hi <- numeric(nrow(dfp))
@@ -149,7 +153,11 @@ growth_plot <- function(hist_data, disc_data, proj, long_term_avg) {
     ggplot2::scale_fill_manual(
       values = c(Historical = "gray70", Estimate = "tomato")
     ) +
-    ggplot2::theme_minimal()
+    ggplot2::theme_minimal() +
+    ggplot2::labs(
+      title = "Year-on-year productivity growth (NQA)",
+      y = "Growth (%)"
+    )
 
   dfp <- proj
   p <- p +

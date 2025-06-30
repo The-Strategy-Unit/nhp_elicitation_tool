@@ -17,7 +17,7 @@ mod_mitigator_ui <- function(id) {
     )
 
   bslib::layout_columns(
-    col_widths = c(6, 6, 6, 6, 12),
+    col_widths = c(6, 6, 12, 12),
     bslib::card(
       bslib::card_title(shiny::textOutput(ns("strategy"))),
       shiny::uiOutput(ns("mitigator_text")),
@@ -103,16 +103,17 @@ If these values vary across the two time periods, please provide an explanation 
     # ),
 
     bslib::card(
-      bslib::card_header("Growth plot"),
+      bslib::card_header("Trend data"),
       bslib::card_body(
-        plotly::plotlyOutput(ns("growth_plot"), height = "400px")
-      )
-    ),
-
-    bslib::card(
-      bslib::card_header("Index plot"),
-      bslib::card_body(
-        plotly::plotlyOutput(ns("index_plot"), height = "400px")
+        bslib::layout_column_wrap(
+          width = 1 / 2,
+          plotly::plotlyOutput(ns("growth_plot"), height = "400px"),
+          plotly::plotlyOutput(ns("index_plot"), height = "400px"),
+        ),
+        p(
+          "Source: ONS, Public Service Productivity, estimates after 2022/23 are based on UK quarterly public sector productivity estimates (experimental)."
+        ),
+        p("NQA: non-quality-adjusted, CAGR: Compound annual growth rate")
       )
     ),
 
