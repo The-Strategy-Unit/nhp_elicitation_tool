@@ -13,22 +13,16 @@ calc_cagr_series <- function(data, window) {
   cagr_vals <- sapply(1:(nrow(data) - window + 1), function(i) {
     start_val <- data$Productivity_Index[i]
     end_val <- data$Productivity_Index[i + window - 1]
-    calc_cagr(start_val, end_val, window) * 100
+    years <- data$Year[i + window] - data$Year[i]
+    calc_cagr(start_val, end_val, years) * 100
   })
   return(c(min(cagr_vals, na.rm = TRUE), max(cagr_vals, na.rm = TRUE)))
 }
 
-hist_data <-
-  "targets/Mockup_elicitation_v2.xls" |>
-  readxl::read_excel(
-    sheet = 'Index',
-    skip = 6
-  ) |>
-  dplyr::select(Period, `Non-Quality Adjusted Productivity Index`) |>
-  dplyr::rename(
-    Year = Period,
-    Productivity_Index = `Non-Quality Adjusted Productivity Index`
-  ) |>
+hist_data <- "targets/Mockup_elicitation_v2.xls" |>
+  readxl::read_excel(sheet = "NQA_index") |>
+  dplyr::select(Year, NQA_prod_index) |>
+  dplyr::rename(Productivity_Index = NQA_prod_index) |>
   dplyr::mutate(
     Year = as.numeric(substr(Year, 1, 4)),
     Productivity_Index = as.numeric(Productivity_Index)
@@ -42,10 +36,12 @@ readr::write_csv(hist_data, "inst/app/data/hist_data.csv")
 # Pre-COVID metrics (up to 2018)
 hist_pre <- hist_data |> dplyr::filter(Year <= 2018)
 
+pre_years <- hist_pre$Year[nrow(hist_pre)] - hist_pre$Year[1]
+
 pre_long_avg <- calc_cagr(
   hist_pre$Productivity_Index[1],
   tail(hist_pre$Productivity_Index, 1),
-  nrow(hist_pre)
+  pre_years
 ) *
   100
 
@@ -63,10 +59,13 @@ if (nrow(hist_pre) >= 10) {
 }
 
 # Including-COVID metrics (all data)
+
+full_years <- hist_data$Year[nrow(hist_data)] - hist_data$Year[1]
+
 long_term_avg <- calc_cagr(
   hist_data$Productivity_Index[1],
   tail(hist_data$Productivity_Index, 1),
-  nrow(hist_data)
+  full_years
 ) *
   100
 
@@ -121,7 +120,7 @@ est <- est_raw |>
   dplyr::select(Year, Growth) |>
   dplyr::mutate(Year = as.numeric(Year), Growth = as.numeric(Growth)) |>
   dplyr::arrange(Year) |>
-  dplyr::filter(Year > 2021)
+  dplyr::filter(Year > 2022)
 
 disc_start <- tail(hist_data$Productivity_Index, 1)
 disc_idx <- disc_start * cumprod(1 + est$Growth / 100)
@@ -133,6 +132,7 @@ disc_data <- dplyr::bind_rows(
     Year = est$Year,
     Productivity_Index = disc_idx,
     Growth = est$Growth
-  )
+  ) |>
+    dplyr::filter(Year > 2022)
 )
 readr::write_csv(disc_data, "inst/app/data/disc_data.csv")
