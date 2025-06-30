@@ -19,7 +19,7 @@ calc_cagr_series <- function(data, window) {
   return(c(min(cagr_vals, na.rm = TRUE), max(cagr_vals, na.rm = TRUE)))
 }
 
-hist_data <- "targets/Mockup_elicitation_v2.xls" |>
+hist_data <- "targets/Data for app and presentation.xlsx" |>
   readxl::read_excel(sheet = "NQA_index") |>
   dplyr::select(Year, NQA_prod_index) |>
   dplyr::rename(Productivity_Index = NQA_prod_index) |>

@@ -80,15 +80,15 @@ index_plot <- function(hist_data, disc_data, proj) {
   df_all <- dplyr::bind_rows(
     hist_data |>
       dplyr::select(Year, Productivity_Index) |>
-      dplyr::mutate(Source = "Historical"),
+      dplyr::mutate(Type = "Historical"),
     disc_data |>
       dplyr::select(Year, Productivity_Index) |>
-      dplyr::mutate(Source = "Estimate")
+      dplyr::mutate(Type = "Estimate")
   )
 
   p <- ggplot2::ggplot(
     df_all,
-    ggplot2::aes(Year, Productivity_Index, color = Source, linetype = Source)
+    ggplot2::aes(Year, Productivity_Index, color = Type, linetype = Type)
   ) +
     ggplot2::geom_line(linewidth = 1) +
     ggplot2::scale_color_manual(
@@ -133,13 +133,13 @@ growth_plot <- function(hist_data, disc_data, proj, long_term_avg) {
   df_bar <- dplyr::bind_rows(
     hist_data |>
       dplyr::filter(!is.na(Growth) & Year <= 2021) |>
-      dplyr::mutate(Source = "Historical"),
+      dplyr::mutate(Type = "Historical"),
     disc_data |>
       dplyr::filter(Year %in% c(2022, 2023, 2024)) |>
       dplyr::select(Year, Growth) |>
-      dplyr::mutate(Source = "Estimate")
+      dplyr::mutate(Type = "Estimate")
   )
-  p <- ggplot2::ggplot(df_bar, ggplot2::aes(Year, Growth, fill = Source)) +
+  p <- ggplot2::ggplot(df_bar, ggplot2::aes(Year, Growth, fill = Type)) +
     ggplot2::geom_col(position = "identity", alpha = 0.8) +
     ggplot2::geom_hline(
       yintercept = long_term_avg,
