@@ -97,11 +97,6 @@ If these values vary across the two time periods, please provide an explanation 
       complete_button
     ),
 
-    # bslib::card(
-    #   bslib::card_header("Long term historic averages (CAGR % per annum)"),
-    #   shiny::tableOutput(ns("cagr_table"))
-    # ),
-
     bslib::card(
       bslib::card_header("Trend data"),
       bslib::card_body(
