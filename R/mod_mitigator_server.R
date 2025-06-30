@@ -411,8 +411,14 @@ mod_mitigator_server <- function(id, email, strategies) {
               name = "High CAGR 0-10 years (derived)",
               style = list(fontWeight = "bold")
             ),
-            comments_low = reactable::colDef(name = "Low rationale"),
-            comments_high = reactable::colDef(name = "High rationale"),
+            comments_low = reactable::colDef(
+              name = "Low rationale",
+              minWidth = 350
+            ),
+            comments_high = reactable::colDef(
+              name = "High rationale",
+              minWidth = 350
+            ),
             is_me = reactable::colDef(show = FALSE)
           ),
           rowStyle = reactable::JS(

@@ -17,7 +17,7 @@ mod_mitigator_ui <- function(id) {
     )
 
   bslib::layout_columns(
-    col_widths = c(6, 6, 12, 12),
+    col_widths = c(6, 6, 12, 12, 12),
     bslib::card(
       bslib::card_title(shiny::textOutput(ns("strategy"))),
       shiny::uiOutput(ns("mitigator_text")),
@@ -113,17 +113,20 @@ If these values vary across the two time periods, please provide an explanation 
     ),
 
     if (!is_phase_1()) {
-      bslib::card(
-        bslib::card_header("Peer results"),
-
-        bslib::layout_column_wrap(
-          width = 1 / 2,
-
-          shinycssloaders::withSpinner(
-            plotly::plotlyOutput(ns("results_plot"), height = "400px")
+      shiny::tagList(
+        bslib::card(
+          bslib::card_header(
+            "Visualisation of peer results CAGR 0-10 years (derived)"
           ),
-
-          reactable::reactableOutput(ns("results_table"))
+          bslib::card_body(
+            plotly::plotlyOutput(ns("results_plot"), height = "400px")
+          )
+        ),
+        bslib::card(
+          bslib::card_header("All peer results"),
+          bslib::card_body(
+            reactable::reactableOutput(ns("results_table"))
+          )
         )
       )
     }
