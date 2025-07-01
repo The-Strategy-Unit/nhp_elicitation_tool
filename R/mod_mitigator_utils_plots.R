@@ -100,6 +100,7 @@ index_plot <- function(hist_data, disc_data, proj) {
     ggplot2::theme_minimal() +
     ggplot2::labs(
       title = "Cumulative productivity growth (NQA) index (1995/96 = 100)",
+      x = "Financial Year",
       y = "Index"
     )
 
@@ -136,10 +137,10 @@ index_plot <- function(hist_data, disc_data, proj) {
 growth_plot <- function(hist_data, disc_data, proj, long_term_avg) {
   df_bar <- dplyr::bind_rows(
     hist_data |>
-      dplyr::filter(!is.na(Growth) & Year <= 2021) |>
+      dplyr::filter(!is.na(Growth) & Year <= 2022) |>
       dplyr::mutate(Type = "Historical"),
     disc_data |>
-      dplyr::filter(Year %in% c(2022, 2023, 2024)) |>
+      dplyr::filter(Year %in% c(2023, 2024)) |>
       dplyr::select(Year, Growth) |>
       dplyr::mutate(Type = "Estimate")
   )
@@ -156,6 +157,7 @@ growth_plot <- function(hist_data, disc_data, proj, long_term_avg) {
     ggplot2::theme_minimal() +
     ggplot2::labs(
       title = "Year-on-year productivity growth (NQA)",
+      x = "Financial Year",
       y = "Growth (%)"
     )
 

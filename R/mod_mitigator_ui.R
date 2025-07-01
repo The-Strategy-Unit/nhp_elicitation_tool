@@ -106,7 +106,7 @@ If these values vary across the two time periods, please provide an explanation 
           plotly::plotlyOutput(ns("index_plot"), height = "400px"),
         ),
         p(
-          "Source: ONS, Public Service Productivity, estimates after 2022/23 are based on UK quarterly public sector productivity estimates (experimental)."
+          "ONS, Public Service Productivity. Estimates after 2022/23 are based on UK quarterly public sector productivity estimates (experimental); these are for the UK and based on calendar years."
         ),
         p("NQA: non-quality-adjusted, CAGR: Compound annual growth rate")
       )
