@@ -1,0 +1,10 @@
+name: thf_elicitation_productivity_tech
+title:
+username: rhian.davies
+account: rhian.davies
+server: connect.strategyunitwm.nhs.uk
+hostUrl: https://connect.strategyunitwm.nhs.uk/__api__
+appId: 150
+bundleId: 400
+url: https://connect.strategyunitwm.nhs.uk/thf/elicitation_productivity_tech/
+version: 1
