@@ -4,50 +4,25 @@
 #'     DO NOT REMOVE.
 #' @noRd
 app_ui <- function(request) {
-  header <- bs4Dash::dashboardHeader(
-    title = bs4Dash::bs4DashBrand(
-      title = "NHP Elicitation Tool",
-      image = "https://the-strategy-unit.github.io/assets/logo_yellow.svg"
-    )
-  )
-
-  sidebar <- bs4Dash::bs4DashSidebar(
-    collapsed = TRUE,
-    expandOnHover = FALSE
-  )
-
-  body <- bs4Dash::bs4DashBody(
-    shiny::tabsetPanel(
-      id = "tabset",
-      type = "hidden",
-      shiny::tabPanel(
-        "tab_home",
-        mod_home_ui("home")
-      ),
+  page <- bslib::page_fluid(
+    title = "National Elicitation Tool",
+    theme = bslib::bs_theme(),
+    bslib::navset_hidden(
+      id = "panels",
+      bslib::nav_panel_hidden("tab_home", mod_home_ui("home")),
       if (app_is_live()) {
-        shiny::tabPanel(
-          "tab_mitigator",
-          mod_mitigator_ui("mitigator")
-        )
+        bslib::nav_panel_hidden("tab_mitigator", mod_mitigator_ui("mitigator"))
       },
       if (app_is_live()) {
-        shiny::tabPanel(
-          "tab_complete",
-          mod_complete_ui("complete")
-        )
+        bslib::nav_panel_hidden("tab_complete", mod_complete_ui("complete"))
       },
-      shiny::tabPanel(
-        "tab_results",
-        mod_view_results_ui("view_results")
-      )
+      if (app_is_live()) {
+        bslib::nav_panel_hidden(
+          "tab_results",
+          mod_view_results_ui("view_results")
+        )
+      }
     )
-  )
-
-  page <- bs4Dash::bs4DashPage(
-    title = "NHP Elicitation Tool",
-    header = header,
-    sidebar = sidebar,
-    body = body
   )
 
   shiny::tagList(
