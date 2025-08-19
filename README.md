@@ -1,15 +1,38 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# NHP Elicitation Tool
+# NEECOM elicitation app
 
-<!-- badges: start -->
+This repo contains the shiny app code for an elicitation on Productivity
+for The Health Foundation. The exercise was run in person at a workshop
+on July 2024. Participants were split into three teams; research, policy
+and front line.
 
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-<!-- badges: end -->
+The aggregation and analysis of the results, including presentions shown
+during the workshop are on
+[GitHub](https://github.com/The-Strategy-Unit/elicitation_thf_2025_07_results).
 
-Shiny app for the NHP National Elicitation Project.
+## Main changes from [core elicitation app](https://github.com/The-Strategy-Unit/nhp_elicitation_tool)
+
+- Only one question was asked.
+- The historic data was provided by The Health Foundation and graphs
+  showing the trend.
+- Four values were elicited, rather than 2. A p10 and p90 for the first
+  5 years and a p10 and p90 for years 6 - 10. These were aggregtated
+  into a p10 and p90 for the whole 10 year period.
+- There were three “teams”. However, the results shown back in phase 2
+  were the values of the entire group. Therefore there was only a single
+  shiny app (and database) deployed.
+
+## Screenshots
+
+### Round 1
+
+![](screenshots/round_1.png)
+
+### Round 2
+
+![](screenshots/round_2.png)
 
 ## Deployment
 

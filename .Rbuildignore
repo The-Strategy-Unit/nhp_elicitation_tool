@@ -16,3 +16,4 @@ run_dev.*
 ^recruitment.xlsx$
 ^nhp_eet.db$
 ^deploy.R$
+^screenshots/*
