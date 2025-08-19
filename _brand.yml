@@ -1,0 +1,33 @@
+meta:
+  name:    
+    full: The Strategy Unit
+  link:
+    home: https://www.strategyunitwm.nhs.uk/
+    github: https://github.com/The-Strategy-Unit    
+
+# adjust these paths if logos are placed elsewhere
+logo:
+  small: logos/logo_black_favicon.png
+  medium:
+    light: logos/logo_black_medium.png
+    dark: logos/logo_yellow_medium.png
+  large: 
+    light: logos/logo_black.svg 
+    dark: logos/logo_yellow.svg  
+
+color:
+  palette:    
+    dark-grey: "#959595"    
+    su-charcoal: "#2c2825"
+    su-yellow: "#f9bd07"    
+    su-white: "#f5f4f3"
+    su-blue: "#5881c1"    
+  foreground: su-charcoal
+  background: su-white
+  primary: su-yellow
+  secondary: dark-grey   
+  info: su-blue
+  
+typography:
+  link:
+    color: info

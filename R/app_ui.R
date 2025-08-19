@@ -4,19 +4,25 @@
 #'     DO NOT REMOVE.
 #' @noRd
 app_ui <- function(request) {
-
   page <- bslib::page_fluid(
     title = "National Elicitation Tool",
-    theme = bslib::bs_theme(bootswatch = "yeti"),
-    #theme = bslib::bs_theme(primary = "#f9bf07", secondary = "#2c2825", base_font = c("Segoe UI", "sans-serif")),
-
+    theme = bslib::bs_theme(),
     bslib::navset_hidden(
-        id = "panels",
-        bslib::nav_panel_hidden("tab_home", mod_home_ui("home")),
-        if (app_is_live()) {bslib::nav_panel_hidden("tab_mitigator", mod_mitigator_ui("mitigator"))},
-        if (app_is_live()) {bslib::nav_panel_hidden("tab_complete", mod_complete_ui("complete"))},
-        if (app_is_live()) {bslib::nav_panel_hidden("tab_results", mod_view_results_ui("view_results"))}
-      )
+      id = "panels",
+      bslib::nav_panel_hidden("tab_home", mod_home_ui("home")),
+      if (app_is_live()) {
+        bslib::nav_panel_hidden("tab_mitigator", mod_mitigator_ui("mitigator"))
+      },
+      if (app_is_live()) {
+        bslib::nav_panel_hidden("tab_complete", mod_complete_ui("complete"))
+      },
+      if (app_is_live()) {
+        bslib::nav_panel_hidden(
+          "tab_results",
+          mod_view_results_ui("view_results")
+        )
+      }
+    )
   )
 
   shiny::tagList(
