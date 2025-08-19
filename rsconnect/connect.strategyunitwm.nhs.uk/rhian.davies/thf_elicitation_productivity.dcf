@@ -5,6 +5,6 @@ account: rhian.davies
 server: connect.strategyunitwm.nhs.uk
 hostUrl: https://connect.strategyunitwm.nhs.uk/__api__
 appId: 149
-bundleId: 398
-url: https://connect.strategyunitwm.nhs.uk/content/8a2f7ce6-34cf-40b6-90c2-aa363a4872e9/
+bundleId: 401
+url: https://connect.strategyunitwm.nhs.uk/thf/elicitation_productivity/
 version: 1
