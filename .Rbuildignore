@@ -12,7 +12,7 @@ run_dev.*
 ^CODE_OF_CONDUCT\.md$
 ^app\.R$
 ^rsconnect$
-
+^.Renviron.example$
 ^recruitment.xlsx$
 ^nhp_eet.db$
 ^deploy.R$
