@@ -9,7 +9,25 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-Shiny app for the NHP National Elicitation Project.
+Core shiny app for Strategy Unit Elicitation Projects. This code has
+been used a base for a number of elicitation exercises.
+
+## Previous Elicitation Exercises
+
+- 2023-10 [National Elicitation
+  (NEE)](https://github.com/The-Strategy-Unit/archive-nhp_elicitation_tool)
+
+- 2024-06 [National Elicitation Community
+  (NEECom)](https://github.com/The-Strategy-Unit/elicitation_neecom_2024_06)
+
+- 2024-10 [Non-demographic
+  growth](https://github.com/The-Strategy-Unit/elicitation_ndg3_2024_10)
+
+- 2025-07 [Productivity for The Health
+  Foundation](https://github.com/The-Strategy-Unit/elicitation_thf_2025_07)
+
+- 2025-11 [Health Status Adjustment
+  (HSA)](https://github.com/The-Strategy-Unit/elicitation_hsa_2025_11)
 
 ## Deployment
 
